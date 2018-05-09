@@ -1,0 +1,157 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "pb/www.proto",
+    "version": "version not set"
+  },
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/v1/echo": {
+      "post": {
+        "summary": "Echo method receives a simple message and returns it.",
+        "operationId": "Echo",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/wwwEchoResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/wwwEchoRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Www"
+        ]
+      }
+    },
+    "/api/v1/services/status": {
+      "get": {
+        "summary": "ServicesStatus method receives no paramaters and returns all services status message",
+        "operationId": "ServicesStatus",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/wwwServicesStatusList"
+            }
+          }
+        },
+        "tags": [
+          "Www"
+        ]
+      }
+    },
+    "/api/v1/version": {
+      "get": {
+        "summary": "Version method receives no paramaters and returns a version message.",
+        "operationId": "Version",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/wwwVersionResponse"
+            }
+          }
+        },
+        "tags": [
+          "Www"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "ServiceStatusStatus": {
+      "type": "string",
+      "enum": [
+        "OK",
+        "UNAVAILABLE"
+      ],
+      "default": "OK"
+    },
+    "wwwEchoRequest": {
+      "type": "object",
+      "properties": {
+        "uuid": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string"
+        }
+      },
+      "description": "EchoRequest represents a simple message sent to the Echo service."
+    },
+    "wwwEchoResponse": {
+      "type": "object",
+      "properties": {
+        "uuid": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string"
+        }
+      },
+      "description": "EchoResponse represents a simple message that the Echo service return."
+    },
+    "wwwServiceStatus": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/definitions/ServiceStatusStatus"
+        },
+        "e_msg": {
+          "type": "string"
+        }
+      },
+      "title": "SeviceStatus represents a sub services status message"
+    },
+    "wwwServicesStatusList": {
+      "type": "object",
+      "properties": {
+        "services": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/wwwServiceStatus"
+          }
+        }
+      },
+      "title": "ServicesStatusList is the sub services status list"
+    },
+    "wwwVersionResponse": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Id represents the message identifier."
+        },
+        "version": {
+          "type": "string"
+        }
+      },
+      "title": "VersionMessage represents a version message"
+    }
+  }
+}
