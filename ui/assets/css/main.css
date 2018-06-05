@@ -17,7 +17,11 @@ body {
 .header {
   text-align: center;
 }
-.foter {
+.footer {
+  /*margin-top: 10px;*/
+  padding: 10px;
+  background: #C4C7C4;
+  color: #FFFFFF;
   min-height: 100px
 }
 .logo {
@@ -276,14 +280,9 @@ h2.title span {
   overflow: hidden;
 }
 
-.carousel {
-  background: #EEE;
-  height: 600px;
-  width: 100%;
-}
-.carousel img {
-  display: block;
-  height: 600px;
+.rsvp-wrapper {
+  position: relative;
+  height: 800px;
   width: 100%;
 }
 
