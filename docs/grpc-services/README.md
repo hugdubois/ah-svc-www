@@ -3,7 +3,7 @@
 
 ## Table of Contents
 
-- [www.proto](#www.proto)
+- [pb/www.proto](#pb/www.proto)
     - [EchoRequest](#grpc.hugdubois.www.EchoRequest)
     - [EchoResponse](#grpc.hugdubois.www.EchoResponse)
     - [EmptyMessage](#grpc.hugdubois.www.EmptyMessage)
@@ -21,10 +21,10 @@
 
 
 
-<a name="www.proto"/>
+<a name="pb/www.proto"/>
 <p align="right"><a href="#top">Top</a></p>
 
-## www.proto
+## pb/www.proto
 
 
 

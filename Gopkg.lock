@@ -40,7 +40,10 @@
 [[projects]]
   branch = "master"
   name = "github.com/dmgk/faker"
-  packages = [".","locales"]
+  packages = [
+    ".",
+    "locales"
+  ]
   revision = "7fef81c5963c21ba8b89459eaf00adf8ae6bf627"
 
 [[projects]]
@@ -58,20 +61,51 @@
 [[projects]]
   branch = "master"
   name = "github.com/fullstorydev/grpchan"
-  packages = [".","inprocgrpc","internal"]
+  packages = [
+    ".",
+    "inprocgrpc",
+    "internal"
+  ]
   revision = "cbe79e1e098d8b2bb4952b70666caa0c37ea1d8e"
 
 [[projects]]
+  name = "github.com/gogo/gateway"
+  packages = ["."]
+  revision = "6d3dfbe4e3b52add3800488f526462e69bce526a"
+  version = "v1.0.0"
+
+[[projects]]
+  name = "github.com/gogo/googleapis"
+  packages = ["google/api"]
+  revision = "08a7655d27152912db7aaf4f983275eaf8d128ef"
+  version = "v1.0.0"
+
+[[projects]]
   name = "github.com/gogo/protobuf"
-  packages = ["gogoproto","jsonpb","proto","protoc-gen-gogo/descriptor","sortkeys","types"]
+  packages = [
+    "gogoproto",
+    "jsonpb",
+    "proto",
+    "protoc-gen-gogo/descriptor",
+    "sortkeys",
+    "types"
+  ]
   revision = "1adfc126b41513cc696b209667c8656ea7aac67c"
   version = "v1.0.0"
 
 [[projects]]
+  branch = "master"
   name = "github.com/golang/protobuf"
-  packages = ["jsonpb","proto","protoc-gen-go/descriptor","ptypes","ptypes/any","ptypes/duration","ptypes/struct","ptypes/timestamp"]
-  revision = "b4deda0973fb4c70b50d226b1af49f3da59f5265"
-  version = "v1.1.0"
+  packages = [
+    "jsonpb",
+    "proto",
+    "ptypes",
+    "ptypes/any",
+    "ptypes/duration",
+    "ptypes/struct",
+    "ptypes/timestamp"
+  ]
+  revision = "3a3da3a4e26776cc22a79ef46d5d58477532dede"
 
 [[projects]]
   branch = "master"
@@ -82,7 +116,14 @@
 [[projects]]
   branch = "master"
   name = "github.com/gomeet/gomeet"
-  packages = ["utils/context","utils/grpc-middlewares/acl","utils/grpc-middlewares/cid","utils/jwt","utils/log","utils/service"]
+  packages = [
+    "utils/context",
+    "utils/grpc-middlewares/acl",
+    "utils/grpc-middlewares/cid",
+    "utils/jwt",
+    "utils/log",
+    "utils/service"
+  ]
   revision = "fa42e24e8bc4a69d2b34137d84ff7696d9b29306"
 
 [[projects]]
@@ -104,10 +145,21 @@
   version = "v1.6.1"
 
 [[projects]]
+  branch = "master"
   name = "github.com/grpc-ecosystem/go-grpc-middleware"
-  packages = [".","auth","logging","logging/logrus","logging/logrus/ctxlogrus","recovery","tags","tags/logrus","util/metautils","validator"]
-  revision = "c250d6563d4d4c20252cd865923440e829844f4e"
-  version = "v1.0.0"
+  packages = [
+    ".",
+    "auth",
+    "logging",
+    "logging/logrus",
+    "logging/logrus/ctxlogrus",
+    "recovery",
+    "tags",
+    "tags/logrus",
+    "util/metautils",
+    "validator"
+  ]
+  revision = "e9c5d9645c437ab1b204cff969a2c0fb16cd4276"
 
 [[projects]]
   name = "github.com/grpc-ecosystem/go-grpc-prometheus"
@@ -118,13 +170,28 @@
 [[projects]]
   branch = "master"
   name = "github.com/grpc-ecosystem/grpc-gateway"
-  packages = ["runtime","runtime/internal","utilities"]
+  packages = [
+    "runtime",
+    "runtime/internal",
+    "utilities"
+  ]
   revision = "a53af079f669b6375dd96cdf5e98e67f886a8b4d"
 
 [[projects]]
   branch = "master"
   name = "github.com/hashicorp/hcl"
-  packages = [".","hcl/ast","hcl/parser","hcl/printer","hcl/scanner","hcl/strconv","hcl/token","json/parser","json/scanner","json/token"]
+  packages = [
+    ".",
+    "hcl/ast",
+    "hcl/parser",
+    "hcl/printer",
+    "hcl/scanner",
+    "hcl/strconv",
+    "hcl/token",
+    "json/parser",
+    "json/scanner",
+    "json/token"
+  ]
   revision = "ef8a98b0bbce4a65b5aa4c368430a80ddc533168"
 
 [[projects]]
@@ -136,7 +203,10 @@
 [[projects]]
   branch = "master"
   name = "github.com/jinzhu/gorm"
-  packages = [".","dialects/sqlite"]
+  packages = [
+    ".",
+    "dialects/sqlite"
+  ]
   revision = "9044197ef935c0969d94cbcfba55ccb94d269bed"
 
 [[projects]]
@@ -226,13 +296,22 @@
 [[projects]]
   branch = "master"
   name = "github.com/prometheus/common"
-  packages = ["expfmt","internal/bitbucket.org/ww/goautoneg","model"]
+  packages = [
+    "expfmt",
+    "internal/bitbucket.org/ww/goautoneg",
+    "model"
+  ]
   revision = "d811d2e9bf898806ecfb6ef6296774b13ffc314c"
 
 [[projects]]
   branch = "master"
   name = "github.com/prometheus/procfs"
-  packages = [".","internal/util","nfs","xfs"]
+  packages = [
+    ".",
+    "internal/util",
+    "nfs",
+    "xfs"
+  ]
   revision = "8b1c2da0d56deffdbb9e48d4414b4e674bd8083e"
 
 [[projects]]
@@ -249,7 +328,10 @@
 
 [[projects]]
   name = "github.com/spf13/afero"
-  packages = [".","mem"]
+  packages = [
+    ".",
+    "mem"
+  ]
   revision = "63644898a8da0bc22138abf860edaf5277b6102e"
   version = "v1.1.0"
 
@@ -304,30 +386,81 @@
 [[projects]]
   branch = "master"
   name = "golang.org/x/net"
-  packages = ["context","http/httpguts","http2","http2/hpack","idna","internal/timeseries","trace"]
+  packages = [
+    "context",
+    "http/httpguts",
+    "http2",
+    "http2/hpack",
+    "idna",
+    "internal/timeseries",
+    "trace"
+  ]
   revision = "f73e4c9ed3b7ebdd5f699a16a880c2b1994e50dd"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
-  packages = ["unix","windows"]
+  packages = [
+    "unix",
+    "windows"
+  ]
   revision = "7db1c3b1a98089d0071c84f646ff5c96aad43682"
 
 [[projects]]
   name = "golang.org/x/text"
-  packages = ["collate","collate/build","internal/colltab","internal/gen","internal/tag","internal/triegen","internal/ucd","language","secure/bidirule","transform","unicode/bidi","unicode/cldr","unicode/norm","unicode/rangetable"]
+  packages = [
+    "collate",
+    "collate/build",
+    "internal/colltab",
+    "internal/gen",
+    "internal/tag",
+    "internal/triegen",
+    "internal/ucd",
+    "language",
+    "secure/bidirule",
+    "transform",
+    "unicode/bidi",
+    "unicode/cldr",
+    "unicode/norm",
+    "unicode/rangetable"
+  ]
   revision = "f21a4dfb5e38f5895301dc265a8def02365cc3d0"
   version = "v0.3.0"
 
 [[projects]]
   branch = "master"
   name = "google.golang.org/genproto"
-  packages = ["googleapis/api/annotations","googleapis/rpc/status"]
+  packages = ["googleapis/rpc/status"]
   revision = "86e600f69ee4704c6efbf6a2a40a5c10700e76c2"
 
 [[projects]]
   name = "google.golang.org/grpc"
-  packages = [".","balancer","balancer/base","balancer/roundrobin","channelz","codes","connectivity","credentials","encoding","encoding/proto","grpclb/grpc_lb_v1/messages","grpclog","internal","keepalive","metadata","naming","peer","resolver","resolver/dns","resolver/passthrough","stats","status","tap","transport"]
+  packages = [
+    ".",
+    "balancer",
+    "balancer/base",
+    "balancer/roundrobin",
+    "channelz",
+    "codes",
+    "connectivity",
+    "credentials",
+    "encoding",
+    "encoding/proto",
+    "grpclb/grpc_lb_v1/messages",
+    "grpclog",
+    "internal",
+    "keepalive",
+    "metadata",
+    "naming",
+    "peer",
+    "resolver",
+    "resolver/dns",
+    "resolver/passthrough",
+    "stats",
+    "status",
+    "tap",
+    "transport"
+  ]
   revision = "41344da2231b913fa3d983840a57a6b1b7b631a1"
   version = "v1.12.0"
 
@@ -340,6 +473,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "0aec5c8f48eef2093f834bb47e688e31c9c953c580f12a235a59b149c257cd87"
+  inputs-digest = "bb2fad6cd4988664282dd0eb7d35f4b4e1b90f608e213e12a71243043fa5320d"
   solver-name = "gps-cdcl"
   solver-version = 1

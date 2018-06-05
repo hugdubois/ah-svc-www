@@ -18,16 +18,18 @@ It has these top-level messages:
 package pb
 
 import go_proto_validators "github.com/mwitkow/go-proto-validators"
-import proto "github.com/golang/protobuf/proto"
+import proto "github.com/gogo/protobuf/proto"
+import golang_proto "github.com/golang/protobuf/proto"
 import fmt "fmt"
 import math "math"
-import _ "google.golang.org/genproto/googleapis/api/annotations"
+import _ "github.com/gogo/googleapis/google/api"
 import _ "github.com/mwitkow/go-proto-validators"
 import _ "github.com/gomeet/go-proto-gomeetfaker"
 import _ "github.com/gogo/protobuf/gogoproto"
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
+var _ = golang_proto.Marshal
 var _ = fmt.Errorf
 var _ = math.Inf
 

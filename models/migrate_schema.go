@@ -28,6 +28,7 @@ func MigrateSchema(dsn string) error {
 	if err != nil {
 		return fmt.Errorf("Sqlite database connection error: %v", err)
 	}
+	defer db.Close()
 	db.SetLogger(&Logger{})
 	db.LogMode(true)
 	mdls := sqliteModels()
@@ -49,6 +50,7 @@ func Flush(dsn string) error {
 	if err != nil {
 		return fmt.Errorf("Sqlite database connection error: %v", err)
 	}
+	defer db.Close()
 	db.SetLogger(&Logger{})
 	db.LogMode(true)
 	mdls := sqliteModels()

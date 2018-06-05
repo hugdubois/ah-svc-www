@@ -8,6 +8,7 @@ import (
 
 	"github.com/auth0/go-jwt-middleware"
 	"github.com/fullstorydev/grpchan"
+	"github.com/gogo/gateway"
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/prometheus/client_golang/prometheus"
@@ -102,9 +103,19 @@ func (svc *Service) RegisterHTTPServices(
 	}
 
 	svc.httpController.RegisterRoutes(mux)
-
 	// get server mux
-	gwmux := runtime.NewServeMux()
+	jsonpb := &gateway.JSONPb{
+		EmitDefaults: true,
+		Indent:       "  ",
+		OrigName:     true,
+	}
+	gwmux := runtime.NewServeMux(
+		runtime.WithMarshalerOption(runtime.MIMEWildcard, jsonpb),
+		// This is necessary to get error details properly
+		// marshalled in unary requests.
+		runtime.WithProtoErrorHandler(runtime.DefaultHTTPProtoErrorHandler),
+	)
+
 	err := pb.RegisterWwwHandlerFromEndpoint(ctx, gwmux, addr, opts)
 	if err != nil {
 		log.Fatalf("RegisterGRPCGateway error : %s\n", err)

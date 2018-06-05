@@ -22,16 +22,18 @@ import locales "github.com/dmgk/faker/locales"
 import rand "math/rand"
 import time "time"
 import uuid "github.com/google/uuid"
-import proto "github.com/golang/protobuf/proto"
+import proto "github.com/gogo/protobuf/proto"
+import golang_proto "github.com/golang/protobuf/proto"
 import fmt "fmt"
 import math "math"
-import _ "google.golang.org/genproto/googleapis/api/annotations"
+import _ "github.com/gogo/googleapis/google/api"
 import _ "github.com/mwitkow/go-proto-validators"
 import _ "github.com/gomeet/go-proto-gomeetfaker"
 import _ "github.com/gogo/protobuf/gogoproto"
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
+var _ = golang_proto.Marshal
 var _ = fmt.Errorf
 var _ = math.Inf
 
@@ -45,62 +47,62 @@ func init() {
 
 func GomeetFakerSetLocale(l string) {
 	switch l {
+	case "de":
+		faker.Locale = locales.De
+	case "de-at":
+		faker.Locale = locales.De_AT
+	case "de-ch":
+		faker.Locale = locales.De_CH
+	case "en":
+		faker.Locale = locales.En
+	case "en-au":
+		faker.Locale = locales.En_AU
+	case "en-au-ocker":
+		faker.Locale = locales.En_AU_OCKER
+	case "en-bork":
+		faker.Locale = locales.En_BORK
 	case "en-ca":
 		faker.Locale = locales.En_CA
+	case "en-gb":
+		faker.Locale = locales.En_GB
 	case "en-ind":
 		faker.Locale = locales.En_IND
-	case "fa":
-		faker.Locale = locales.Fa
-	case "nb-no":
-		faker.Locale = locales.Nb_NO
-	case "zh-cn":
-		faker.Locale = locales.Zh_CN
+	case "en-nep":
+		faker.Locale = locales.En_NEP
 	case "en-us":
 		faker.Locale = locales.En_US
+	case "es":
+		faker.Locale = locales.Es
+	case "fa":
+		faker.Locale = locales.Fa
+	case "fr":
+		faker.Locale = locales.Fr
 	case "it":
 		faker.Locale = locales.It
 	case "ja":
 		faker.Locale = locales.Ja
-	case "pl":
-		faker.Locale = locales.Pl
-	case "sk":
-		faker.Locale = locales.Sk
-	case "en-gb":
-		faker.Locale = locales.En_GB
-	case "en-nep":
-		faker.Locale = locales.En_NEP
-	case "en":
-		faker.Locale = locales.En
-	case "pt-br":
-		faker.Locale = locales.Pt_BR
-	case "vi":
-		faker.Locale = locales.Vi
-	case "zh-tw":
-		faker.Locale = locales.Zh_TW
-	case "fr":
-		faker.Locale = locales.Fr
 	case "ko":
 		faker.Locale = locales.Ko
-	case "ru":
-		faker.Locale = locales.Ru
-	case "sv":
-		faker.Locale = locales.Sv
-	case "de":
-		faker.Locale = locales.De
-	case "en-au-ocker":
-		faker.Locale = locales.En_AU_OCKER
+	case "nb-no":
+		faker.Locale = locales.Nb_NO
 	case "nl":
 		faker.Locale = locales.Nl
-	case "de-at":
-		faker.Locale = locales.De_AT
-	case "en-bork":
-		faker.Locale = locales.En_BORK
-	case "de-ch":
-		faker.Locale = locales.De_CH
-	case "en-au":
-		faker.Locale = locales.En_AU
-	case "es":
-		faker.Locale = locales.Es
+	case "pl":
+		faker.Locale = locales.Pl
+	case "pt-br":
+		faker.Locale = locales.Pt_BR
+	case "ru":
+		faker.Locale = locales.Ru
+	case "sk":
+		faker.Locale = locales.Sk
+	case "sv":
+		faker.Locale = locales.Sv
+	case "vi":
+		faker.Locale = locales.Vi
+	case "zh-cn":
+		faker.Locale = locales.Zh_CN
+	case "zh-tw":
+		faker.Locale = locales.Zh_TW
 	default:
 		faker.Locale = locales.En
 	}

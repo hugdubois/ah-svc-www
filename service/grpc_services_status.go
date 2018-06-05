@@ -48,9 +48,9 @@ func serviceStatusSuccessHandler(ver *pb.VersionResponse) *pb.ServiceStatus {
 func svcCurrentStatus(s *wwwServer, ctx context.Context, svcCtx context.Context) *pb.ServiceStatus {
 	ver, err := s.Version(ctx, &pb.EmptyMessage{})
 	if err != nil {
-		return serviceStatusErrorHandler(ctx, &pb.VersionResponse{name, version}, err, "Version call error")
+		return serviceStatusErrorHandler(ctx, &pb.VersionResponse{Name: name, Version: version}, err, "Version call error")
 	}
-	return serviceStatusSuccessHandler(&pb.VersionResponse{ver.GetName(), ver.GetVersion()})
+	return serviceStatusSuccessHandler(&pb.VersionResponse{Name: ver.GetName(), Version: ver.GetVersion()})
 }
 
 // SUB-SERVICES DEFINITION : func-status

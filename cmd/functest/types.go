@@ -3,7 +3,7 @@
 package functest
 
 import (
-	"github.com/golang/protobuf/proto"
+	"github.com/gogo/protobuf/proto"
 )
 
 const FUNCTEST_HTTP = "HTTP"
@@ -19,6 +19,8 @@ type FunctionalTestConfig struct {
 	ClientPrivateKey     string
 	JsonWebToken         string
 	TimeoutSeconds       int
+	IsEmbeddedServer     bool
+	IsRandomPort         bool
 	SqliteDataSourceName string
 }
 

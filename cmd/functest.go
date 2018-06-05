@@ -140,7 +140,7 @@ func runFunctionalTests() {
 		var err error
 		jwtToken, err = jwt.Create(
 			"github.com/gomeet/gomeet",
-			secretSigningKey,
+			jwtSecret,
 			tokenLifetimeHours,
 			subjectID,
 			jwt.Claims{},
@@ -184,6 +184,8 @@ func runFunctionalTests() {
 		ClientPrivateKey:  serverPrivateKey,
 		TimeoutSeconds:    timeoutSeconds,
 		JsonWebToken:      jwtToken,
+		IsEmbeddedServer:  useEmbeddedServer,
+		IsRandomPort:      useRandomPort,
 
 		//extra parameters
 

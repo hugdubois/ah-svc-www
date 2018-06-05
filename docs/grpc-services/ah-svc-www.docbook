@@ -3,7 +3,7 @@
   <title>Protocol Documentation</title>
   
   <section>
-    <title>www.proto</title>
+    <title>pb/www.proto</title>
     <para></para>
     
     <section id="grpc.hugdubois.www.EchoRequest">
