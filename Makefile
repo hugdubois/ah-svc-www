@@ -139,7 +139,7 @@ define package_shasum
 endef
 
 .PHONY: build
-build: proto
+build: proto ui
 	@echo "$(NAME): build task"
 	-mkdir -p _build
 	CGO_ENABLED=$(GO_CGO_ENABLED) go build \
@@ -151,6 +151,11 @@ build: proto
 .PHONY: clean
 clean: tools-clean package-clean proto-clean
 	@echo "$(NAME): clean task"
+
+.PHONY: ui
+ui: tools
+	@echo "$(NAME): ui task"
+	_tools/bin/go-bindata -o ui/assets.go -pkg ui -prefix ui ui/assets/...
 
 .PHONY: proto
 proto: tools proto-gen-doc
@@ -294,8 +299,8 @@ docker:
 	echo "TAG=$(DOCKER_TAG)" > .env
 
 	echo 'AH_SVC_WWW_SQLITE_DB_FILE=$(DOCKER_ENV_AH_SVC_WWW_SQLITE_DB_FILE)' >> .env
-	
-	
+
+
 	-docker build -t $(DOCKER_IMAGE_NAME):$(DOCKER_TAG) .
 
 .PHONY: docker-push
@@ -409,21 +414,21 @@ tools-upgrade: tools
 .PHONY: test-func
 test-func: build
 	@echo "$(NAME): test-func task"
-	@_build/$(NAME) functest $(DEBUG_TEST_FLAG) -e --jwt-secret=$(TEST_ENV_HUGDUBOIS_JWT_SECRET) --random-port --sqlite-migrate --sqlite-dsn="$(TEST_ENV_AH_SVC_WWW_SQLITE_DB_DSN)" 
+	@_build/$(NAME) functest $(DEBUG_TEST_FLAG) -e --jwt-secret=$(TEST_ENV_HUGDUBOIS_JWT_SECRET) --random-port --sqlite-migrate --sqlite-dsn="$(TEST_ENV_AH_SVC_WWW_SQLITE_DB_DSN)"
 
 .PHONY: test-unit
 test-unit:
 	@echo "$(NAME): test-unit task"
 	@if ls models/*_test.go 1> /dev/null 2>&1; then cd models && go test -sqlite-dsn="$(TEST_ENV_AH_SVC_WWW_SQLITE_DB_DSN)"; fi
 	@if ls $(GO_PROTO_PACKAGE_ALIAS)/*_test.go 1> /dev/null 2>&1; then cd $(GO_PROTO_PACKAGE_ALIAS) && go test; fi
-	@cd service && go test $(DEBUG_TEST_FLAG) -sqlite-dsn="$(TEST_ENV_AH_SVC_WWW_SQLITE_DB_DSN)" 
+	@cd service && go test $(DEBUG_TEST_FLAG) -sqlite-dsn="$(TEST_ENV_AH_SVC_WWW_SQLITE_DB_DSN)"
 
 .PHONY: test-race
 test-race:
 	@echo "$(NAME): test-race task"
 	@if ls models/*_test.go 1> /dev/null 2>&1; then cd models && go test -race -sqlite-dsn="$(TEST_ENV_AH_SVC_WWW_SQLITE_DB_DSN)"; fi
 	@if ls $(GO_PROTO_PACKAGE_ALIAS)/*_test.go 1> /dev/null 2>&1; then cd $(GO_PROTO_PACKAGE_ALIAS) && go test -race; fi
-	@cd service && go test $(DEBUG_TEST_FLAG) -race -sqlite-dsn="$(TEST_ENV_AH_SVC_WWW_SQLITE_DB_DSN)" 
+	@cd service && go test $(DEBUG_TEST_FLAG) -race -sqlite-dsn="$(TEST_ENV_AH_SVC_WWW_SQLITE_DB_DSN)"
 
 .PHONY: test
 test:

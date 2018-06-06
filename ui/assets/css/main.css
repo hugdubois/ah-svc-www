@@ -74,6 +74,9 @@ h2.title span {
   background: #fff;
   padding: 0 10px;
 }
+.not-found {
+  font-size: 30px;
+}
 .clearfix {
   overflow: auto;
 }

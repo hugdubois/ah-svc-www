@@ -122,6 +122,7 @@
   branch = "master"
   name = "github.com/jinzhu/gorm"
 
-
-
+[[constraint]]
+  name = "github.com/elazarl/go-bindata-assetfs"
+  version = "v1.0.0"
 
