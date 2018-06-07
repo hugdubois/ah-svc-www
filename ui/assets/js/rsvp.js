@@ -6439,6 +6439,137 @@ var _elm_lang$core$Regex$AtMost = function (a) {
 };
 var _elm_lang$core$Regex$All = {ctor: 'All'};
 
+var _elm_lang$core$Set$foldr = F3(
+	function (f, b, _p0) {
+		var _p1 = _p0;
+		return A3(
+			_elm_lang$core$Dict$foldr,
+			F3(
+				function (k, _p2, b) {
+					return A2(f, k, b);
+				}),
+			b,
+			_p1._0);
+	});
+var _elm_lang$core$Set$foldl = F3(
+	function (f, b, _p3) {
+		var _p4 = _p3;
+		return A3(
+			_elm_lang$core$Dict$foldl,
+			F3(
+				function (k, _p5, b) {
+					return A2(f, k, b);
+				}),
+			b,
+			_p4._0);
+	});
+var _elm_lang$core$Set$toList = function (_p6) {
+	var _p7 = _p6;
+	return _elm_lang$core$Dict$keys(_p7._0);
+};
+var _elm_lang$core$Set$size = function (_p8) {
+	var _p9 = _p8;
+	return _elm_lang$core$Dict$size(_p9._0);
+};
+var _elm_lang$core$Set$member = F2(
+	function (k, _p10) {
+		var _p11 = _p10;
+		return A2(_elm_lang$core$Dict$member, k, _p11._0);
+	});
+var _elm_lang$core$Set$isEmpty = function (_p12) {
+	var _p13 = _p12;
+	return _elm_lang$core$Dict$isEmpty(_p13._0);
+};
+var _elm_lang$core$Set$Set_elm_builtin = function (a) {
+	return {ctor: 'Set_elm_builtin', _0: a};
+};
+var _elm_lang$core$Set$empty = _elm_lang$core$Set$Set_elm_builtin(_elm_lang$core$Dict$empty);
+var _elm_lang$core$Set$singleton = function (k) {
+	return _elm_lang$core$Set$Set_elm_builtin(
+		A2(
+			_elm_lang$core$Dict$singleton,
+			k,
+			{ctor: '_Tuple0'}));
+};
+var _elm_lang$core$Set$insert = F2(
+	function (k, _p14) {
+		var _p15 = _p14;
+		return _elm_lang$core$Set$Set_elm_builtin(
+			A3(
+				_elm_lang$core$Dict$insert,
+				k,
+				{ctor: '_Tuple0'},
+				_p15._0));
+	});
+var _elm_lang$core$Set$fromList = function (xs) {
+	return A3(_elm_lang$core$List$foldl, _elm_lang$core$Set$insert, _elm_lang$core$Set$empty, xs);
+};
+var _elm_lang$core$Set$map = F2(
+	function (f, s) {
+		return _elm_lang$core$Set$fromList(
+			A2(
+				_elm_lang$core$List$map,
+				f,
+				_elm_lang$core$Set$toList(s)));
+	});
+var _elm_lang$core$Set$remove = F2(
+	function (k, _p16) {
+		var _p17 = _p16;
+		return _elm_lang$core$Set$Set_elm_builtin(
+			A2(_elm_lang$core$Dict$remove, k, _p17._0));
+	});
+var _elm_lang$core$Set$union = F2(
+	function (_p19, _p18) {
+		var _p20 = _p19;
+		var _p21 = _p18;
+		return _elm_lang$core$Set$Set_elm_builtin(
+			A2(_elm_lang$core$Dict$union, _p20._0, _p21._0));
+	});
+var _elm_lang$core$Set$intersect = F2(
+	function (_p23, _p22) {
+		var _p24 = _p23;
+		var _p25 = _p22;
+		return _elm_lang$core$Set$Set_elm_builtin(
+			A2(_elm_lang$core$Dict$intersect, _p24._0, _p25._0));
+	});
+var _elm_lang$core$Set$diff = F2(
+	function (_p27, _p26) {
+		var _p28 = _p27;
+		var _p29 = _p26;
+		return _elm_lang$core$Set$Set_elm_builtin(
+			A2(_elm_lang$core$Dict$diff, _p28._0, _p29._0));
+	});
+var _elm_lang$core$Set$filter = F2(
+	function (p, _p30) {
+		var _p31 = _p30;
+		return _elm_lang$core$Set$Set_elm_builtin(
+			A2(
+				_elm_lang$core$Dict$filter,
+				F2(
+					function (k, _p32) {
+						return p(k);
+					}),
+				_p31._0));
+	});
+var _elm_lang$core$Set$partition = F2(
+	function (p, _p33) {
+		var _p34 = _p33;
+		var _p35 = A2(
+			_elm_lang$core$Dict$partition,
+			F2(
+				function (k, _p36) {
+					return p(k);
+				}),
+			_p34._0);
+		var p1 = _p35._0;
+		var p2 = _p35._1;
+		return {
+			ctor: '_Tuple2',
+			_0: _elm_lang$core$Set$Set_elm_builtin(p1),
+			_1: _elm_lang$core$Set$Set_elm_builtin(p2)
+		};
+	});
+
 var _elm_lang$dom$Native_Dom = function() {
 
 var fakeNode = {
@@ -9651,6 +9782,198 @@ var _elm_lang$svg$Svg_Attributes$additive = _elm_lang$virtual_dom$VirtualDom$att
 var _elm_lang$svg$Svg_Attributes$accumulate = _elm_lang$virtual_dom$VirtualDom$attribute('accumulate');
 var _elm_lang$svg$Svg_Attributes$accelerate = _elm_lang$virtual_dom$VirtualDom$attribute('accelerate');
 var _elm_lang$svg$Svg_Attributes$accentHeight = _elm_lang$virtual_dom$VirtualDom$attribute('accent-height');
+
+var _rtfeldman$elm_validate$Validate$validEmail = _elm_lang$core$Regex$caseInsensitive(
+	_elm_lang$core$Regex$regex('^[a-zA-Z0-9.!#$%&\'*+\\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$'));
+var _rtfeldman$elm_validate$Validate$lacksNonWhitespaceChars = _elm_lang$core$Regex$regex('^\\s*$');
+var _rtfeldman$elm_validate$Validate$isInt = function (str) {
+	var _p0 = _elm_lang$core$String$toInt(str);
+	if (_p0.ctor === 'Ok') {
+		return true;
+	} else {
+		return false;
+	}
+};
+var _rtfeldman$elm_validate$Validate$isValidEmail = function (email) {
+	return A2(_elm_lang$core$Regex$contains, _rtfeldman$elm_validate$Validate$validEmail, email);
+};
+var _rtfeldman$elm_validate$Validate$isBlank = function (str) {
+	return A2(_elm_lang$core$Regex$contains, _rtfeldman$elm_validate$Validate$lacksNonWhitespaceChars, str);
+};
+var _rtfeldman$elm_validate$Validate$any = F2(
+	function (validators, subject) {
+		any:
+		while (true) {
+			var _p1 = validators;
+			if (_p1.ctor === '[]') {
+				return true;
+			} else {
+				var _p2 = _p1._0._0(subject);
+				if (_p2.ctor === '[]') {
+					var _v3 = _p1._1,
+						_v4 = subject;
+					validators = _v3;
+					subject = _v4;
+					continue any;
+				} else {
+					return false;
+				}
+			}
+		}
+	});
+var _rtfeldman$elm_validate$Validate$firstErrorHelp = F2(
+	function (validators, subject) {
+		firstErrorHelp:
+		while (true) {
+			var _p3 = validators;
+			if (_p3.ctor === '[]') {
+				return {ctor: '[]'};
+			} else {
+				var _p4 = _p3._0._0(subject);
+				if (_p4.ctor === '[]') {
+					var _v7 = _p3._1,
+						_v8 = subject;
+					validators = _v7;
+					subject = _v8;
+					continue firstErrorHelp;
+				} else {
+					return _p4;
+				}
+			}
+		}
+	});
+var _rtfeldman$elm_validate$Validate$validate = F2(
+	function (_p5, subject) {
+		var _p6 = _p5;
+		return _p6._0(subject);
+	});
+var _rtfeldman$elm_validate$Validate$Validator = function (a) {
+	return {ctor: 'Validator', _0: a};
+};
+var _rtfeldman$elm_validate$Validate$ifNotInt = F2(
+	function (subjectToString, errorFromString) {
+		var getErrors = function (subject) {
+			var str = subjectToString(subject);
+			return _rtfeldman$elm_validate$Validate$isInt(str) ? {ctor: '[]'} : {
+				ctor: '::',
+				_0: errorFromString(str),
+				_1: {ctor: '[]'}
+			};
+		};
+		return _rtfeldman$elm_validate$Validate$Validator(getErrors);
+	});
+var _rtfeldman$elm_validate$Validate$ifInvalidEmail = F2(
+	function (subjectToEmail, errorFromEmail) {
+		var getErrors = function (subject) {
+			var email = subjectToEmail(subject);
+			return _rtfeldman$elm_validate$Validate$isValidEmail(email) ? {ctor: '[]'} : {
+				ctor: '::',
+				_0: errorFromEmail(email),
+				_1: {ctor: '[]'}
+			};
+		};
+		return _rtfeldman$elm_validate$Validate$Validator(getErrors);
+	});
+var _rtfeldman$elm_validate$Validate$fromErrors = function (toErrors) {
+	return _rtfeldman$elm_validate$Validate$Validator(toErrors);
+};
+var _rtfeldman$elm_validate$Validate$ifTrue = F2(
+	function (test, error) {
+		var getErrors = function (subject) {
+			return test(subject) ? {
+				ctor: '::',
+				_0: error,
+				_1: {ctor: '[]'}
+			} : {ctor: '[]'};
+		};
+		return _rtfeldman$elm_validate$Validate$Validator(getErrors);
+	});
+var _rtfeldman$elm_validate$Validate$ifBlank = F2(
+	function (subjectToString, error) {
+		return A2(
+			_rtfeldman$elm_validate$Validate$ifTrue,
+			function (subject) {
+				return _rtfeldman$elm_validate$Validate$isBlank(
+					subjectToString(subject));
+			},
+			error);
+	});
+var _rtfeldman$elm_validate$Validate$ifEmptyList = F2(
+	function (subjectToList, error) {
+		return A2(
+			_rtfeldman$elm_validate$Validate$ifTrue,
+			function (subject) {
+				return _elm_lang$core$List$isEmpty(
+					subjectToList(subject));
+			},
+			error);
+	});
+var _rtfeldman$elm_validate$Validate$ifEmptyDict = F2(
+	function (subjectToDict, error) {
+		return A2(
+			_rtfeldman$elm_validate$Validate$ifTrue,
+			function (subject) {
+				return _elm_lang$core$Dict$isEmpty(
+					subjectToDict(subject));
+			},
+			error);
+	});
+var _rtfeldman$elm_validate$Validate$ifEmptySet = F2(
+	function (subjectToSet, error) {
+		return A2(
+			_rtfeldman$elm_validate$Validate$ifTrue,
+			function (subject) {
+				return _elm_lang$core$Set$isEmpty(
+					subjectToSet(subject));
+			},
+			error);
+	});
+var _rtfeldman$elm_validate$Validate$ifNothing = F2(
+	function (subjectToMaybe, error) {
+		return A2(
+			_rtfeldman$elm_validate$Validate$ifTrue,
+			function (subject) {
+				return _elm_lang$core$Native_Utils.eq(
+					subjectToMaybe(subject),
+					_elm_lang$core$Maybe$Nothing);
+			},
+			error);
+	});
+var _rtfeldman$elm_validate$Validate$ifFalse = F2(
+	function (test, error) {
+		var getErrors = function (subject) {
+			return test(subject) ? {ctor: '[]'} : {
+				ctor: '::',
+				_0: error,
+				_1: {ctor: '[]'}
+			};
+		};
+		return _rtfeldman$elm_validate$Validate$Validator(getErrors);
+	});
+var _rtfeldman$elm_validate$Validate$all = function (validators) {
+	var newGetErrors = function (subject) {
+		var accumulateErrors = F2(
+			function (_p7, totalErrors) {
+				var _p8 = _p7;
+				return A2(
+					_elm_lang$core$Basics_ops['++'],
+					totalErrors,
+					_p8._0(subject));
+			});
+		return A3(
+			_elm_lang$core$List$foldl,
+			accumulateErrors,
+			{ctor: '[]'},
+			validators);
+	};
+	return _rtfeldman$elm_validate$Validate$Validator(newGetErrors);
+};
+var _rtfeldman$elm_validate$Validate$firstError = function (validators) {
+	var getErrors = function (subject) {
+		return A2(_rtfeldman$elm_validate$Validate$firstErrorHelp, validators, subject);
+	};
+	return _rtfeldman$elm_validate$Validate$Validator(getErrors);
+};
 
 var _user$project$Internal_Ripple_Model$defaultGeometry = {
 	isSurfaceDisabled: false,
@@ -20099,6 +20422,21 @@ var _user$project$Internal_TopAppBar_Implementation$topAppBar = F4(
 	});
 var _user$project$Internal_TopAppBar_Implementation$view = A3(_user$project$Internal_Component$render, _user$project$Internal_TopAppBar_Implementation$get, _user$project$Internal_TopAppBar_Implementation$topAppBar, _user$project$Internal_Msg$TopAppBarMsg);
 
+var _user$project$Internal_Typography_Implementation$adjustMargin = _user$project$Internal_Options$cs('mdc-typography--adjust-margin');
+var _user$project$Internal_Typography_Implementation$button = _user$project$Internal_Options$cs('mdc-typography--button');
+var _user$project$Internal_Typography_Implementation$subheading2 = _user$project$Internal_Options$cs('mdc-typography--subheading2');
+var _user$project$Internal_Typography_Implementation$subheading1 = _user$project$Internal_Options$cs('mdc-typography--subheading1');
+var _user$project$Internal_Typography_Implementation$body2 = _user$project$Internal_Options$cs('mdc-typography--body2');
+var _user$project$Internal_Typography_Implementation$body1 = _user$project$Internal_Options$cs('mdc-typography--body1');
+var _user$project$Internal_Typography_Implementation$caption = _user$project$Internal_Options$cs('mdc-typography--caption');
+var _user$project$Internal_Typography_Implementation$headline = _user$project$Internal_Options$cs('mdc-typography--headline');
+var _user$project$Internal_Typography_Implementation$title = _user$project$Internal_Options$cs('mdc-typography--title');
+var _user$project$Internal_Typography_Implementation$display4 = _user$project$Internal_Options$cs('mdc-typography--display4');
+var _user$project$Internal_Typography_Implementation$display3 = _user$project$Internal_Options$cs('mdc-typography--display3');
+var _user$project$Internal_Typography_Implementation$display2 = _user$project$Internal_Options$cs('mdc-typography--display2');
+var _user$project$Internal_Typography_Implementation$display1 = _user$project$Internal_Options$cs('mdc-typography--display1');
+var _user$project$Internal_Typography_Implementation$typography = _user$project$Internal_Options$cs('mdc-typography');
+
 var _user$project$Material$top = function (content) {
 	return A2(
 		_elm_lang$html$Html$div,
@@ -20384,12 +20722,182 @@ var _user$project$Material_Textfield_HelperText$validationMsg = _user$project$In
 var _user$project$Material_Textfield_HelperText$persistent = _user$project$Internal_Textfield_HelperText_Implementation$persistent;
 var _user$project$Material_Textfield_HelperText$helperText = _user$project$Internal_Textfield_HelperText_Implementation$helperText;
 
-var _user$project$Main$defaultModel = {mdc: _user$project$Material$defaultModel, presence: true, housing: true, brunch: true};
-var _user$project$Main$Model = F4(
-	function (a, b, c, d) {
-		return {mdc: a, presence: b, housing: c, brunch: d};
+var _user$project$Material_Typography$adjustMargin = _user$project$Internal_Typography_Implementation$adjustMargin;
+var _user$project$Material_Typography$button = _user$project$Internal_Typography_Implementation$button;
+var _user$project$Material_Typography$subheading2 = _user$project$Internal_Typography_Implementation$subheading2;
+var _user$project$Material_Typography$subheading1 = _user$project$Internal_Typography_Implementation$subheading1;
+var _user$project$Material_Typography$body2 = _user$project$Internal_Typography_Implementation$body2;
+var _user$project$Material_Typography$body1 = _user$project$Internal_Typography_Implementation$body1;
+var _user$project$Material_Typography$caption = _user$project$Internal_Typography_Implementation$caption;
+var _user$project$Material_Typography$headline = _user$project$Internal_Typography_Implementation$headline;
+var _user$project$Material_Typography$title = _user$project$Internal_Typography_Implementation$title;
+var _user$project$Material_Typography$display4 = _user$project$Internal_Typography_Implementation$display4;
+var _user$project$Material_Typography$display3 = _user$project$Internal_Typography_Implementation$display3;
+var _user$project$Material_Typography$display2 = _user$project$Internal_Typography_Implementation$display2;
+var _user$project$Material_Typography$display1 = _user$project$Internal_Typography_Implementation$display1;
+var _user$project$Material_Typography$typography = _user$project$Internal_Typography_Implementation$typography;
+
+var _user$project$Main$viewNotHereMsg = function (model) {
+	return A3(
+		_user$project$Material_Options$styled,
+		_elm_lang$html$Html$div,
+		{
+			ctor: '::',
+			_0: A2(_user$project$Material_Options$css, 'position', 'relative'),
+			_1: {
+				ctor: '::',
+				_0: A2(_user$project$Material_Options$css, 'display', 'block'),
+				_1: {
+					ctor: '::',
+					_0: A2(_user$project$Material_Options$css, 'margin', '40px 5px'),
+					_1: {
+						ctor: '::',
+						_0: A2(_user$project$Material_Options$css, 'text-align', 'center'),
+						_1: {
+							ctor: '::',
+							_0: A2(_user$project$Material_Options$css, 'height', '40px'),
+							_1: {
+								ctor: '::',
+								_0: A2(_user$project$Material_Options$css, 'color', 'rgba(0, 0, 0, 0.6)'),
+								_1: {
+									ctor: '::',
+									_0: A2(_user$project$Material_Options$css, 'font-size', '20px'),
+									_1: {ctor: '[]'}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html$text('Quel dommage on se faisait une joie de votre presence.'),
+			_1: {ctor: '[]'}
+		});
+};
+var _user$project$Main$defaultRsvp = {email: '', names: '', presence: true, childrenNameAge: '', housing: true, music: '', brunch: true};
+var _user$project$Main$defaultModel = {
+	mdc: _user$project$Material$defaultModel,
+	rsvp: _user$project$Main$defaultRsvp,
+	errors: {ctor: '[]'},
+	displayEmailError: false,
+	displayNameError: false
+};
+var _user$project$Main$hasError = F2(
+	function (field, errors) {
+		return !_elm_lang$core$List$isEmpty(
+			A2(
+				_elm_lang$core$List$filter,
+				function (_p0) {
+					var _p1 = _p0;
+					return _elm_lang$core$Native_Utils.eq(_p1._0, field);
+				},
+				errors));
 	});
-var _user$project$Main$Click = {ctor: 'Click'};
+var _user$project$Main$errorMsg = F2(
+	function (field, errors) {
+		return _elm_lang$core$String$concat(
+			A2(
+				_elm_lang$core$List$map,
+				function (_p2) {
+					var _p3 = _p2;
+					return A2(_elm_lang$core$Basics_ops['++'], _p3._1, ' ');
+				},
+				A2(
+					_elm_lang$core$List$filter,
+					function (_p4) {
+						var _p5 = _p4;
+						return _elm_lang$core$Native_Utils.eq(_p5._0, field);
+					},
+					errors)));
+	});
+var _user$project$Main_ops = _user$project$Main_ops || {};
+_user$project$Main_ops['=>'] = F2(
+	function (v0, v1) {
+		return {ctor: '_Tuple2', _0: v0, _1: v1};
+	});
+var _user$project$Main$Rsvp = F7(
+	function (a, b, c, d, e, f, g) {
+		return {names: a, email: b, presence: c, childrenNameAge: d, housing: e, music: f, brunch: g};
+	});
+var _user$project$Main$Model = F5(
+	function (a, b, c, d, e) {
+		return {mdc: a, rsvp: b, errors: c, displayEmailError: d, displayNameError: e};
+	});
+var _user$project$Main$Email = {ctor: 'Email'};
+var _user$project$Main$Name = {ctor: 'Name'};
+var _user$project$Main$rsvpValidator = _rtfeldman$elm_validate$Validate$all(
+	{
+		ctor: '::',
+		_0: _rtfeldman$elm_validate$Validate$firstError(
+			{
+				ctor: '::',
+				_0: A2(
+					_rtfeldman$elm_validate$Validate$ifBlank,
+					function (_) {
+						return _.names;
+					},
+					{ctor: '_Tuple2', _0: _user$project$Main$Name, _1: 'Vos noms et prenoms sont obligatoire'}),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_rtfeldman$elm_validate$Validate$ifFalse,
+						function (subject) {
+							return _elm_lang$core$Native_Utils.cmp(
+								2,
+								_elm_lang$core$String$length(subject.names)) < 0;
+						},
+						{ctor: '_Tuple2', _0: _user$project$Main$Name, _1: 'Au moins trois caractéres'}),
+					_1: {ctor: '[]'}
+				}
+			}),
+		_1: {
+			ctor: '::',
+			_0: _rtfeldman$elm_validate$Validate$firstError(
+				{
+					ctor: '::',
+					_0: A2(
+						_rtfeldman$elm_validate$Validate$ifBlank,
+						function (_) {
+							return _.email;
+						},
+						{ctor: '_Tuple2', _0: _user$project$Main$Email, _1: 'Un email est obligatoire'}),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_rtfeldman$elm_validate$Validate$ifInvalidEmail,
+							function (_) {
+								return _.email;
+							},
+							function (_p6) {
+								return {ctor: '_Tuple2', _0: _user$project$Main$Email, _1: 'Invalide email'};
+							}),
+						_1: {ctor: '[]'}
+					}
+				}),
+			_1: {ctor: '[]'}
+		}
+	});
+var _user$project$Main$Brunch = {ctor: 'Brunch'};
+var _user$project$Main$Housing = {ctor: 'Housing'};
+var _user$project$Main$Presence = {ctor: 'Presence'};
+var _user$project$Main$MusicChange = function (a) {
+	return {ctor: 'MusicChange', _0: a};
+};
+var _user$project$Main$ChildrenNameAgeChange = function (a) {
+	return {ctor: 'ChildrenNameAgeChange', _0: a};
+};
+var _user$project$Main$NameChange = function (a) {
+	return {ctor: 'NameChange', _0: a};
+};
+var _user$project$Main$EmailChange = function (a) {
+	return {ctor: 'EmailChange', _0: a};
+};
+var _user$project$Main$Toogle = function (a) {
+	return {ctor: 'Toogle', _0: a};
+};
+var _user$project$Main$Submit = {ctor: 'Submit'};
 var _user$project$Main$Mdc = function (a) {
 	return {ctor: 'Mdc', _0: a};
 };
@@ -20403,11 +20911,109 @@ var _user$project$Main$subscriptions = function (model) {
 };
 var _user$project$Main$update = F2(
 	function (msg, model) {
-		var _p0 = msg;
-		if (_p0.ctor === 'Mdc') {
-			return A3(_user$project$Material$update, _user$project$Main$Mdc, _p0._0, model);
-		} else {
-			return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+		var rsvp = model.rsvp;
+		var _p7 = msg;
+		switch (_p7.ctor) {
+			case 'Mdc':
+				return A3(_user$project$Material$update, _user$project$Main$Mdc, _p7._0, model);
+			case 'EmailChange':
+				var newRsvp = _elm_lang$core$Native_Utils.update(
+					rsvp,
+					{email: _p7._0});
+				return A2(
+					_user$project$Main_ops['=>'],
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{
+							rsvp: newRsvp,
+							errors: A2(_rtfeldman$elm_validate$Validate$validate, _user$project$Main$rsvpValidator, newRsvp),
+							displayEmailError: true
+						}),
+					_elm_lang$core$Platform_Cmd$none);
+			case 'NameChange':
+				var newRsvp = _elm_lang$core$Native_Utils.update(
+					rsvp,
+					{names: _p7._0});
+				return A2(
+					_user$project$Main_ops['=>'],
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{
+							rsvp: newRsvp,
+							errors: A2(_rtfeldman$elm_validate$Validate$validate, _user$project$Main$rsvpValidator, newRsvp),
+							displayNameError: true
+						}),
+					_elm_lang$core$Platform_Cmd$none);
+			case 'ChildrenNameAgeChange':
+				var newRsvp = _elm_lang$core$Native_Utils.update(
+					rsvp,
+					{childrenNameAge: _p7._0});
+				return A2(
+					_user$project$Main_ops['=>'],
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{
+							rsvp: newRsvp,
+							errors: A2(_rtfeldman$elm_validate$Validate$validate, _user$project$Main$rsvpValidator, newRsvp)
+						}),
+					_elm_lang$core$Platform_Cmd$none);
+			case 'MusicChange':
+				var newRsvp = _elm_lang$core$Native_Utils.update(
+					rsvp,
+					{music: _p7._0});
+				return A2(
+					_user$project$Main_ops['=>'],
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{
+							rsvp: newRsvp,
+							errors: A2(_rtfeldman$elm_validate$Validate$validate, _user$project$Main$rsvpValidator, newRsvp)
+						}),
+					_elm_lang$core$Platform_Cmd$none);
+			case 'Toogle':
+				var _p8 = _p7._0;
+				switch (_p8.ctor) {
+					case 'Presence':
+						return A2(
+							_user$project$Main_ops['=>'],
+							_elm_lang$core$Native_Utils.update(
+								model,
+								{
+									rsvp: _elm_lang$core$Native_Utils.update(
+										rsvp,
+										{presence: !rsvp.presence})
+								}),
+							_elm_lang$core$Platform_Cmd$none);
+					case 'Housing':
+						return A2(
+							_user$project$Main_ops['=>'],
+							_elm_lang$core$Native_Utils.update(
+								model,
+								{
+									rsvp: _elm_lang$core$Native_Utils.update(
+										rsvp,
+										{housing: !rsvp.housing})
+								}),
+							_elm_lang$core$Platform_Cmd$none);
+					default:
+						return A2(
+							_user$project$Main_ops['=>'],
+							_elm_lang$core$Native_Utils.update(
+								model,
+								{
+									rsvp: _elm_lang$core$Native_Utils.update(
+										rsvp,
+										{brunch: !rsvp.brunch})
+								}),
+							_elm_lang$core$Platform_Cmd$none);
+				}
+			default:
+				var rsvp = A2(_elm_lang$core$Debug$log, 'rsvp', model.rsvp);
+				var errors = A2(
+					_elm_lang$core$Debug$log,
+					'errors fields',
+					A2(_rtfeldman$elm_validate$Validate$validate, _user$project$Main$rsvpValidator, rsvp));
+				return A2(_user$project$Main_ops['=>'], model, _elm_lang$core$Platform_Cmd$none);
 		}
 	});
 var _user$project$Main$viewBtnSubmit = function (model) {
@@ -20438,11 +21044,19 @@ var _user$project$Main$viewBtnSubmit = function (model) {
 					_0: _user$project$Material_Button$ripple,
 					_1: {
 						ctor: '::',
-						_0: _user$project$Material_Options$onClick(_user$project$Main$Click),
+						_0: _user$project$Material_Options$onClick(_user$project$Main$Submit),
 						_1: {
 							ctor: '::',
-							_0: A2(_user$project$Material_Options$css, 'float', 'right'),
-							_1: {ctor: '[]'}
+							_0: A2(_user$project$Material_Options$css, 'position', 'relative'),
+							_1: {
+								ctor: '::',
+								_0: A2(_user$project$Material_Options$css, 'display', 'block'),
+								_1: {
+									ctor: '::',
+									_0: A2(_user$project$Material_Options$css, 'margin', '30px auto'),
+									_1: {ctor: '[]'}
+								}
+							}
 						}
 					}
 				},
@@ -20482,12 +21096,55 @@ var _user$project$Main$viewTxtEmail = function (model) {
 					_0: _user$project$Material_Textfield$label('Une addresse email'),
 					_1: {
 						ctor: '::',
-						_0: A2(_user$project$Material_Options$css, 'width', '100%'),
-						_1: {ctor: '[]'}
+						_0: _user$project$Material_Textfield$required,
+						_1: {
+							ctor: '::',
+							_0: _user$project$Material_Textfield$pattern('^[a-zA-Z0-9.!#$%&\'*+\\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$'),
+							_1: {
+								ctor: '::',
+								_0: _user$project$Material_Options$onInput(_user$project$Main$EmailChange),
+								_1: {
+									ctor: '::',
+									_0: _user$project$Material_Textfield$value(model.rsvp.email),
+									_1: {
+										ctor: '::',
+										_0: A2(_user$project$Material_Options$css, 'width', '100%'),
+										_1: {ctor: '[]'}
+									}
+								}
+							}
+						}
 					}
 				},
 				{ctor: '[]'}),
-			_1: {ctor: '[]'}
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_user$project$Material_Textfield_HelperText$helperText,
+					{
+						ctor: '::',
+						_0: _user$project$Material_Textfield_HelperText$persistent,
+						_1: {
+							ctor: '::',
+							_0: _user$project$Material_Textfield_HelperText$validationMsg,
+							_1: {
+								ctor: '::',
+								_0: A2(
+									_user$project$Material_Options$when,
+									(!model.displayEmailError) || (!A2(_user$project$Main$hasError, _user$project$Main$Email, model.errors)),
+									A2(_user$project$Material_Options$css, 'display', 'none')),
+								_1: {ctor: '[]'}
+							}
+						}
+					},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text(
+							A2(_user$project$Main$errorMsg, _user$project$Main$Email, model.errors)),
+						_1: {ctor: '[]'}
+					}),
+				_1: {ctor: '[]'}
+			}
 		});
 };
 var _user$project$Main$viewTxtNames = function (model) {
@@ -20518,12 +21175,55 @@ var _user$project$Main$viewTxtNames = function (model) {
 					_0: _user$project$Material_Textfield$label('Vos noms et prenoms'),
 					_1: {
 						ctor: '::',
-						_0: A2(_user$project$Material_Options$css, 'width', '100%'),
-						_1: {ctor: '[]'}
+						_0: _user$project$Material_Textfield$required,
+						_1: {
+							ctor: '::',
+							_0: _user$project$Material_Textfield$pattern('.{3,}'),
+							_1: {
+								ctor: '::',
+								_0: _user$project$Material_Options$onInput(_user$project$Main$NameChange),
+								_1: {
+									ctor: '::',
+									_0: _user$project$Material_Textfield$value(model.rsvp.names),
+									_1: {
+										ctor: '::',
+										_0: A2(_user$project$Material_Options$css, 'width', '100%'),
+										_1: {ctor: '[]'}
+									}
+								}
+							}
+						}
 					}
 				},
 				{ctor: '[]'}),
-			_1: {ctor: '[]'}
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_user$project$Material_Textfield_HelperText$helperText,
+					{
+						ctor: '::',
+						_0: _user$project$Material_Textfield_HelperText$persistent,
+						_1: {
+							ctor: '::',
+							_0: _user$project$Material_Textfield_HelperText$validationMsg,
+							_1: {
+								ctor: '::',
+								_0: A2(
+									_user$project$Material_Options$when,
+									(!model.displayNameError) || (!A2(_user$project$Main$hasError, _user$project$Main$Name, model.errors)),
+									A2(_user$project$Material_Options$css, 'display', 'none')),
+								_1: {ctor: '[]'}
+							}
+						}
+					},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text(
+							A2(_user$project$Main$errorMsg, _user$project$Main$Name, model.errors)),
+						_1: {ctor: '[]'}
+					}),
+				_1: {ctor: '[]'}
+			}
 		});
 };
 var _user$project$Main$viewTxtChildrenNameAge = function (model) {
@@ -20554,8 +21254,16 @@ var _user$project$Main$viewTxtChildrenNameAge = function (model) {
 					_0: _user$project$Material_Textfield$label('Prenoms et ages des enfants'),
 					_1: {
 						ctor: '::',
-						_0: A2(_user$project$Material_Options$css, 'width', '100%'),
-						_1: {ctor: '[]'}
+						_0: _user$project$Material_Options$onInput(_user$project$Main$ChildrenNameAgeChange),
+						_1: {
+							ctor: '::',
+							_0: _user$project$Material_Textfield$value(model.rsvp.childrenNameAge),
+							_1: {
+								ctor: '::',
+								_0: A2(_user$project$Material_Options$css, 'width', '100%'),
+								_1: {ctor: '[]'}
+							}
+						}
 					}
 				},
 				{ctor: '[]'}),
@@ -20571,7 +21279,11 @@ var _user$project$Main$viewTxtMusic = function (model) {
 			_1: {
 				ctor: '::',
 				_0: A2(_user$project$Material_Options$css, 'display', 'block'),
-				_1: {ctor: '[]'}
+				_1: {
+					ctor: '::',
+					_0: A2(_user$project$Material_Options$css, 'margin-top', '16px'),
+					_1: {ctor: '[]'}
+				}
 			}
 		},
 		{
@@ -20590,8 +21302,16 @@ var _user$project$Main$viewTxtMusic = function (model) {
 					_0: _user$project$Material_Textfield$label('Sur quel morceau souhaitez-vous danser?'),
 					_1: {
 						ctor: '::',
-						_0: A2(_user$project$Material_Options$css, 'width', '100%'),
-						_1: {ctor: '[]'}
+						_0: _user$project$Material_Options$onInput(_user$project$Main$MusicChange),
+						_1: {
+							ctor: '::',
+							_0: _user$project$Material_Textfield$value(model.rsvp.music),
+							_1: {
+								ctor: '::',
+								_0: A2(_user$project$Material_Options$css, 'width', '100%'),
+								_1: {ctor: '[]'}
+							}
+						}
 					}
 				},
 				{ctor: '[]'}),
@@ -20635,7 +21355,7 @@ var _user$project$Main$viewPresence = function (model) {
 				},
 				{
 					ctor: '::',
-					_0: _elm_lang$html$Html$text('On vous compte parmi nous?'),
+					_0: _elm_lang$html$Html$text('On vous compte parmi nous?*'),
 					_1: {ctor: '[]'}
 				}),
 			_1: {
@@ -20656,8 +21376,13 @@ var _user$project$Main$viewPresence = function (model) {
 							model.mdc,
 							{
 								ctor: '::',
-								_0: A2(_user$project$Material_Options$when, model.presence, _user$project$Material_Switch$on),
-								_1: {ctor: '[]'}
+								_0: A2(_user$project$Material_Options$when, model.rsvp.presence, _user$project$Material_Switch$on),
+								_1: {
+									ctor: '::',
+									_0: _user$project$Material_Options$onClick(
+										_user$project$Main$Toogle(_user$project$Main$Presence)),
+									_1: {ctor: '[]'}
+								}
 							},
 							{ctor: '[]'}),
 						_1: {
@@ -20676,7 +21401,8 @@ var _user$project$Main$viewPresence = function (model) {
 								},
 								{
 									ctor: '::',
-									_0: _elm_lang$html$Html$text('Oui'),
+									_0: _elm_lang$html$Html$text(
+										model.rsvp.presence ? 'Oui' : 'Non désolé'),
 									_1: {ctor: '[]'}
 								}),
 							_1: {ctor: '[]'}
@@ -20744,8 +21470,13 @@ var _user$project$Main$viewHousing = function (model) {
 							model.mdc,
 							{
 								ctor: '::',
-								_0: A2(_user$project$Material_Options$when, model.housing, _user$project$Material_Switch$on),
-								_1: {ctor: '[]'}
+								_0: A2(_user$project$Material_Options$when, model.rsvp.housing, _user$project$Material_Switch$on),
+								_1: {
+									ctor: '::',
+									_0: _user$project$Material_Options$onClick(
+										_user$project$Main$Toogle(_user$project$Main$Housing)),
+									_1: {ctor: '[]'}
+								}
 							},
 							{ctor: '[]'}),
 						_1: {
@@ -20764,7 +21495,8 @@ var _user$project$Main$viewHousing = function (model) {
 								},
 								{
 									ctor: '::',
-									_0: _elm_lang$html$Html$text('Oui ça m\'intéresse'),
+									_0: _elm_lang$html$Html$text(
+										model.rsvp.housing ? 'Oui ça m\'intéresse' : 'Non je me débrouille par moi même'),
 									_1: {ctor: '[]'}
 								}),
 							_1: {ctor: '[]'}
@@ -20832,8 +21564,13 @@ var _user$project$Main$viewBrunch = function (model) {
 							model.mdc,
 							{
 								ctor: '::',
-								_0: A2(_user$project$Material_Options$when, model.brunch, _user$project$Material_Switch$on),
-								_1: {ctor: '[]'}
+								_0: A2(_user$project$Material_Options$when, model.rsvp.brunch, _user$project$Material_Switch$on),
+								_1: {
+									ctor: '::',
+									_0: _user$project$Material_Options$onClick(
+										_user$project$Main$Toogle(_user$project$Main$Brunch)),
+									_1: {ctor: '[]'}
+								}
 							},
 							{ctor: '[]'}),
 						_1: {
@@ -20852,13 +21589,36 @@ var _user$project$Main$viewBrunch = function (model) {
 								},
 								{
 									ctor: '::',
-									_0: _elm_lang$html$Html$text('Oui je serais là'),
+									_0: _elm_lang$html$Html$text(
+										model.rsvp.brunch ? 'Oui je serais là' : 'Non je me casse à jeun'),
 									_1: {ctor: '[]'}
 								}),
 							_1: {ctor: '[]'}
 						}
 					}),
 				_1: {ctor: '[]'}
+			}
+		});
+};
+var _user$project$Main$viewHere = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: _user$project$Main$viewTxtChildrenNameAge(model),
+			_1: {
+				ctor: '::',
+				_0: _user$project$Main$viewHousing(model),
+				_1: {
+					ctor: '::',
+					_0: _user$project$Main$viewTxtMusic(model),
+					_1: {
+						ctor: '::',
+						_0: _user$project$Main$viewBrunch(model),
+						_1: {ctor: '[]'}
+					}
+				}
 			}
 		});
 };
@@ -20890,23 +21650,11 @@ var _user$project$Main$view = function (model) {
 					_0: _user$project$Main$viewPresence(model),
 					_1: {
 						ctor: '::',
-						_0: _user$project$Main$viewTxtChildrenNameAge(model),
+						_0: model.rsvp.presence ? _user$project$Main$viewHere(model) : _user$project$Main$viewNotHereMsg(model),
 						_1: {
 							ctor: '::',
-							_0: _user$project$Main$viewHousing(model),
-							_1: {
-								ctor: '::',
-								_0: _user$project$Main$viewTxtMusic(model),
-								_1: {
-									ctor: '::',
-									_0: _user$project$Main$viewBrunch(model),
-									_1: {
-										ctor: '::',
-										_0: _user$project$Main$viewBtnSubmit(model),
-										_1: {ctor: '[]'}
-									}
-								}
-							}
+							_0: _user$project$Main$viewBtnSubmit(model),
+							_1: {ctor: '[]'}
 						}
 					}
 				}

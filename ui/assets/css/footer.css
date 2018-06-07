@@ -7,7 +7,6 @@
   font: bold 16px sans-serif;
 
 	padding: 55px 50px;
-	/*margin-top: 80px;*/
 }
 
 .footer-distributed .footer-left,
@@ -63,7 +62,8 @@
 	width: 35%;
 }
 
-.footer-distributed .footer-center i{
+.footer-distributed .footer-center i,
+.footer-distributed .footer-right i{
 	background-color:  #33383b;
 	color: #ffffff;
 	font-size: 25px;
@@ -76,28 +76,32 @@
 	vertical-align: middle;
 }
 
-.footer-distributed .footer-center i.fa-envelope{
+.footer-distributed .footer-center i.fa-envelope,
+.footer-distributed .footer-right i.fa-envelope {
 	font-size: 17px;
 	line-height: 38px;
 }
 
-.footer-distributed .footer-center p{
+.footer-distributed .footer-center p,
+.footer-distributed .footer-right p {
 	display: inline-block;
 	color: #ffffff;
 	vertical-align: middle;
 	margin:0;
 }
 
-.footer-distributed .footer-center p span{
+.footer-distributed .footer-center p span,
+.footer-distributed .footer-right p span {
 	display:block;
 	font-weight: normal;
 	font-size:14px;
 	line-height:2;
 }
 
-.footer-distributed .footer-center p a{
+.footer-distributed .footer-center p a,
+.footer-distributed .footer-right p a{
 	color:  #5383d3;
-	text-decoration: none;;
+	text-decoration: none;
 }
 
 
@@ -106,8 +110,7 @@
 .footer-distributed .footer-right{
 	width: 20%;
 }
-
-.footer-distributed .footer-company-about{
+.footer-distributed .footer-title{
 	line-height: 20px;
 	color:  #92999f;
 	font-size: 13px;
@@ -115,13 +118,23 @@
 	margin: 0;
 }
 
-.footer-distributed .footer-company-about span{
+.footer-distributed .footer-title span{
 	display: block;
 	color:  #ffffff;
 	font-size: 14px;
 	font-weight: bold;
 	margin-bottom: 20px;
 }
+
+
+.footer-distributed p.footer-company-about{
+	line-height: 20px;
+	color:  #92999f;
+	font-size: 13px;
+	font-weight: normal;
+	margin: 0;
+}
+
 
 .footer-distributed .footer-icons{
 	margin-top: 25px;
@@ -143,7 +156,6 @@
 	margin-right: 3px;
 	margin-bottom: 5px;
 }
-
 /* If you don't want the footer to be responsive, remove these media queries */
 
 @media (max-width: 880px) {
@@ -160,21 +172,38 @@
 		text-align: center;
 	}
 
-	.footer-distributed .footer-center i{
+	.footer-distributed .footer-center i,
+	.footer-distributed .footer-right i{
 		margin-left: 0;
 	}
   .footer-distributed .footer-company-name {
     display: none;
   }
   .footer-distributed .footer-links a,
-  .footer-distributed .footer-center div {
+  .footer-distributed .footer-center div,
+  .footer-distributed .footer-right div {
     display: block;
     width: 100%;
   }
   .footer-distributed .footer-links span {
     display: none;
   }
-  .footer-distributed .footer-center {
+  .footer-distributed .footer-center,
+  .footer-distributed .footer-right {
     text-align: left;
+  }
+  .footer-distributed .footer-right h1.about{
+    margin-top: 50px;
+  }
+  .footer-distributed p.address {
+    padding: 0px;
+    width: 165px;
+  }
+}
+@media (max-width: 400px) {
+  .footer-distributed p.address {
+    box-sizing: border-box;
+    float: right;
+    width: 200px;
   }
 }
