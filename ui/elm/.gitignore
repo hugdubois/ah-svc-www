@@ -6,7 +6,10 @@ elm-stuff
 elm.js
 # elm-repl generated files
 repl-temp-*
-j
+
 node_modules
 elm-mdc.js
 material-components-web.css
+
+
+style-bundle.js
