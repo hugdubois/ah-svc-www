@@ -13,6 +13,7 @@ It has these top-level messages:
 	ServiceStatus
 	ServicesStatusList
 	RsvpCreationRequest
+	RsvpInfo
 	RsvpCreationResponse
 */
 package pb
@@ -57,8 +58,8 @@ func (this *ServicesStatusList) Validate() error {
 var _regex_RsvpCreationRequest_Email = regexp.MustCompile(`^[a-zA-Z0-9.!#$%&'*+/=?^_{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$`)
 
 func (this *RsvpCreationRequest) Validate() error {
-	if !(len(this.Names) > 1) {
-		return go_proto_validators.FieldError("Names", fmt.Errorf(`value '%v' must length be greater than '1'`, this.Names))
+	if !(len(this.Names) > 3) {
+		return go_proto_validators.FieldError("Names", fmt.Errorf(`value '%v' must length be greater than '3'`, this.Names))
 	}
 	if !(len(this.Names) < 256) {
 		return go_proto_validators.FieldError("Names", fmt.Errorf(`value '%v' must length be less than '256'`, this.Names))
@@ -74,6 +75,36 @@ func (this *RsvpCreationRequest) Validate() error {
 	}
 	return nil
 }
+
+var _regex_RsvpInfo_Uuid = regexp.MustCompile(`^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$`)
+var _regex_RsvpInfo_Email = regexp.MustCompile(`^[a-zA-Z0-9.!#$%&'*+/=?^_{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$`)
+
+func (this *RsvpInfo) Validate() error {
+	if !_regex_RsvpInfo_Uuid.MatchString(this.Uuid) {
+		return go_proto_validators.FieldError("Uuid", fmt.Errorf(`Invalid uuid`))
+	}
+	if !(len(this.Names) > 3) {
+		return go_proto_validators.FieldError("Names", fmt.Errorf(`value '%v' must length be greater than '3'`, this.Names))
+	}
+	if !(len(this.Names) < 256) {
+		return go_proto_validators.FieldError("Names", fmt.Errorf(`value '%v' must length be less than '256'`, this.Names))
+	}
+	if !_regex_RsvpInfo_Email.MatchString(this.Email) {
+		return go_proto_validators.FieldError("Email", fmt.Errorf(`Invalid email`))
+	}
+	if !(len(this.ChildrenNameAge) < 256) {
+		return go_proto_validators.FieldError("ChildrenNameAge", fmt.Errorf(`value '%v' must length be less than '256'`, this.ChildrenNameAge))
+	}
+	if !(len(this.Music) < 256) {
+		return go_proto_validators.FieldError("Music", fmt.Errorf(`value '%v' must length be less than '256'`, this.Music))
+	}
+	return nil
+}
 func (this *RsvpCreationResponse) Validate() error {
+	if this.Info != nil {
+		if err := go_proto_validators.CallValidatorIfExists(this.Info); err != nil {
+			return go_proto_validators.FieldError("Info", err)
+		}
+	}
 	return nil
 }

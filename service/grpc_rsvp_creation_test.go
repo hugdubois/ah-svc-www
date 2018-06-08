@@ -1,8 +1,10 @@
 package service
 
 import (
+	"fmt"
 	"testing"
 
+	"github.com/dmgk/faker"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc/codes"
@@ -20,6 +22,8 @@ func TestRsvpCreation(t *testing.T) {
 		e    *status.Status
 	)
 
+	verylongString := faker.Lorem().Characters(256)
+
 	flushAllDbTest(t)
 	ctx := context.Background()
 
@@ -31,7 +35,15 @@ func TestRsvpCreation(t *testing.T) {
 	assert.Nil(t, res, "RsvpCreation: error on call")
 	e = status.Convert(err)
 	assert.Equal(t, codes.InvalidArgument, e.Code(), "RsvpCreation: error on call")
-	assert.Equal(t, "invalid field Names: value '' must length be greater than '1'", e.Message(), "RsvpCreation: error on call")
+	assert.Equal(t, "invalid field Names: value '' must length be greater than '3'", e.Message(), "RsvpCreation: error on call")
+
+	req = &pb.RsvpCreationRequest{Names: verylongString}
+	res, err = cli.RsvpCreation(ctx, req)
+	assert.NotNil(t, err, "RsvpCreation: error on call")
+	assert.Nil(t, res, "RsvpCreation: error on call")
+	e = status.Convert(err)
+	assert.Equal(t, codes.InvalidArgument, e.Code(), "RsvpCreation: error on call")
+	assert.Equal(t, fmt.Sprintf("invalid field Names: value '%s' must length be less than '256'", req.GetNames()), e.Message(), "RsvpCreation: error on call")
 
 	req = &pb.RsvpCreationRequest{Names: vReq.GetNames()}
 	res, err = cli.RsvpCreation(ctx, req)
@@ -40,6 +52,30 @@ func TestRsvpCreation(t *testing.T) {
 	e = status.Convert(err)
 	assert.Equal(t, codes.InvalidArgument, e.Code(), "RsvpCreation: error on call")
 	assert.Equal(t, "invalid field Email: Invalid email", e.Message(), "RsvpCreation: error on call")
+
+	req = &pb.RsvpCreationRequest{Names: vReq.GetNames()}
+	res, err = cli.RsvpCreation(ctx, req)
+	assert.NotNil(t, err, "RsvpCreation: error on call")
+	assert.Nil(t, res, "RsvpCreation: error on call")
+	e = status.Convert(err)
+	assert.Equal(t, codes.InvalidArgument, e.Code(), "RsvpCreation: error on call")
+	assert.Equal(t, "invalid field Email: Invalid email", e.Message(), "RsvpCreation: error on call")
+
+	req = &pb.RsvpCreationRequest{Names: vReq.GetNames(), Email: vReq.GetEmail(), ChildrenNameAge: verylongString}
+	res, err = cli.RsvpCreation(ctx, req)
+	assert.NotNil(t, err, "RsvpCreation: error on call")
+	assert.Nil(t, res, "RsvpCreation: error on call")
+	e = status.Convert(err)
+	assert.Equal(t, codes.InvalidArgument, e.Code(), "RsvpCreation: error on call")
+	assert.Equal(t, fmt.Sprintf("invalid field ChildrenNameAge: value '%s' must length be less than '256'", req.GetChildrenNameAge()), e.Message(), "RsvpCreation: error on call")
+
+	req = &pb.RsvpCreationRequest{Names: vReq.GetNames(), Email: vReq.GetEmail(), ChildrenNameAge: vReq.GetChildrenNameAge(), Music: verylongString}
+	res, err = cli.RsvpCreation(ctx, req)
+	assert.NotNil(t, err, "RsvpCreation: error on call")
+	assert.Nil(t, res, "RsvpCreation: error on call")
+	e = status.Convert(err)
+	assert.Equal(t, codes.InvalidArgument, e.Code(), "RsvpCreation: error on call")
+	assert.Equal(t, fmt.Sprintf("invalid field Music: value '%s' must length be less than '256'", req.GetMusic()), e.Message(), "RsvpCreation: error on call")
 
 	res, err = cli.RsvpCreation(ctx, vReq)
 	assert.Nil(t, err, "RsvpCreation: error on call")

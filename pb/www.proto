@@ -68,7 +68,7 @@ message ServicesStatusList {
 
 // RsvpCreationRequest encodes the request of a rsvp creation operation.
 message RsvpCreationRequest {
-  string names             = 1 [(gomeetfaker.field).lorem.words.num = 6, (validator.field) = {length_gt: 1, length_lt: 256}]; // names free this is a string field
+  string names             = 1 [(gomeetfaker.field).lorem.words.num = 6, (validator.field) = {length_gt: 3, length_lt: 256}]; // names free this is a string field
   string email             = 2 [(gomeetfaker.field).internet.email = true, (validator.field) = {human_error: "Invalid email", regex: "^[a-zA-Z0-9.!#$%&'*+/=?^_{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"}]; // email contact valid email
   bool   presence          = 3 [(gomeetfaker.field).value.content = "true"]; // presence is a boolean that indicate the people behind this rsvp are present
   string children_name_age = 4 [(gomeetfaker.field).lorem.words.num = 6, (validator.field) = {length_lt: 256}]; // names and ages of children this is a free string field
@@ -77,7 +77,23 @@ message RsvpCreationRequest {
   bool   brunch            = 7 [(gomeetfaker.field).value.content = "true"]; // brunch is boolean that indicate the people behind this rsvp are present in sunday brunch
 }
 
+// RsvpInfo encodes a rsvp.
+message RsvpInfo {
+  string uuid              = 1 [(gomeetfaker.field).uuid.version = "V4", (validator.field) = {human_error: "Invalid uuid", regex: "^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"}]; // internal profile ID
+  string names             = 2 [(gomeetfaker.field).lorem.words.num = 6, (validator.field) = {length_gt: 3, length_lt: 256}]; // names free this is a string field
+  string email             = 3 [(gomeetfaker.field).internet.email = true, (validator.field) = {human_error: "Invalid email", regex: "^[a-zA-Z0-9.!#$%&'*+/=?^_{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"}]; // email contact valid email
+  bool   presence          = 4 [(gomeetfaker.field).value.content = "true"]; // presence is a boolean that indicate the people behind this rsvp are present
+  string children_name_age = 5 [(gomeetfaker.field).lorem.words.num = 6, (validator.field) = {length_lt: 256}]; // names and ages of children this is a free string field
+  bool   housing           = 6 [(gomeetfaker.field).value.content = "true"]; // housing is boolean that indicate the people behind this rsvp use housing
+  string music             = 7 [(gomeetfaker.field).lorem.words.num = 6, (validator.field) = {length_lt: 256}]; // wanted music this is a free string field
+  bool   brunch            = 8 [(gomeetfaker.field).value.content = "true"]; // brunch is boolean that indicate the people behind this rsvp are present in sunday brunch
+  string created_at        = 9 [(gomeetfaker.field).date = {now: true, format: "2006-01-02T15:04:05Z07:00"}]; // creation time (UTC - RFC 3339 format)
+  string updated_at        = 10 [(gomeetfaker.field).date = {now: true, format: "2006-01-02T15:04:05Z07:00"}]; // modification time (UTC - RFC 3339 format)
+  string deleted_at        = 11 [(gomeetfaker.field).date = {now: true, format: "2006-01-02T15:04:05Z07:00"}]; // deletion time (UTC - RFC 3339 format if the profile was logically deleted, empty otherwise)
+}
+
 // RsvpCreationResponse encodes the result of a rsvp creation operation.
 message RsvpCreationResponse {
-  bool ok = 1 [(gomeetfaker.field).value.content = "1"]; // indicates whether the operation was successful
+  bool     ok   = 1 [(gomeetfaker.field).value.content = "1"]; // indicates whether the operation was successful
+  RsvpInfo info = 2;                                           // rsvp information (unreliable if the operation failed)
 }

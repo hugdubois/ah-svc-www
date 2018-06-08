@@ -13,6 +13,7 @@ It has these top-level messages:
 	ServiceStatus
 	ServicesStatusList
 	RsvpCreationRequest
+	RsvpInfo
 	RsvpCreationResponse
 */
 package pb
@@ -22,6 +23,7 @@ import locales "github.com/dmgk/faker/locales"
 import rand "math/rand"
 import strings "strings"
 import time "time"
+import uuid "github.com/google/uuid"
 import proto "github.com/gogo/protobuf/proto"
 import golang_proto "github.com/golang/protobuf/proto"
 import fmt "fmt"
@@ -150,8 +152,25 @@ func NewRsvpCreationRequestGomeetFaker() *RsvpCreationRequest {
 	return this
 }
 
+func NewRsvpInfoGomeetFaker() *RsvpInfo {
+	this := &RsvpInfo{}
+	this.Uuid = uuid.New().String()
+	this.Names = strings.Join(faker.Lorem().Words(6), " ")
+	this.Email = faker.Internet().Email()
+	this.Presence = true
+	this.ChildrenNameAge = strings.Join(faker.Lorem().Words(6), " ")
+	this.Housing = true
+	this.Music = strings.Join(faker.Lorem().Words(6), " ")
+	this.Brunch = true
+	this.CreatedAt = time.Now().Format("2006-01-02T15:04:05Z07:00")
+	this.UpdatedAt = time.Now().Format("2006-01-02T15:04:05Z07:00")
+	this.DeletedAt = time.Now().Format("2006-01-02T15:04:05Z07:00")
+	return this
+}
+
 func NewRsvpCreationResponseGomeetFaker() *RsvpCreationResponse {
 	this := &RsvpCreationResponse{}
 	this.Ok = true
+	this.Info = NewRsvpInfoGomeetFaker()
 	return this
 }

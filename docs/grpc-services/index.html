@@ -191,6 +191,10 @@
                 </li>
               
                 <li>
+                  <a href="#grpc.hugdubois.www.RsvpInfo"><span class="badge">M</span>RsvpInfo</a>
+                </li>
+              
+                <li>
                   <a href="#grpc.hugdubois.www.ServiceStatus"><span class="badge">M</span>ServiceStatus</a>
                 </li>
               
@@ -315,6 +319,106 @@
                   <td><a href="#bool">bool</a></td>
                   <td></td>
                   <td><p>indicates whether the operation was successful </p></td>
+                </tr>
+              
+                <tr>
+                  <td>info</td>
+                  <td><a href="#grpc.hugdubois.www.RsvpInfo">RsvpInfo</a></td>
+                  <td></td>
+                  <td><p>rsvp information (unreliable if the operation failed) </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="grpc.hugdubois.www.RsvpInfo">RsvpInfo</h3>
+        <p>RsvpInfo encodes a rsvp.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>uuid</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>internal profile ID </p></td>
+                </tr>
+              
+                <tr>
+                  <td>names</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>names free this is a string field </p></td>
+                </tr>
+              
+                <tr>
+                  <td>email</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>email contact valid email </p></td>
+                </tr>
+              
+                <tr>
+                  <td>presence</td>
+                  <td><a href="#bool">bool</a></td>
+                  <td></td>
+                  <td><p>presence is a boolean that indicate the people behind this rsvp are present </p></td>
+                </tr>
+              
+                <tr>
+                  <td>children_name_age</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>names and ages of children this is a free string field </p></td>
+                </tr>
+              
+                <tr>
+                  <td>housing</td>
+                  <td><a href="#bool">bool</a></td>
+                  <td></td>
+                  <td><p>housing is boolean that indicate the people behind this rsvp use housing </p></td>
+                </tr>
+              
+                <tr>
+                  <td>music</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>wanted music this is a free string field </p></td>
+                </tr>
+              
+                <tr>
+                  <td>brunch</td>
+                  <td><a href="#bool">bool</a></td>
+                  <td></td>
+                  <td><p>brunch is boolean that indicate the people behind this rsvp are present in sunday brunch </p></td>
+                </tr>
+              
+                <tr>
+                  <td>created_at</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>creation time (UTC - RFC 3339 format) </p></td>
+                </tr>
+              
+                <tr>
+                  <td>updated_at</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>modification time (UTC - RFC 3339 format) </p></td>
+                </tr>
+              
+                <tr>
+                  <td>deleted_at</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>deletion time (UTC - RFC 3339 format if the profile was logically deleted, empty otherwise) </p></td>
                 </tr>
               
             </tbody>

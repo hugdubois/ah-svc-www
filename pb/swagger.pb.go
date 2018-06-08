@@ -128,9 +128,54 @@ swagger = `{
         "ok": {
           "type": "boolean",
           "format": "boolean"
+        },
+        "info": {
+          "$ref": "#/definitions/wwwRsvpInfo"
         }
       },
       "description": "RsvpCreationResponse encodes the result of a rsvp creation operation."
+    },
+    "wwwRsvpInfo": {
+      "type": "object",
+      "properties": {
+        "uuid": {
+          "type": "string"
+        },
+        "names": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "presence": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "children_name_age": {
+          "type": "string"
+        },
+        "housing": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "music": {
+          "type": "string"
+        },
+        "brunch": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
+        },
+        "deleted_at": {
+          "type": "string"
+        }
+      },
+      "description": "RsvpInfo encodes a rsvp."
     },
     "wwwServiceStatus": {
       "type": "object",

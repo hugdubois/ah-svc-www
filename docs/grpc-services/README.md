@@ -7,6 +7,7 @@
     - [EmptyMessage](#grpc.hugdubois.www.EmptyMessage)
     - [RsvpCreationRequest](#grpc.hugdubois.www.RsvpCreationRequest)
     - [RsvpCreationResponse](#grpc.hugdubois.www.RsvpCreationResponse)
+    - [RsvpInfo](#grpc.hugdubois.www.RsvpInfo)
     - [ServiceStatus](#grpc.hugdubois.www.ServiceStatus)
     - [ServicesStatusList](#grpc.hugdubois.www.ServicesStatusList)
     - [VersionResponse](#grpc.hugdubois.www.VersionResponse)
@@ -68,6 +69,32 @@ RsvpCreationResponse encodes the result of a rsvp creation operation.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | ok | [bool](#bool) |  | indicates whether the operation was successful |
+| info | [RsvpInfo](#grpc.hugdubois.www.RsvpInfo) |  | rsvp information (unreliable if the operation failed) |
+
+
+
+
+
+
+<a name="grpc.hugdubois.www.RsvpInfo"/>
+
+### RsvpInfo
+RsvpInfo encodes a rsvp.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| uuid | [string](#string) |  | internal profile ID |
+| names | [string](#string) |  | names free this is a string field |
+| email | [string](#string) |  | email contact valid email |
+| presence | [bool](#bool) |  | presence is a boolean that indicate the people behind this rsvp are present |
+| children_name_age | [string](#string) |  | names and ages of children this is a free string field |
+| housing | [bool](#bool) |  | housing is boolean that indicate the people behind this rsvp use housing |
+| music | [string](#string) |  | wanted music this is a free string field |
+| brunch | [bool](#bool) |  | brunch is boolean that indicate the people behind this rsvp are present in sunday brunch |
+| created_at | [string](#string) |  | creation time (UTC - RFC 3339 format) |
+| updated_at | [string](#string) |  | modification time (UTC - RFC 3339 format) |
+| deleted_at | [string](#string) |  | deletion time (UTC - RFC 3339 format if the profile was logically deleted, empty otherwise) |
 
 
 
