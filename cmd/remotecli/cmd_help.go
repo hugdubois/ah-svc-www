@@ -13,8 +13,8 @@ func (c *remoteCli) cmdHelp(args []string) (string, error) {
 	┌─ services_status
 	└─ call services_status service
 
-	┌─ echo <uuid [string]> <content [string]>
-	└─ call echo service
+	┌─ rsvp_creation <names [string]> <email [string]> <presence [bool]> <children_name_age [string]> <housing [bool]> <music [string]> <brunch [bool]>
+	└─ call rsvp_creation service
 
 	┌─ service_address
 	└─ return service address

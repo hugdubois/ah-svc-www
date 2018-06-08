@@ -132,7 +132,7 @@ func (svc *Service) RegisterHTTPServices(
 	// api gateway handlers with metrics instrumentations
 	routeMap := map[string]string{
 		"/api/v1/services/status": "Api.ServicesStatus",
-		"/api/v1/echo":            "Api.Echo",
+		"/api/v1/rsvp_creation":   "Api.RsvpCreation",
 		"/api/v1/version":         "Api.Version",
 	}
 	for route, label := range routeMap {

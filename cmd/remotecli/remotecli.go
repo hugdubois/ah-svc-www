@@ -136,7 +136,7 @@ func (c *remoteCli) GetActionsMap() map[string]func([]string) (string, error) {
 		//grpc method
 		"version":         c.cmdVersion,
 		"services_status": c.cmdServicesStatus,
-		"echo":            c.cmdEcho,
+		"rsvp_creation":   c.cmdRsvpCreation,
 		// global method
 		"console_version": c.cmdConsoleVersion,
 		"jwt":             c.cmdJWT,

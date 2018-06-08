@@ -12,15 +12,16 @@ It has these top-level messages:
 	VersionResponse
 	ServiceStatus
 	ServicesStatusList
-	EchoRequest
-	EchoResponse
+	RsvpCreationRequest
+	RsvpCreationResponse
 */
 package pb
 
+import regexp "regexp"
+import fmt "fmt"
 import go_proto_validators "github.com/mwitkow/go-proto-validators"
 import proto "github.com/gogo/protobuf/proto"
 import golang_proto "github.com/golang/protobuf/proto"
-import fmt "fmt"
 import math "math"
 import _ "github.com/gogo/googleapis/google/api"
 import _ "github.com/mwitkow/go-proto-validators"
@@ -52,9 +53,27 @@ func (this *ServicesStatusList) Validate() error {
 	}
 	return nil
 }
-func (this *EchoRequest) Validate() error {
+
+var _regex_RsvpCreationRequest_Email = regexp.MustCompile(`^[a-zA-Z0-9.!#$%&'*+/=?^_{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$`)
+
+func (this *RsvpCreationRequest) Validate() error {
+	if !(len(this.Names) > 1) {
+		return go_proto_validators.FieldError("Names", fmt.Errorf(`value '%v' must length be greater than '1'`, this.Names))
+	}
+	if !(len(this.Names) < 256) {
+		return go_proto_validators.FieldError("Names", fmt.Errorf(`value '%v' must length be less than '256'`, this.Names))
+	}
+	if !_regex_RsvpCreationRequest_Email.MatchString(this.Email) {
+		return go_proto_validators.FieldError("Email", fmt.Errorf(`Invalid email`))
+	}
+	if !(len(this.ChildrenNameAge) < 256) {
+		return go_proto_validators.FieldError("ChildrenNameAge", fmt.Errorf(`value '%v' must length be less than '256'`, this.ChildrenNameAge))
+	}
+	if !(len(this.Music) < 256) {
+		return go_proto_validators.FieldError("Music", fmt.Errorf(`value '%v' must length be less than '256'`, this.Music))
+	}
 	return nil
 }
-func (this *EchoResponse) Validate() error {
+func (this *RsvpCreationResponse) Validate() error {
 	return nil
 }

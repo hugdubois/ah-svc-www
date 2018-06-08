@@ -12,16 +12,16 @@ It has these top-level messages:
 	VersionResponse
 	ServiceStatus
 	ServicesStatusList
-	EchoRequest
-	EchoResponse
+	RsvpCreationRequest
+	RsvpCreationResponse
 */
 package pb
 
 import faker "github.com/dmgk/faker"
 import locales "github.com/dmgk/faker/locales"
 import rand "math/rand"
+import strings "strings"
 import time "time"
-import uuid "github.com/google/uuid"
 import proto "github.com/gogo/protobuf/proto"
 import golang_proto "github.com/golang/protobuf/proto"
 import fmt "fmt"
@@ -138,16 +138,20 @@ func NewServicesStatusListGomeetFaker() *ServicesStatusList {
 	return this
 }
 
-func NewEchoRequestGomeetFaker() *EchoRequest {
-	this := &EchoRequest{}
-	this.Uuid = uuid.New().String()
-	this.Content = faker.Lorem().String()
+func NewRsvpCreationRequestGomeetFaker() *RsvpCreationRequest {
+	this := &RsvpCreationRequest{}
+	this.Names = strings.Join(faker.Lorem().Words(6), " ")
+	this.Email = faker.Internet().Email()
+	this.Presence = true
+	this.ChildrenNameAge = strings.Join(faker.Lorem().Words(6), " ")
+	this.Housing = true
+	this.Music = strings.Join(faker.Lorem().Words(6), " ")
+	this.Brunch = true
 	return this
 }
 
-func NewEchoResponseGomeetFaker() *EchoResponse {
-	this := &EchoResponse{}
-	this.Uuid = uuid.New().String()
-	this.Content = faker.Lorem().String()
+func NewRsvpCreationResponseGomeetFaker() *RsvpCreationResponse {
+	this := &RsvpCreationResponse{}
+	this.Ok = true
 	return this
 }

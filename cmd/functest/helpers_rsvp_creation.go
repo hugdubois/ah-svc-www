@@ -4,17 +4,17 @@ import (
 	pb "github.com/hugdubois/ah-svc-www/pb"
 )
 
-func testGetEchoRequest(
+func testGetRsvpCreationRequest(
 	config FunctionalTestConfig,
-) (reqs []*pb.EchoRequest, extras map[string]interface{}, err error) {
-	// return an array of pb.EchoRequest struct pointers,
-	// each of them will be passed as an argument to the grpc Echo method
+) (reqs []*pb.RsvpCreationRequest, extras map[string]interface{}, err error) {
+	// return an array of pb.RsvpCreationRequest struct pointers,
+	// each of them will be passed as an argument to the grpc RsvpCreation method
 
-	reqs = append(reqs, &pb.EchoRequest{})
+	reqs = append(reqs, &pb.RsvpCreationRequest{})
 	return reqs, extras, err
 }
 
-func testEchoResponse(
+func testRsvpCreationResponse(
 	config FunctionalTestConfig,
 	testsType string,
 	testCaseResults []*TestCaseResult,
@@ -26,25 +26,25 @@ func testEchoResponse(
 	// testsType value is value of FUNCTEST_HTTP (HTTP) and FUNCTEST_GRPC (GRPC) constants cf. types.go
 	for _, tr := range testCaseResults {
 		var (
-			req *pb.EchoRequest
-			res *pb.EchoResponse
+			req *pb.RsvpCreationRequest
+			res *pb.RsvpCreationResponse
 			err error
 			ok  bool
 		)
 		if tr.Request == nil {
-			failures = append(failures, TestFailure{Procedure: "Echo", Message: "expected request message type pb.EchoRequest - nil given"})
+			failures = append(failures, TestFailure{Procedure: "RsvpCreation", Message: "expected request message type pb.RsvpCreationRequest - nil given"})
 			continue
 		}
-		req, ok = tr.Request.(*pb.EchoRequest)
+		req, ok = tr.Request.(*pb.RsvpCreationRequest)
 		if !ok {
-			failures = append(failures, TestFailure{Procedure: "Echo", Message: "expected request message type pb.EchoRequest - cast fail"})
+			failures = append(failures, TestFailure{Procedure: "RsvpCreation", Message: "expected request message type pb.RsvpCreationRequest - cast fail"})
 			continue
 		}
 
 		if tr.Response != nil {
-			res, ok = tr.Response.(*pb.EchoResponse)
+			res, ok = tr.Response.(*pb.RsvpCreationResponse)
 			if !ok {
-				failures = append(failures, TestFailure{Procedure: "Echo", Message: "expected response message type pb.EchoRequest - cast fail"})
+				failures = append(failures, TestFailure{Procedure: "RsvpCreation", Message: "expected response message type pb.RsvpCreationRequest - cast fail"})
 				continue
 			}
 		}
@@ -53,7 +53,7 @@ func testEchoResponse(
 		err = tr.Error
 		if err != nil {
 			// if no error are expected do something like this
-			// failures = append(failures, TestFailure{Procedure: "Echo", Message: "no error expected"})
+			// failures = append(failures, TestFailure{Procedure: "RsvpCreation", Message: "no error expected"})
 			// continue
 		}
 
@@ -61,7 +61,7 @@ func testEchoResponse(
 			// for example :
 			// if res.GetId() != req.GetId() {
 			//     failureMsg := fmt.Sprintf("expected ID \"%s\" but got \"%s\" for request: %v", req.GetId(), res.GetId(), req)
-			//     failures = append(failures, TestFailure{Procedure: "Echo", Message: failureMsg})
+			//     failures = append(failures, TestFailure{Procedure: "RsvpCreation", Message: failureMsg})
 			// }
 		}
 	}

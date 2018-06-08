@@ -31,10 +31,10 @@ service Www {
     };
   }
 
-  // Echo method receives a simple message and returns it.
-  rpc Echo(EchoRequest) returns (EchoResponse) {
+  // RsvpCreation attempts to create a new rsvp.
+  rpc RsvpCreation(RsvpCreationRequest) returns (RsvpCreationResponse) {
     option (google.api.http) = {
-      post: "/api/v1/echo"
+      post: "/api/v1/rsvp_creation"
       body: "*"
     };
   }
@@ -66,14 +66,18 @@ message ServicesStatusList {
   repeated ServiceStatus services = 1;
 }
 
-// EchoRequest represents a simple message sent to the Echo service.
-message EchoRequest {
-  string uuid    = 1 [(gomeetfaker.field).uuid.version = "V4"]; // Uuid represents the message identifier.
-  string content = 2 [(gomeetfaker.field).lorem.string = true]; // some content
+// RsvpCreationRequest encodes the request of a rsvp creation operation.
+message RsvpCreationRequest {
+  string names             = 1 [(gomeetfaker.field).lorem.words.num = 6, (validator.field) = {length_gt: 1, length_lt: 256}]; // names free this is a string field
+  string email             = 2 [(gomeetfaker.field).internet.email = true, (validator.field) = {human_error: "Invalid email", regex: "^[a-zA-Z0-9.!#$%&'*+/=?^_{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"}]; // email contact valid email
+  bool   presence          = 3 [(gomeetfaker.field).value.content = "true"]; // presence is a boolean that indicate the people behind this rsvp are present
+  string children_name_age = 4 [(gomeetfaker.field).lorem.words.num = 6, (validator.field) = {length_lt: 256}]; // names and ages of children this is a free string field
+  bool   housing           = 5 [(gomeetfaker.field).value.content = "true"]; // housing is boolean that indicate the people behind this rsvp use housing
+  string music             = 6 [(gomeetfaker.field).lorem.words.num = 6, (validator.field) = {length_lt: 256}]; // wanted music this is a free string field
+  bool   brunch            = 7 [(gomeetfaker.field).value.content = "true"]; // brunch is boolean that indicate the people behind this rsvp are present in sunday brunch
 }
 
-// EchoResponse represents a simple message that the Echo service return.
-message EchoResponse {
-  string uuid    = 1 [(gomeetfaker.field).uuid.version = "V4"]; // Uuid represents the message identifier.
-  string content = 2 [(gomeetfaker.field).lorem.string = true]; // some content
+// RsvpCreationResponse encodes the result of a rsvp creation operation.
+message RsvpCreationResponse {
+  bool ok = 1 [(gomeetfaker.field).value.content = "1"]; // indicates whether the operation was successful
 }

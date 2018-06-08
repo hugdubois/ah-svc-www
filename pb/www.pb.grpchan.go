@@ -37,9 +37,9 @@ func (c *wwwChannelClient) ServicesStatus(ctx context.Context, in *EmptyMessage,
 	return out, nil
 }
 
-func (c *wwwChannelClient) Echo(ctx context.Context, in *EchoRequest, opts ...grpc.CallOption) (*EchoResponse, error) {
-	out := new(EchoResponse)
-	err := c.ch.Invoke(ctx, "/grpc.hugdubois.www.Www/Echo", in, out, opts...)
+func (c *wwwChannelClient) RsvpCreation(ctx context.Context, in *RsvpCreationRequest, opts ...grpc.CallOption) (*RsvpCreationResponse, error) {
+	out := new(RsvpCreationResponse)
+	err := c.ch.Invoke(ctx, "/grpc.hugdubois.www.Www/RsvpCreation", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}

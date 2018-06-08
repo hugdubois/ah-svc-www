@@ -14,22 +14,22 @@ import (
 	pb "github.com/hugdubois/ah-svc-www/pb"
 )
 
-func TestHttpEcho(config FunctionalTestConfig) (failures []TestFailure) {
+func TestHttpRsvpCreation(config FunctionalTestConfig) (failures []TestFailure) {
 	client, serverAddr, proto, err := httpClient(config)
 	if err != nil {
-		failures = append(failures, TestFailure{Procedure: "Echo/HTTP", Message: fmt.Sprintf("HTTP client initialization error (%v)", err)})
+		failures = append(failures, TestFailure{Procedure: "RsvpCreation/HTTP", Message: fmt.Sprintf("HTTP client initialization error (%v)", err)})
 		return failures
 	}
 
 	var testCaseResults []*TestCaseResult
-	reqs, extras, err := testGetEchoRequest(config)
+	reqs, extras, err := testGetRsvpCreationRequest(config)
 	if err != nil {
-		failures = append(failures, TestFailure{Procedure: "Echo/HTTP", Message: fmt.Sprintf("HTTP testGetEchoRequest error (%v)", err)})
+		failures = append(failures, TestFailure{Procedure: "RsvpCreation/HTTP", Message: fmt.Sprintf("HTTP testGetRsvpCreationRequest error (%v)", err)})
 		return failures
 	}
 
 	for _, req := range reqs {
-		url := fmt.Sprintf("%s://%s/api/v1/echo", proto, serverAddr)
+		url := fmt.Sprintf("%s://%s/api/v1/rsvp_creation", proto, serverAddr)
 
 		// Proto to JSON
 		ma := jsonpb.Marshaler{}
@@ -40,7 +40,7 @@ func TestHttpEcho(config FunctionalTestConfig) (failures []TestFailure) {
 				&TestCaseResult{
 					req,
 					nil,
-					fmt.Errorf("Echo/HTTP POST error to marshalling the message with %s (%v) - %v", url, err, req),
+					fmt.Errorf("RsvpCreation/HTTP POST error to marshalling the message with %s (%v) - %v", url, err, req),
 				},
 			)
 			continue
@@ -56,7 +56,7 @@ func TestHttpEcho(config FunctionalTestConfig) (failures []TestFailure) {
 				&TestCaseResult{
 					req,
 					nil,
-					fmt.Errorf("Echo/HTTP POST error to construct the http request with %s (%v) - %v", url, err, req),
+					fmt.Errorf("RsvpCreation/HTTP POST error to construct the http request with %s (%v) - %v", url, err, req),
 				},
 			)
 			continue
@@ -71,7 +71,7 @@ func TestHttpEcho(config FunctionalTestConfig) (failures []TestFailure) {
 				&TestCaseResult{
 					req,
 					nil,
-					fmt.Errorf("Echo/HTTP POST error on %s (%v) - %v", url, err, req),
+					fmt.Errorf("RsvpCreation/HTTP POST error on %s (%v) - %v", url, err, req),
 				},
 			)
 			continue
@@ -85,7 +85,7 @@ func TestHttpEcho(config FunctionalTestConfig) (failures []TestFailure) {
 				&TestCaseResult{
 					req,
 					nil,
-					fmt.Errorf("Echo/HTTP POST error on %s (%v) - %v - readAll body", url, err, req),
+					fmt.Errorf("RsvpCreation/HTTP POST error on %s (%v) - %v - readAll body", url, err, req),
 				},
 			)
 			continue
@@ -99,16 +99,16 @@ func TestHttpEcho(config FunctionalTestConfig) (failures []TestFailure) {
 				&TestCaseResult{
 					req,
 					nil,
-					fmt.Errorf("Echo/HTTP POST error on %s (Code: %d, Error: %s) - %v", url, httpError.Code, httpError.Error, req),
+					fmt.Errorf("RsvpCreation/HTTP POST error on %s (Code: %d, Error: %s) - %v", url, httpError.Code, httpError.Error, req),
 				},
 			)
 			continue
 		}
 
-		res := &pb.EchoResponse{}
+		res := &pb.RsvpCreationResponse{}
 		err = jsonpb.UnmarshalString(string(body), res)
 		testCaseResults = append(testCaseResults, &TestCaseResult{req, res, err})
 	}
 
-	return testEchoResponse(config, FUNCTEST_HTTP, testCaseResults, extras)
+	return testRsvpCreationResponse(config, FUNCTEST_HTTP, testCaseResults, extras)
 }

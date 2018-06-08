@@ -225,8 +225,8 @@ func runFunctionalTestSession(config functest.FunctionalTestConfig) []functest.T
 	failures = appendFailures(failures, functest.TestHttpVersion(config))
 	failures = appendFailures(failures, functest.TestServicesStatus(config))
 	failures = appendFailures(failures, functest.TestHttpServicesStatus(config))
-	failures = appendFailures(failures, functest.TestEcho(config))
-	failures = appendFailures(failures, functest.TestHttpEcho(config))
+	failures = appendFailures(failures, functest.TestRsvpCreation(config))
+	failures = appendFailures(failures, functest.TestHttpRsvpCreation(config))
 	// Extra http handler
 	failures = appendFailures(failures, functest.TestHttpStatus(config))
 	failures = appendFailures(failures, functest.TestHttpMetrics(config))

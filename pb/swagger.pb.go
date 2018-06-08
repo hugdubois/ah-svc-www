@@ -21,15 +21,15 @@ swagger = `{
     "application/json"
   ],
   "paths": {
-    "/api/v1/echo": {
+    "/api/v1/rsvp_creation": {
       "post": {
-        "summary": "Echo method receives a simple message and returns it.",
-        "operationId": "Echo",
+        "summary": "RsvpCreation attempts to create a new rsvp.",
+        "operationId": "RsvpCreation",
         "responses": {
           "200": {
             "description": "",
             "schema": {
-              "$ref": "#/definitions/wwwEchoResponse"
+              "$ref": "#/definitions/wwwRsvpCreationResponse"
             }
           }
         },
@@ -39,7 +39,7 @@ swagger = `{
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/wwwEchoRequest"
+              "$ref": "#/definitions/wwwRsvpCreationRequest"
             }
           }
         ],
@@ -92,29 +92,45 @@ swagger = `{
       ],
       "default": "OK"
     },
-    "wwwEchoRequest": {
+    "wwwRsvpCreationRequest": {
       "type": "object",
       "properties": {
-        "uuid": {
+        "names": {
           "type": "string"
         },
-        "content": {
+        "email": {
           "type": "string"
+        },
+        "presence": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "children_name_age": {
+          "type": "string"
+        },
+        "housing": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "music": {
+          "type": "string"
+        },
+        "brunch": {
+          "type": "boolean",
+          "format": "boolean"
         }
       },
-      "description": "EchoRequest represents a simple message sent to the Echo service."
+      "description": "RsvpCreationRequest encodes the request of a rsvp creation operation."
     },
-    "wwwEchoResponse": {
+    "wwwRsvpCreationResponse": {
       "type": "object",
       "properties": {
-        "uuid": {
-          "type": "string"
-        },
-        "content": {
-          "type": "string"
+        "ok": {
+          "type": "boolean",
+          "format": "boolean"
         }
       },
-      "description": "EchoResponse represents a simple message that the Echo service return."
+      "description": "RsvpCreationResponse encodes the result of a rsvp creation operation."
     },
     "wwwServiceStatus": {
       "type": "object",

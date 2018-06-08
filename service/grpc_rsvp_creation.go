@@ -8,13 +8,13 @@ import (
 	pb "github.com/hugdubois/ah-svc-www/pb"
 )
 
-func (s *wwwServer) Echo(ctx context.Context, req *pb.EchoRequest) (*pb.EchoResponse, error) {
+func (s *wwwServer) RsvpCreation(ctx context.Context, req *pb.RsvpCreationRequest) (*pb.RsvpCreationResponse, error) {
 	log.Debug(ctx, "service call", log.Fields{"req": req})
 
-	// res := &pb.EchoResponse{}
+	// res := &pb.RsvpCreationResponse{}
 	// Do something useful with req and res
 	// for now a fake response is returned see https://github.com/gomeet/go-proto-gomeetfaker
-	res := pb.NewEchoResponseGomeetFaker()
+	res := pb.NewRsvpCreationResponseGomeetFaker()
 
 	return res, nil
 }
