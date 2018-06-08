@@ -68,7 +68,7 @@ message ServicesStatusList {
 
 // RsvpCreationRequest encodes the request of a rsvp creation operation.
 message RsvpCreationRequest {
-  string names             = 1 [(gomeetfaker.field).lorem.words.num = 6, (validator.field) = {length_gt: 3, length_lt: 256}]; // names free this is a string field
+  string names             = 1 [(gomeetfaker.field).lorem.words.num = 6, (validator.field) = {length_gt: 2, length_lt: 256}]; // names free this is a string field
   string email             = 2 [(gomeetfaker.field).internet.email = true, (validator.field) = {human_error: "Invalid email", regex: "^[a-zA-Z0-9.!#$%&'*+/=?^_{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"}]; // email contact valid email
   bool   presence          = 3 [(gomeetfaker.field).value.content = "true"]; // presence is a boolean that indicate the people behind this rsvp are present
   string children_name_age = 4 [(gomeetfaker.field).lorem.words.num = 6, (validator.field) = {length_lt: 256}]; // names and ages of children this is a free string field
@@ -80,7 +80,7 @@ message RsvpCreationRequest {
 // RsvpInfo encodes a rsvp.
 message RsvpInfo {
   string uuid              = 1 [(gomeetfaker.field).uuid.version = "V4", (validator.field) = {human_error: "Invalid uuid", regex: "^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"}]; // internal profile ID
-  string names             = 2 [(gomeetfaker.field).lorem.words.num = 6, (validator.field) = {length_gt: 3, length_lt: 256}]; // names free this is a string field
+  string names             = 2 [(gomeetfaker.field).lorem.words.num = 6, (validator.field) = {length_gt: 2, length_lt: 256}]; // names free this is a string field
   string email             = 3 [(gomeetfaker.field).internet.email = true, (validator.field) = {human_error: "Invalid email", regex: "^[a-zA-Z0-9.!#$%&'*+/=?^_{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"}]; // email contact valid email
   bool   presence          = 4 [(gomeetfaker.field).value.content = "true"]; // presence is a boolean that indicate the people behind this rsvp are present
   string children_name_age = 5 [(gomeetfaker.field).lorem.words.num = 6, (validator.field) = {length_lt: 256}]; // names and ages of children this is a free string field

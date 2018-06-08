@@ -155,6 +155,7 @@ clean: tools-clean package-clean proto-clean
 .PHONY: ui
 ui: tools
 	@echo "$(NAME): ui task"
+	cd ui/elm && make build
 	_tools/bin/go-bindata -o ui/assets.go -pkg ui -prefix ui ui/assets/...
 
 .PHONY: proto

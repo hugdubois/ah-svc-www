@@ -64,7 +64,7 @@ func testRsvpCreationResponse(
 				switch {
 				case i < 1:
 					expectedCode = codes.InvalidArgument
-					expectedMessage = fmt.Sprintf("invalid field Names: value '%s' must length be greater than '3'", req.GetNames())
+					expectedMessage = fmt.Sprintf("invalid field Names: value '%s' must length be greater than '2'", req.GetNames())
 				case i < 2:
 					expectedCode = codes.InvalidArgument
 					expectedMessage = fmt.Sprintf("invalid field Names: value '%s' must length be less than '256'", req.GetNames())

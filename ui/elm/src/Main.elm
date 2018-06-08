@@ -3,6 +3,7 @@ module Main exposing (..)
 import Debug
 import Html exposing (Html, text)
 import Html.Attributes exposing (style)
+import Http
 import List exposing (filter, length)
 import Material
 import Material.Button as Button
@@ -13,6 +14,9 @@ import Material.Textfield as Textfield
 import Material.Textfield.HelperText as Textfield
 import Material.Typography as Typography
 import Material.Options as Options exposing (when, styled, cs, css)
+import Pb.Www exposing (RsvpCreationRequest, RsvpCreationResponse)
+import Request.Www
+import RemoteData
 import String exposing (isEmpty)
 import Validate exposing (Validator, ifFalse, ifBlank, ifInvalidEmail, validate)
 
@@ -20,17 +24,6 @@ import Validate exposing (Validator, ifFalse, ifBlank, ifInvalidEmail, validate)
 (=>) : a -> b -> ( a, b )
 (=>) =
     (,)
-
-
-type alias Rsvp =
-    { names : String
-    , email : String
-    , presence : Bool
-    , childrenNameAge : String
-    , housing : Bool
-    , music : String
-    , brunch : Bool
-    }
 
 
 type alias Error =
@@ -42,7 +35,7 @@ type Field
     | Email
 
 
-rsvpValidator : Validator ( Field, String ) Rsvp
+rsvpValidator : Validator ( Field, String ) RsvpCreationRequest
 rsvpValidator =
     Validate.all
         [ Validate.firstError
@@ -72,7 +65,7 @@ hasError field errors =
 
 type alias Model =
     { mdc : Material.Model Msg
-    , rsvp : Rsvp
+    , rsvp : RsvpCreationRequest
     , errors : List Error
     , displayEmailError : Bool
     , displayNameError : Bool
@@ -89,7 +82,7 @@ defaultModel =
     }
 
 
-defaultRsvp : Rsvp
+defaultRsvp : RsvpCreationRequest
 defaultRsvp =
     { email = ""
     , names = ""
@@ -115,6 +108,7 @@ type Msg
     | NameChange String
     | ChildrenNameAgeChange String
     | MusicChange String
+    | RsvpCreation (Result Http.Error RsvpCreationResponse)
 
 
 main : Program Never Model Msg
@@ -213,16 +207,49 @@ update msg model =
                         }
                             => Cmd.none
 
-            Submit ->
+            RsvpCreation (Ok response) ->
                 let
-                    errors =
-                        Debug.log "errors fields" <| validate rsvpValidator rsvp
-
-                    rsvp =
-                        Debug.log "rsvp" <| model.rsvp
+                    _ =
+                        Debug.log "reponse" response
                 in
                     model
                         => Cmd.none
+
+            RsvpCreation (Err error) ->
+                let
+                    _ =
+                        Debug.log "error" error
+                in
+                    model
+                        => Cmd.none
+
+            Submit ->
+                case validate rsvpValidator rsvp of
+                    [] ->
+                        model
+                            => Http.send RsvpCreation (Request.Www.rsvpCreation rsvp)
+
+                    errors ->
+                        { model
+                            | errors = errors
+                            , displayNameError = True
+                            , displayEmailError = True
+                        }
+                            => Cmd.none
+
+
+
+--let
+--errors =
+--Debug.log "errors fields" <| validate rsvpValidator rsvp
+--rsvp =
+--Debug.log "rsvp" <| model.rsvp
+--v =
+--Debug.log "version" <| Request.Www.rsvpCreation rsvp
+----Debug.log "rsvp" <| model.rsvp
+--in
+--model
+--=> Cmd.none
 
 
 view : Model -> Html Msg

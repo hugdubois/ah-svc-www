@@ -15,7 +15,7 @@ func castRsvpParams(
 	error, *string, *string, *bool, *string, *bool, *string, *bool,
 ) {
 	if len(names) < 3 {
-		return fmt.Errorf("invalid field Names: value '%s' must length be greater than '3'", names), nil, nil, nil, nil, nil, nil, nil
+		return fmt.Errorf("invalid field Names: value '%s' must length be greater than '2'", names), nil, nil, nil, nil, nil, nil, nil
 	}
 	if len(names) > 255 {
 		return fmt.Errorf("invalid field Names: value '%s' must length be less than '256'", names), nil, nil, nil, nil, nil, nil, nil

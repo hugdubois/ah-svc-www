@@ -35,7 +35,7 @@ func TestRsvpCreation(t *testing.T) {
 	assert.Nil(t, res, "RsvpCreation: error on call")
 	e = status.Convert(err)
 	assert.Equal(t, codes.InvalidArgument, e.Code(), "RsvpCreation: error on call")
-	assert.Equal(t, "invalid field Names: value '' must length be greater than '3'", e.Message(), "RsvpCreation: error on call")
+	assert.Equal(t, "invalid field Names: value '' must length be greater than '2'", e.Message(), "RsvpCreation: error on call")
 
 	req = &pb.RsvpCreationRequest{Names: verylongString}
 	res, err = cli.RsvpCreation(ctx, req)
