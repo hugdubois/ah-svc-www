@@ -5,21 +5,44 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/net/context"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 
 	pb "github.com/hugdubois/ah-svc-www/pb"
 )
 
 func TestRsvpCreation(t *testing.T) {
+	var (
+		req  *pb.RsvpCreationRequest
+		vReq *pb.RsvpCreationRequest
+		res  *pb.RsvpCreationResponse
+		err  error
+		e    *status.Status
+	)
+
+	flushAllDbTest(t)
 	ctx := context.Background()
 
-	req := &pb.RsvpCreationRequest{}
-	// You can generate a fake request see https://github.com/gomeet/go-proto-gomeetfaker
-	// req := &pb.RsvpCreationRequest{}
-	res, err := cli.RsvpCreation(ctx, req)
+	vReq = pb.NewRsvpCreationRequestGomeetFaker()
+
+	req = &pb.RsvpCreationRequest{}
+	res, err = cli.RsvpCreation(ctx, req)
+	assert.NotNil(t, err, "RsvpCreation: error on call")
+	assert.Nil(t, res, "RsvpCreation: error on call")
+	e = status.Convert(err)
+	assert.Equal(t, codes.InvalidArgument, e.Code(), "RsvpCreation: error on call")
+	assert.Equal(t, "invalid field Names: value '' must length be greater than '1'", e.Message(), "RsvpCreation: error on call")
+
+	req = &pb.RsvpCreationRequest{Names: vReq.GetNames()}
+	res, err = cli.RsvpCreation(ctx, req)
+	assert.NotNil(t, err, "RsvpCreation: error on call")
+	assert.Nil(t, res, "RsvpCreation: error on call")
+	e = status.Convert(err)
+	assert.Equal(t, codes.InvalidArgument, e.Code(), "RsvpCreation: error on call")
+	assert.Equal(t, "invalid field Email: Invalid email", e.Message(), "RsvpCreation: error on call")
+
+	res, err = cli.RsvpCreation(ctx, vReq)
 	assert.Nil(t, err, "RsvpCreation: error on call")
 	assert.NotNil(t, res, "RsvpCreation: error on call")
-
-	// Do something useful tests with req and res
-	// for example :
-	// assert.Equal(t, req.GetUuid(), res.GetUuid(), "RsvpCreation: Uuid field in response must be the same as that of the request")
+	assert.True(t, res.GetOk(), "RsvpCreation: error on call")
 }
