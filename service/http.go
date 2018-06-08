@@ -75,6 +75,7 @@ func (s wwwHTTPController) NotFound(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s wwwHTTPController) Root(w http.ResponseWriter, r *http.Request) {
+	fmt.Printf("PLOPPLOPPLOP %s\n", r.URL.Path)
 	log.Infof("wwwHTTPController.Root: %s", r.URL.Path)
 	if strings.TrimPrefix(r.URL.Path, "/") == "" {
 		contents, err := s.uiFs.Asset(path.Join(s.uiFs.Prefix, "index.html"))

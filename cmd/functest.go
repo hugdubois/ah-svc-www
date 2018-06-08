@@ -184,8 +184,6 @@ func runFunctionalTests() {
 		ClientPrivateKey:  serverPrivateKey,
 		TimeoutSeconds:    timeoutSeconds,
 		JsonWebToken:      jwtToken,
-		IsEmbeddedServer:  useEmbeddedServer,
-		IsRandomPort:      useRandomPort,
 
 		//extra parameters
 

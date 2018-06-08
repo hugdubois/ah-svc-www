@@ -19,8 +19,6 @@ type FunctionalTestConfig struct {
 	ClientPrivateKey     string
 	JsonWebToken         string
 	TimeoutSeconds       int
-	IsEmbeddedServer     bool
-	IsRandomPort         bool
 	SqliteDataSourceName string
 }
 

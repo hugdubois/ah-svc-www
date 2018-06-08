@@ -59,7 +59,8 @@ func Flush(dsn string) error {
 		for _, mdl := range mdls {
 			scope := db.NewScope(mdl)
 			quotedTableName := scope.QuotedTableName()
-			if err := db.Exec(fmt.Sprintf("TRUNCATE TABLE %s;", quotedTableName)).Error; err != nil {
+			if err := db.Exec(fmt.Sprintf("DELETE FROM %s;", quotedTableName)).Error; err != nil {
+
 				errs = append(errs, err)
 			}
 		}
