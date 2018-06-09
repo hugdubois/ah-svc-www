@@ -22895,85 +22895,216 @@ var _user$project$Request_Helpers$apiUrl = function (str) {
 };
 
 var _user$project$Request_Www$rsvpCreation = function (rsvpCreationRequest) {
-	return _lukewestby$elm_http_builder$HttpBuilder$toRequest(
+	return _krisajenkins$remotedata$RemoteData$fromTask(
+		_lukewestby$elm_http_builder$HttpBuilder$toTask(
+			A2(
+				_lukewestby$elm_http_builder$HttpBuilder$withExpect,
+				_elm_lang$http$Http$expectJson(_user$project$Pb_Www$rsvpCreationResponseDecoder),
+				A2(
+					_lukewestby$elm_http_builder$HttpBuilder$withBody,
+					_elm_lang$http$Http$jsonBody(
+						_user$project$Pb_Www$rsvpCreationRequestEncoder(rsvpCreationRequest)),
+					_lukewestby$elm_http_builder$HttpBuilder$post(
+						_user$project$Request_Helpers$apiUrl('rsvp_creation'))))));
+};
+var _user$project$Request_Www$servicesStatus = _krisajenkins$remotedata$RemoteData$fromTask(
+	_lukewestby$elm_http_builder$HttpBuilder$toTask(
 		A2(
 			_lukewestby$elm_http_builder$HttpBuilder$withExpect,
-			_elm_lang$http$Http$expectJson(_user$project$Pb_Www$rsvpCreationResponseDecoder),
-			A2(
-				_lukewestby$elm_http_builder$HttpBuilder$withBody,
-				_elm_lang$http$Http$jsonBody(
-					_user$project$Pb_Www$rsvpCreationRequestEncoder(rsvpCreationRequest)),
-				_lukewestby$elm_http_builder$HttpBuilder$post(
-					_user$project$Request_Helpers$apiUrl('rsvp_creation')))));
-};
-var _user$project$Request_Www$servicesStatus = _lukewestby$elm_http_builder$HttpBuilder$toRequest(
-	A2(
-		_lukewestby$elm_http_builder$HttpBuilder$withExpect,
-		_elm_lang$http$Http$expectJson(_user$project$Pb_Www$versionResponseDecoder),
-		_lukewestby$elm_http_builder$HttpBuilder$get(
-			_user$project$Request_Helpers$apiUrl('services_status'))));
-var _user$project$Request_Www$version = _lukewestby$elm_http_builder$HttpBuilder$toRequest(
-	A2(
-		_lukewestby$elm_http_builder$HttpBuilder$withExpect,
-		_elm_lang$http$Http$expectJson(_user$project$Pb_Www$versionResponseDecoder),
-		_lukewestby$elm_http_builder$HttpBuilder$get(
-			_user$project$Request_Helpers$apiUrl('version'))));
+			_elm_lang$http$Http$expectJson(_user$project$Pb_Www$serviceStatusDecoder),
+			_lukewestby$elm_http_builder$HttpBuilder$get(
+				_user$project$Request_Helpers$apiUrl('services_status')))));
+var _user$project$Request_Www$version = _krisajenkins$remotedata$RemoteData$fromTask(
+	_lukewestby$elm_http_builder$HttpBuilder$toTask(
+		A2(
+			_lukewestby$elm_http_builder$HttpBuilder$withExpect,
+			_elm_lang$http$Http$expectJson(_user$project$Pb_Www$versionResponseDecoder),
+			_lukewestby$elm_http_builder$HttpBuilder$get(
+				_user$project$Request_Helpers$apiUrl('version')))));
 
-var _user$project$Main$viewNotHereMsg = function (model) {
-	return A3(
-		_user$project$Material_Options$styled,
-		_elm_lang$html$Html$div,
-		{
+var _user$project$Main$viewGlobalError = A3(
+	_user$project$Material_Options$styled,
+	_elm_lang$html$Html$div,
+	{
+		ctor: '::',
+		_0: A2(_user$project$Material_Options$css, 'position', 'relative'),
+		_1: {
 			ctor: '::',
-			_0: A2(_user$project$Material_Options$css, 'position', 'relative'),
+			_0: A2(_user$project$Material_Options$css, 'display', 'block'),
 			_1: {
 				ctor: '::',
-				_0: A2(_user$project$Material_Options$css, 'display', 'block'),
+				_0: A2(_user$project$Material_Options$css, 'margin', '40px 5px'),
 				_1: {
 					ctor: '::',
-					_0: A2(_user$project$Material_Options$css, 'margin', '40px 5px'),
+					_0: A2(_user$project$Material_Options$css, 'text-align', 'center'),
 					_1: {
 						ctor: '::',
-						_0: A2(_user$project$Material_Options$css, 'text-align', 'center'),
+						_0: A2(_user$project$Material_Options$css, 'height', '40px'),
 						_1: {
 							ctor: '::',
-							_0: A2(_user$project$Material_Options$css, 'height', '40px'),
+							_0: A2(_user$project$Material_Options$css, 'border-color', '#d32f2f'),
 							_1: {
 								ctor: '::',
-								_0: A2(_user$project$Material_Options$css, 'color', 'rgba(0, 0, 0, 0.6)'),
+								_0: A2(_user$project$Material_Options$css, 'border-top', '15px solid #d32f2f'),
 								_1: {
 									ctor: '::',
-									_0: A2(_user$project$Material_Options$css, 'font-size', '20px'),
-									_1: {ctor: '[]'}
+									_0: A2(_user$project$Material_Options$css, 'color', '#d32f2f'),
+									_1: {
+										ctor: '::',
+										_0: A2(_user$project$Material_Options$css, 'font-size', '20px'),
+										_1: {
+											ctor: '::',
+											_0: _user$project$Material_Typography$title,
+											_1: {
+												ctor: '::',
+												_0: _user$project$Material_Typography$adjustMargin,
+												_1: {ctor: '[]'}
+											}
+										}
+									}
 								}
 							}
 						}
 					}
 				}
 			}
-		},
-		{
+		}
+	},
+	{
+		ctor: '::',
+		_0: _elm_lang$html$Html$text('Une erreur s\'est produite veuillez recharger la page'),
+		_1: {ctor: '[]'}
+	});
+var _user$project$Main$viewAgenda = A3(
+	_user$project$Material_Options$styled,
+	_elm_lang$html$Html$div,
+	{
+		ctor: '::',
+		_0: A2(_user$project$Material_Options$css, 'position', 'relative'),
+		_1: {
 			ctor: '::',
-			_0: _elm_lang$html$Html$text('Quel dommage on se faisait une joie de votre presence.'),
-			_1: {ctor: '[]'}
-		});
+			_0: A2(_user$project$Material_Options$css, 'display', 'block'),
+			_1: {
+				ctor: '::',
+				_0: A2(_user$project$Material_Options$css, 'margin', '40px 5px'),
+				_1: {
+					ctor: '::',
+					_0: A2(_user$project$Material_Options$css, 'text-align', 'center'),
+					_1: {
+						ctor: '::',
+						_0: A2(_user$project$Material_Options$css, 'height', '40px'),
+						_1: {
+							ctor: '::',
+							_0: A2(_user$project$Material_Options$css, 'color', 'rgba(0, 0, 0, 0.6)'),
+							_1: {
+								ctor: '::',
+								_0: A2(_user$project$Material_Options$css, 'font-size', '20px'),
+								_1: {
+									ctor: '::',
+									_0: _user$project$Material_Typography$title,
+									_1: {
+										ctor: '::',
+										_0: _user$project$Material_Typography$adjustMargin,
+										_1: {ctor: '[]'}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	{
+		ctor: '::',
+		_0: _elm_lang$html$Html$text('Nous sommes impatients de vous voir le 08.09.18.'),
+		_1: {ctor: '[]'}
+	});
+var _user$project$Main$viewNotHereMsg = A3(
+	_user$project$Material_Options$styled,
+	_elm_lang$html$Html$div,
+	{
+		ctor: '::',
+		_0: A2(_user$project$Material_Options$css, 'position', 'relative'),
+		_1: {
+			ctor: '::',
+			_0: A2(_user$project$Material_Options$css, 'display', 'block'),
+			_1: {
+				ctor: '::',
+				_0: A2(_user$project$Material_Options$css, 'margin', '40px 5px'),
+				_1: {
+					ctor: '::',
+					_0: A2(_user$project$Material_Options$css, 'text-align', 'center'),
+					_1: {
+						ctor: '::',
+						_0: A2(_user$project$Material_Options$css, 'height', '40px'),
+						_1: {
+							ctor: '::',
+							_0: A2(_user$project$Material_Options$css, 'color', 'rgba(0, 0, 0, 0.6)'),
+							_1: {
+								ctor: '::',
+								_0: A2(_user$project$Material_Options$css, 'font-size', '20px'),
+								_1: {
+									ctor: '::',
+									_0: _user$project$Material_Typography$title,
+									_1: {
+										ctor: '::',
+										_0: _user$project$Material_Typography$adjustMargin,
+										_1: {ctor: '[]'}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	{
+		ctor: '::',
+		_0: _elm_lang$html$Html$text('Quel dommage on se faisait une joie de votre présence.'),
+		_1: {ctor: '[]'}
+	});
+var _user$project$Main$viewConfirm = function (rsvpResponse) {
+	var _p0 = rsvpResponse.info;
+	if (_p0.ctor === 'Just') {
+		return _p0._0.presence ? _user$project$Main$viewAgenda : _user$project$Main$viewNotHereMsg;
+	} else {
+		return _user$project$Main$viewGlobalError;
+	}
 };
+var _user$project$Main$errorServerToError = F3(
+	function (error, field, msg) {
+		var pattern = _elm_lang$core$Regex$regex(
+			A2(
+				_elm_lang$core$Basics_ops['++'],
+				'invalid field ',
+				_elm_lang$core$Basics$toString(field)));
+		return A2(_elm_lang$core$Regex$contains, pattern, error) ? {
+			ctor: '::',
+			_0: {ctor: '_Tuple2', _0: field, _1: msg},
+			_1: {ctor: '[]'}
+		} : {ctor: '[]'};
+	});
 var _user$project$Main$defaultRsvp = {email: '', names: '', presence: true, childrenNameAge: '', housing: true, music: '', brunch: true};
 var _user$project$Main$defaultModel = {
 	mdc: _user$project$Material$defaultModel,
 	rsvp: _user$project$Main$defaultRsvp,
+	rsvpResponse: _krisajenkins$remotedata$RemoteData$NotAsked,
 	errors: {ctor: '[]'},
+	displayNamesError: false,
 	displayEmailError: false,
-	displayNameError: false
+	displayChildrenNameAgeError: false,
+	displayMusicError: false
 };
 var _user$project$Main$hasError = F2(
 	function (field, errors) {
 		return !_elm_lang$core$List$isEmpty(
 			A2(
 				_elm_lang$core$List$filter,
-				function (_p0) {
-					var _p1 = _p0;
-					return _elm_lang$core$Native_Utils.eq(_p1._0, field);
+				function (_p1) {
+					var _p2 = _p1;
+					return _elm_lang$core$Native_Utils.eq(_p2._0, field);
 				},
 				errors));
 	});
@@ -22982,29 +23113,27 @@ var _user$project$Main$errorMsg = F2(
 		return _elm_lang$core$String$concat(
 			A2(
 				_elm_lang$core$List$map,
-				function (_p2) {
-					var _p3 = _p2;
-					return A2(_elm_lang$core$Basics_ops['++'], _p3._1, ' ');
+				function (_p3) {
+					var _p4 = _p3;
+					return A2(_elm_lang$core$Basics_ops['++'], _p4._1, ' ');
 				},
 				A2(
 					_elm_lang$core$List$filter,
-					function (_p4) {
-						var _p5 = _p4;
-						return _elm_lang$core$Native_Utils.eq(_p5._0, field);
+					function (_p5) {
+						var _p6 = _p5;
+						return _elm_lang$core$Native_Utils.eq(_p6._0, field);
 					},
 					errors)));
 	});
-var _user$project$Main_ops = _user$project$Main_ops || {};
-_user$project$Main_ops['=>'] = F2(
-	function (v0, v1) {
-		return {ctor: '_Tuple2', _0: v0, _1: v1};
+var _user$project$Main$Model = F8(
+	function (a, b, c, d, e, f, g, h) {
+		return {mdc: a, rsvp: b, rsvpResponse: c, errors: d, displayEmailError: e, displayNamesError: f, displayChildrenNameAgeError: g, displayMusicError: h};
 	});
-var _user$project$Main$Model = F5(
-	function (a, b, c, d, e) {
-		return {mdc: a, rsvp: b, errors: c, displayEmailError: d, displayNameError: e};
-	});
+var _user$project$Main$GlobalError = {ctor: 'GlobalError'};
+var _user$project$Main$Music = {ctor: 'Music'};
+var _user$project$Main$ChildrenNameAge = {ctor: 'ChildrenNameAge'};
 var _user$project$Main$Email = {ctor: 'Email'};
-var _user$project$Main$Name = {ctor: 'Name'};
+var _user$project$Main$Names = {ctor: 'Names'};
 var _user$project$Main$rsvpValidator = _rtfeldman$elm_validate$Validate$all(
 	{
 		ctor: '::',
@@ -23016,7 +23145,7 @@ var _user$project$Main$rsvpValidator = _rtfeldman$elm_validate$Validate$all(
 					function (_) {
 						return _.names;
 					},
-					{ctor: '_Tuple2', _0: _user$project$Main$Name, _1: 'Vos noms et prenoms sont obligatoire'}),
+					{ctor: '_Tuple2', _0: _user$project$Main$Names, _1: 'Vos noms et prenoms sont obligatoire'}),
 				_1: {
 					ctor: '::',
 					_0: A2(
@@ -23026,7 +23155,7 @@ var _user$project$Main$rsvpValidator = _rtfeldman$elm_validate$Validate$all(
 								2,
 								_elm_lang$core$String$length(subject.names)) < 0;
 						},
-						{ctor: '_Tuple2', _0: _user$project$Main$Name, _1: 'Au moins trois caractéres'}),
+						{ctor: '_Tuple2', _0: _user$project$Main$Names, _1: 'Au moins trois caractéres'}),
 					_1: {ctor: '[]'}
 				}
 			}),
@@ -23048,7 +23177,7 @@ var _user$project$Main$rsvpValidator = _rtfeldman$elm_validate$Validate$all(
 							function (_) {
 								return _.email;
 							},
-							function (_p6) {
+							function (_p7) {
 								return {ctor: '_Tuple2', _0: _user$project$Main$Email, _1: 'Invalide email'};
 							}),
 						_1: {ctor: '[]'}
@@ -23057,6 +23186,43 @@ var _user$project$Main$rsvpValidator = _rtfeldman$elm_validate$Validate$all(
 			_1: {ctor: '[]'}
 		}
 	});
+var _user$project$Main$errorServerToErrors = function (error) {
+	var _p8 = error;
+	switch (_p8.ctor) {
+		case 'BadStatus':
+			var _p9 = _p8._0;
+			return _elm_lang$core$List$concat(
+				{
+					ctor: '::',
+					_0: A3(_user$project$Main$errorServerToError, _p9.body, _user$project$Main$Names, 'de 3 à 255 caractéres'),
+					_1: {
+						ctor: '::',
+						_0: A3(_user$project$Main$errorServerToError, _p9.body, _user$project$Main$Email, 'un email valide'),
+						_1: {
+							ctor: '::',
+							_0: A3(_user$project$Main$errorServerToError, _p9.body, _user$project$Main$ChildrenNameAge, 'pas plus 255 caractéres'),
+							_1: {
+								ctor: '::',
+								_0: A3(_user$project$Main$errorServerToError, _p9.body, _user$project$Main$Music, 'pas plus 255 caractéres'),
+								_1: {ctor: '[]'}
+							}
+						}
+					}
+				});
+		case 'NetworkError':
+			return {
+				ctor: '::',
+				_0: {ctor: '_Tuple2', _0: _user$project$Main$GlobalError, _1: 'Une erreur réseaux est survenue essayer plus tard'},
+				_1: {ctor: '[]'}
+			};
+		default:
+			return {
+				ctor: '::',
+				_0: {ctor: '_Tuple2', _0: _user$project$Main$GlobalError, _1: 'Une erreur inconnue est survenue contactez-nous par un autre moyen'},
+				_1: {ctor: '[]'}
+			};
+	}
+};
 var _user$project$Main$Brunch = {ctor: 'Brunch'};
 var _user$project$Main$Housing = {ctor: 'Housing'};
 var _user$project$Main$Presence = {ctor: 'Presence'};
@@ -23069,11 +23235,11 @@ var _user$project$Main$MusicChange = function (a) {
 var _user$project$Main$ChildrenNameAgeChange = function (a) {
 	return {ctor: 'ChildrenNameAgeChange', _0: a};
 };
-var _user$project$Main$NameChange = function (a) {
-	return {ctor: 'NameChange', _0: a};
-};
 var _user$project$Main$EmailChange = function (a) {
 	return {ctor: 'EmailChange', _0: a};
+};
+var _user$project$Main$NamesChange = function (a) {
+	return {ctor: 'NamesChange', _0: a};
 };
 var _user$project$Main$Toogle = function (a) {
 	return {ctor: 'Toogle', _0: a};
@@ -23093,16 +23259,16 @@ var _user$project$Main$subscriptions = function (model) {
 var _user$project$Main$update = F2(
 	function (msg, model) {
 		var rsvp = model.rsvp;
-		var _p7 = msg;
-		switch (_p7.ctor) {
+		var _p10 = msg;
+		switch (_p10.ctor) {
 			case 'Mdc':
-				return A3(_user$project$Material$update, _user$project$Main$Mdc, _p7._0, model);
+				return A3(_user$project$Material$update, _user$project$Main$Mdc, _p10._0, model);
 			case 'EmailChange':
 				var newRsvp = _elm_lang$core$Native_Utils.update(
 					rsvp,
-					{email: _p7._0});
+					{email: _p10._0});
 				return A2(
-					_user$project$Main_ops['=>'],
+					_elm_lang$core$Platform_Cmd_ops['!'],
 					_elm_lang$core$Native_Utils.update(
 						model,
 						{
@@ -23110,53 +23276,55 @@ var _user$project$Main$update = F2(
 							errors: A2(_rtfeldman$elm_validate$Validate$validate, _user$project$Main$rsvpValidator, newRsvp),
 							displayEmailError: true
 						}),
-					_elm_lang$core$Platform_Cmd$none);
-			case 'NameChange':
+					{ctor: '[]'});
+			case 'NamesChange':
 				var newRsvp = _elm_lang$core$Native_Utils.update(
 					rsvp,
-					{names: _p7._0});
+					{names: _p10._0});
 				return A2(
-					_user$project$Main_ops['=>'],
+					_elm_lang$core$Platform_Cmd_ops['!'],
 					_elm_lang$core$Native_Utils.update(
 						model,
 						{
 							rsvp: newRsvp,
 							errors: A2(_rtfeldman$elm_validate$Validate$validate, _user$project$Main$rsvpValidator, newRsvp),
-							displayNameError: true
+							displayNamesError: true
 						}),
-					_elm_lang$core$Platform_Cmd$none);
+					{ctor: '[]'});
 			case 'ChildrenNameAgeChange':
 				var newRsvp = _elm_lang$core$Native_Utils.update(
 					rsvp,
-					{childrenNameAge: _p7._0});
+					{childrenNameAge: _p10._0});
 				return A2(
-					_user$project$Main_ops['=>'],
+					_elm_lang$core$Platform_Cmd_ops['!'],
 					_elm_lang$core$Native_Utils.update(
 						model,
 						{
 							rsvp: newRsvp,
-							errors: A2(_rtfeldman$elm_validate$Validate$validate, _user$project$Main$rsvpValidator, newRsvp)
+							errors: A2(_rtfeldman$elm_validate$Validate$validate, _user$project$Main$rsvpValidator, newRsvp),
+							displayChildrenNameAgeError: true
 						}),
-					_elm_lang$core$Platform_Cmd$none);
+					{ctor: '[]'});
 			case 'MusicChange':
 				var newRsvp = _elm_lang$core$Native_Utils.update(
 					rsvp,
-					{music: _p7._0});
+					{music: _p10._0});
 				return A2(
-					_user$project$Main_ops['=>'],
+					_elm_lang$core$Platform_Cmd_ops['!'],
 					_elm_lang$core$Native_Utils.update(
 						model,
 						{
 							rsvp: newRsvp,
-							errors: A2(_rtfeldman$elm_validate$Validate$validate, _user$project$Main$rsvpValidator, newRsvp)
+							errors: A2(_rtfeldman$elm_validate$Validate$validate, _user$project$Main$rsvpValidator, newRsvp),
+							displayMusicError: true
 						}),
-					_elm_lang$core$Platform_Cmd$none);
+					{ctor: '[]'});
 			case 'Toogle':
-				var _p8 = _p7._0;
-				switch (_p8.ctor) {
+				var _p11 = _p10._0;
+				switch (_p11.ctor) {
 					case 'Presence':
 						return A2(
-							_user$project$Main_ops['=>'],
+							_elm_lang$core$Platform_Cmd_ops['!'],
 							_elm_lang$core$Native_Utils.update(
 								model,
 								{
@@ -23164,10 +23332,10 @@ var _user$project$Main$update = F2(
 										rsvp,
 										{presence: !rsvp.presence})
 								}),
-							_elm_lang$core$Platform_Cmd$none);
+							{ctor: '[]'});
 					case 'Housing':
 						return A2(
-							_user$project$Main_ops['=>'],
+							_elm_lang$core$Platform_Cmd_ops['!'],
 							_elm_lang$core$Native_Utils.update(
 								model,
 								{
@@ -23175,10 +23343,10 @@ var _user$project$Main$update = F2(
 										rsvp,
 										{housing: !rsvp.housing})
 								}),
-							_elm_lang$core$Platform_Cmd$none);
+							{ctor: '[]'});
 					default:
 						return A2(
-							_user$project$Main_ops['=>'],
+							_elm_lang$core$Platform_Cmd_ops['!'],
 							_elm_lang$core$Native_Utils.update(
 								model,
 								{
@@ -23186,89 +23354,111 @@ var _user$project$Main$update = F2(
 										rsvp,
 										{brunch: !rsvp.brunch})
 								}),
-							_elm_lang$core$Platform_Cmd$none);
+							{ctor: '[]'});
 				}
 			case 'RsvpCreation':
-				if (_p7._0.ctor === 'Ok') {
-					var _p9 = A2(_elm_lang$core$Debug$log, 'reponse', _p7._0._0);
-					return A2(_user$project$Main_ops['=>'], model, _elm_lang$core$Platform_Cmd$none);
-				} else {
-					var _p10 = A2(_elm_lang$core$Debug$log, 'error', _p7._0._0);
-					return A2(_user$project$Main_ops['=>'], model, _elm_lang$core$Platform_Cmd$none);
-				}
-			default:
-				var _p11 = A2(_rtfeldman$elm_validate$Validate$validate, _user$project$Main$rsvpValidator, rsvp);
-				if (_p11.ctor === '[]') {
-					return A2(
-						_user$project$Main_ops['=>'],
+				var _p13 = _p10._0;
+				var errors = function () {
+					var _p12 = _p13;
+					if (_p12.ctor === 'Failure') {
+						return _user$project$Main$errorServerToErrors(
+							A2(_elm_lang$core$Debug$log, 'errors', _p12._0));
+					} else {
+						return {ctor: '[]'};
+					}
+				}();
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					_elm_lang$core$Native_Utils.update(
 						model,
-						A2(
-							_elm_lang$http$Http$send,
-							_user$project$Main$RsvpCreation,
-							_user$project$Request_Www$rsvpCreation(rsvp)));
+						{rsvpResponse: _p13, errors: errors}),
+					{ctor: '[]'});
+			default:
+				var _p14 = A2(_rtfeldman$elm_validate$Validate$validate, _user$project$Main$rsvpValidator, rsvp);
+				if (_p14.ctor === '[]') {
+					return A2(
+						_elm_lang$core$Platform_Cmd_ops['!'],
+						model,
+						{
+							ctor: '::',
+							_0: A2(
+								_elm_lang$core$Task$perform,
+								_user$project$Main$RsvpCreation,
+								_user$project$Request_Www$rsvpCreation(rsvp)),
+							_1: {ctor: '[]'}
+						});
 				} else {
 					return A2(
-						_user$project$Main_ops['=>'],
+						_elm_lang$core$Platform_Cmd_ops['!'],
 						_elm_lang$core$Native_Utils.update(
 							model,
-							{errors: _p11, displayNameError: true, displayEmailError: true}),
-						_elm_lang$core$Platform_Cmd$none);
+							{errors: _p14, displayNamesError: true, displayEmailError: true}),
+						{ctor: '[]'});
 				}
 		}
 	});
-var _user$project$Main$viewBtnSubmit = function (model) {
-	return A2(
-		_user$project$Material_FormField$view,
-		{
-			ctor: '::',
-			_0: A2(_user$project$Material_Options$css, 'position', 'relative'),
-			_1: {
+var _user$project$Main$viewSubmit = F2(
+	function (model, isLoading) {
+		return A2(_user$project$Main$hasError, _user$project$Main$GlobalError, model.errors) ? _user$project$Main$viewGlobalError : A2(
+			_user$project$Material_FormField$view,
+			{
 				ctor: '::',
-				_0: A2(_user$project$Material_Options$css, 'display', 'block'),
-				_1: {ctor: '[]'}
-			}
-		},
-		{
-			ctor: '::',
-			_0: A5(
-				_user$project$Material_Button$view,
-				_user$project$Main$Mdc,
-				{
+				_0: A2(_user$project$Material_Options$css, 'position', 'relative'),
+				_1: {
 					ctor: '::',
-					_0: 0,
+					_0: A2(_user$project$Material_Options$css, 'display', 'block'),
 					_1: {ctor: '[]'}
-				},
-				model.mdc,
-				{
-					ctor: '::',
-					_0: _user$project$Material_Button$ripple,
-					_1: {
+				}
+			},
+			{
+				ctor: '::',
+				_0: A5(
+					_user$project$Material_Button$view,
+					_user$project$Main$Mdc,
+					{
 						ctor: '::',
-						_0: _user$project$Material_Options$onClick(_user$project$Main$Submit),
+						_0: 0,
+						_1: {ctor: '[]'}
+					},
+					model.mdc,
+					{
+						ctor: '::',
+						_0: _user$project$Material_Button$ripple,
 						_1: {
 							ctor: '::',
-							_0: A2(_user$project$Material_Options$css, 'position', 'relative'),
+							_0: _user$project$Material_Button$raised,
 							_1: {
 								ctor: '::',
-								_0: A2(_user$project$Material_Options$css, 'display', 'block'),
+								_0: A2(
+									_user$project$Material_Options$when,
+									!isLoading,
+									_user$project$Material_Options$onClick(_user$project$Main$Submit)),
 								_1: {
 									ctor: '::',
-									_0: A2(_user$project$Material_Options$css, 'margin', '30px auto'),
-									_1: {ctor: '[]'}
+									_0: A2(_user$project$Material_Options$css, 'position', 'relative'),
+									_1: {
+										ctor: '::',
+										_0: A2(_user$project$Material_Options$css, 'display', 'block'),
+										_1: {
+											ctor: '::',
+											_0: A2(_user$project$Material_Options$css, 'margin', '30px auto'),
+											_1: {ctor: '[]'}
+										}
+									}
 								}
 							}
 						}
-					}
-				},
-				{
-					ctor: '::',
-					_0: _elm_lang$html$Html$text('Envoyer'),
-					_1: {ctor: '[]'}
-				}),
-			_1: {ctor: '[]'}
-		});
-};
-var _user$project$Main$viewTxtEmail = function (model) {
+					},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text('Envoyer'),
+						_1: {ctor: '[]'}
+					}),
+				_1: {ctor: '[]'}
+			});
+	});
+var _user$project$Main$viewEmail = function (model) {
+	var invalid = model.displayEmailError && A2(_user$project$Main$hasError, _user$project$Main$Email, model.errors);
 	return A2(
 		_user$project$Material_FormField$view,
 		{
@@ -23309,7 +23499,11 @@ var _user$project$Main$viewTxtEmail = function (model) {
 									_1: {
 										ctor: '::',
 										_0: A2(_user$project$Material_Options$css, 'width', '100%'),
-										_1: {ctor: '[]'}
+										_1: {
+											ctor: '::',
+											_0: A2(_user$project$Material_Options$when, invalid, _user$project$Material_Textfield$invalid),
+											_1: {ctor: '[]'}
+										}
 									}
 								}
 							}
@@ -23331,7 +23525,7 @@ var _user$project$Main$viewTxtEmail = function (model) {
 								ctor: '::',
 								_0: A2(
 									_user$project$Material_Options$when,
-									(!model.displayEmailError) || (!A2(_user$project$Main$hasError, _user$project$Main$Email, model.errors)),
+									!invalid,
 									A2(_user$project$Material_Options$css, 'display', 'none')),
 								_1: {ctor: '[]'}
 							}
@@ -23347,7 +23541,8 @@ var _user$project$Main$viewTxtEmail = function (model) {
 			}
 		});
 };
-var _user$project$Main$viewTxtNames = function (model) {
+var _user$project$Main$viewNames = function (model) {
+	var invalid = model.displayNamesError && A2(_user$project$Main$hasError, _user$project$Main$Names, model.errors);
 	return A2(
 		_user$project$Material_FormField$view,
 		{
@@ -23381,14 +23576,18 @@ var _user$project$Main$viewTxtNames = function (model) {
 							_0: _user$project$Material_Textfield$pattern('.{3,}'),
 							_1: {
 								ctor: '::',
-								_0: _user$project$Material_Options$onInput(_user$project$Main$NameChange),
+								_0: _user$project$Material_Options$onInput(_user$project$Main$NamesChange),
 								_1: {
 									ctor: '::',
 									_0: _user$project$Material_Textfield$value(model.rsvp.names),
 									_1: {
 										ctor: '::',
 										_0: A2(_user$project$Material_Options$css, 'width', '100%'),
-										_1: {ctor: '[]'}
+										_1: {
+											ctor: '::',
+											_0: A2(_user$project$Material_Options$when, invalid, _user$project$Material_Textfield$invalid),
+											_1: {ctor: '[]'}
+										}
 									}
 								}
 							}
@@ -23410,7 +23609,7 @@ var _user$project$Main$viewTxtNames = function (model) {
 								ctor: '::',
 								_0: A2(
 									_user$project$Material_Options$when,
-									(!model.displayNameError) || (!A2(_user$project$Main$hasError, _user$project$Main$Name, model.errors)),
+									!invalid,
 									A2(_user$project$Material_Options$css, 'display', 'none')),
 								_1: {ctor: '[]'}
 							}
@@ -23419,14 +23618,15 @@ var _user$project$Main$viewTxtNames = function (model) {
 					{
 						ctor: '::',
 						_0: _elm_lang$html$Html$text(
-							A2(_user$project$Main$errorMsg, _user$project$Main$Name, model.errors)),
+							A2(_user$project$Main$errorMsg, _user$project$Main$Names, model.errors)),
 						_1: {ctor: '[]'}
 					}),
 				_1: {ctor: '[]'}
 			}
 		});
 };
-var _user$project$Main$viewTxtChildrenNameAge = function (model) {
+var _user$project$Main$viewChildrenNameAge = function (model) {
+	var invalid = model.displayChildrenNameAgeError && A2(_user$project$Main$hasError, _user$project$Main$ChildrenNameAge, model.errors);
 	return A2(
 		_user$project$Material_FormField$view,
 		{
@@ -23461,16 +23661,48 @@ var _user$project$Main$viewTxtChildrenNameAge = function (model) {
 							_1: {
 								ctor: '::',
 								_0: A2(_user$project$Material_Options$css, 'width', '100%'),
-								_1: {ctor: '[]'}
+								_1: {
+									ctor: '::',
+									_0: A2(_user$project$Material_Options$when, invalid, _user$project$Material_Textfield$invalid),
+									_1: {ctor: '[]'}
+								}
 							}
 						}
 					}
 				},
 				{ctor: '[]'}),
-			_1: {ctor: '[]'}
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_user$project$Material_Textfield_HelperText$helperText,
+					{
+						ctor: '::',
+						_0: _user$project$Material_Textfield_HelperText$persistent,
+						_1: {
+							ctor: '::',
+							_0: _user$project$Material_Textfield_HelperText$validationMsg,
+							_1: {
+								ctor: '::',
+								_0: A2(
+									_user$project$Material_Options$when,
+									!invalid,
+									A2(_user$project$Material_Options$css, 'display', 'none')),
+								_1: {ctor: '[]'}
+							}
+						}
+					},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text(
+							A2(_user$project$Main$errorMsg, _user$project$Main$ChildrenNameAge, model.errors)),
+						_1: {ctor: '[]'}
+					}),
+				_1: {ctor: '[]'}
+			}
 		});
 };
-var _user$project$Main$viewTxtMusic = function (model) {
+var _user$project$Main$viewMusic = function (model) {
+	var invalid = model.displayMusicError && A2(_user$project$Main$hasError, _user$project$Main$Music, model.errors);
 	return A2(
 		_user$project$Material_FormField$view,
 		{
@@ -23509,13 +23741,44 @@ var _user$project$Main$viewTxtMusic = function (model) {
 							_1: {
 								ctor: '::',
 								_0: A2(_user$project$Material_Options$css, 'width', '100%'),
-								_1: {ctor: '[]'}
+								_1: {
+									ctor: '::',
+									_0: A2(_user$project$Material_Options$when, invalid, _user$project$Material_Textfield$invalid),
+									_1: {ctor: '[]'}
+								}
 							}
 						}
 					}
 				},
 				{ctor: '[]'}),
-			_1: {ctor: '[]'}
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_user$project$Material_Textfield_HelperText$helperText,
+					{
+						ctor: '::',
+						_0: _user$project$Material_Textfield_HelperText$persistent,
+						_1: {
+							ctor: '::',
+							_0: _user$project$Material_Textfield_HelperText$validationMsg,
+							_1: {
+								ctor: '::',
+								_0: A2(
+									_user$project$Material_Options$when,
+									!invalid,
+									A2(_user$project$Material_Options$css, 'display', 'none')),
+								_1: {ctor: '[]'}
+							}
+						}
+					},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text(
+							A2(_user$project$Main$errorMsg, _user$project$Main$Music, model.errors)),
+						_1: {ctor: '[]'}
+					}),
+				_1: {ctor: '[]'}
+			}
 		});
 };
 var _user$project$Main$viewPresence = function (model) {
@@ -23806,13 +24069,13 @@ var _user$project$Main$viewHere = function (model) {
 		{ctor: '[]'},
 		{
 			ctor: '::',
-			_0: _user$project$Main$viewTxtChildrenNameAge(model),
+			_0: _user$project$Main$viewChildrenNameAge(model),
 			_1: {
 				ctor: '::',
 				_0: _user$project$Main$viewHousing(model),
 				_1: {
 					ctor: '::',
-					_0: _user$project$Main$viewTxtMusic(model),
+					_0: _user$project$Main$viewMusic(model),
 					_1: {
 						ctor: '::',
 						_0: _user$project$Main$viewBrunch(model),
@@ -23822,44 +24085,56 @@ var _user$project$Main$viewHere = function (model) {
 			}
 		});
 };
-var _user$project$Main$view = function (model) {
-	return A3(
-		_user$project$Material_Options$styled,
-		_elm_lang$html$Html$div,
-		{
-			ctor: '::',
-			_0: A2(_user$project$Material_Options$css, 'position', 'relative'),
-			_1: {
+var _user$project$Main$viewWrapper = F2(
+	function (model, isLoading) {
+		return A3(
+			_user$project$Material_Options$styled,
+			_elm_lang$html$Html$div,
+			{
 				ctor: '::',
-				_0: A2(_user$project$Material_Options$css, 'display', 'block'),
+				_0: A2(_user$project$Material_Options$css, 'position', 'relative'),
 				_1: {
 					ctor: '::',
-					_0: A2(_user$project$Material_Options$css, 'padding', '0px 5px'),
-					_1: {ctor: '[]'}
-				}
-			}
-		},
-		{
-			ctor: '::',
-			_0: _user$project$Main$viewTxtNames(model),
-			_1: {
-				ctor: '::',
-				_0: _user$project$Main$viewTxtEmail(model),
-				_1: {
-					ctor: '::',
-					_0: _user$project$Main$viewPresence(model),
+					_0: A2(_user$project$Material_Options$css, 'display', 'block'),
 					_1: {
 						ctor: '::',
-						_0: model.rsvp.presence ? _user$project$Main$viewHere(model) : _user$project$Main$viewNotHereMsg(model),
+						_0: A2(_user$project$Material_Options$css, 'padding', '0px 5px'),
+						_1: {ctor: '[]'}
+					}
+				}
+			},
+			{
+				ctor: '::',
+				_0: _user$project$Main$viewNames(model),
+				_1: {
+					ctor: '::',
+					_0: _user$project$Main$viewEmail(model),
+					_1: {
+						ctor: '::',
+						_0: _user$project$Main$viewPresence(model),
 						_1: {
 							ctor: '::',
-							_0: _user$project$Main$viewBtnSubmit(model),
-							_1: {ctor: '[]'}
+							_0: model.rsvp.presence ? _user$project$Main$viewHere(model) : _user$project$Main$viewNotHereMsg,
+							_1: {
+								ctor: '::',
+								_0: A2(_user$project$Main$viewSubmit, model, isLoading),
+								_1: {ctor: '[]'}
+							}
 						}
 					}
 				}
-			}
-		});
+			});
+	});
+var _user$project$Main$view = function (model) {
+	var _p15 = model.rsvpResponse;
+	switch (_p15.ctor) {
+		case 'Success':
+			return _user$project$Main$viewConfirm(_p15._0);
+		case 'Loading':
+			return A2(_user$project$Main$viewWrapper, model, true);
+		default:
+			return A2(_user$project$Main$viewWrapper, model, false);
+	}
 };
 var _user$project$Main$main = _elm_lang$html$Html$program(
 	{init: _user$project$Main$init, subscriptions: _user$project$Main$subscriptions, update: _user$project$Main$update, view: _user$project$Main$view})();

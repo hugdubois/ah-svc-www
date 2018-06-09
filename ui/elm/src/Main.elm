@@ -14,16 +14,13 @@ import Material.Textfield as Textfield
 import Material.Textfield.HelperText as Textfield
 import Material.Typography as Typography
 import Material.Options as Options exposing (when, styled, cs, css)
-import Pb.Www exposing (RsvpCreationRequest, RsvpCreationResponse)
+import Pb.Www exposing (RsvpCreationRequest, RsvpCreationResponse, RsvpInfo)
+import Regex
 import Request.Www
-import RemoteData
+import RemoteData exposing (WebData)
 import String exposing (isEmpty)
+import Task
 import Validate exposing (Validator, ifFalse, ifBlank, ifInvalidEmail, validate)
-
-
-(=>) : a -> b -> ( a, b )
-(=>) =
-    (,)
 
 
 type alias Error =
@@ -31,16 +28,19 @@ type alias Error =
 
 
 type Field
-    = Name
+    = Names
     | Email
+    | ChildrenNameAge
+    | Music
+    | GlobalError
 
 
 rsvpValidator : Validator ( Field, String ) RsvpCreationRequest
 rsvpValidator =
     Validate.all
         [ Validate.firstError
-            [ ifBlank .names ( Name, "Vos noms et prenoms sont obligatoire" )
-            , ifFalse (\subject -> 2 < (String.length subject.names)) ( Name, "Au moins trois caractéres" )
+            [ ifBlank .names ( Names, "Vos noms et prenoms sont obligatoire" )
+            , ifFalse (\subject -> 2 < (String.length subject.names)) ( Names, "Au moins trois caractéres" )
             ]
         , Validate.firstError
             [ ifBlank .email ( Email, "Un email est obligatoire" )
@@ -66,9 +66,12 @@ hasError field errors =
 type alias Model =
     { mdc : Material.Model Msg
     , rsvp : RsvpCreationRequest
+    , rsvpResponse : WebData RsvpCreationResponse
     , errors : List Error
     , displayEmailError : Bool
-    , displayNameError : Bool
+    , displayNamesError : Bool
+    , displayChildrenNameAgeError : Bool
+    , displayMusicError : Bool
     }
 
 
@@ -76,9 +79,12 @@ defaultModel : Model
 defaultModel =
     { mdc = Material.defaultModel
     , rsvp = defaultRsvp
+    , rsvpResponse = RemoteData.NotAsked
     , errors = []
+    , displayNamesError = False
     , displayEmailError = False
-    , displayNameError = False
+    , displayChildrenNameAgeError = False
+    , displayMusicError = False
     }
 
 
@@ -104,11 +110,11 @@ type Msg
     = Mdc (Material.Msg Msg)
     | Submit
     | Toogle Toogler
+    | NamesChange String
     | EmailChange String
-    | NameChange String
     | ChildrenNameAgeChange String
     | MusicChange String
-    | RsvpCreation (Result Http.Error RsvpCreationResponse)
+    | RsvpCreation (WebData RsvpCreationResponse)
 
 
 main : Program Never Model Msg
@@ -151,9 +157,9 @@ update msg model =
                         , errors = validate rsvpValidator newRsvp
                         , displayEmailError = True
                     }
-                        => Cmd.none
+                        ! []
 
-            NameChange names ->
+            NamesChange names ->
                 let
                     newRsvp =
                         { rsvp | names = names }
@@ -161,9 +167,9 @@ update msg model =
                     { model
                         | rsvp = newRsvp
                         , errors = validate rsvpValidator newRsvp
-                        , displayNameError = True
+                        , displayNamesError = True
                     }
-                        => Cmd.none
+                        ! []
 
             ChildrenNameAgeChange childrenNameAge ->
                 let
@@ -173,8 +179,9 @@ update msg model =
                     { model
                         | rsvp = newRsvp
                         , errors = validate rsvpValidator newRsvp
+                        , displayChildrenNameAgeError = True
                     }
-                        => Cmd.none
+                        ! []
 
             MusicChange music ->
                 let
@@ -184,8 +191,9 @@ update msg model =
                     { model
                         | rsvp = newRsvp
                         , errors = validate rsvpValidator newRsvp
+                        , displayMusicError = True
                     }
-                        => Cmd.none
+                        ! []
 
             Toogle toogler ->
                 case toogler of
@@ -193,80 +201,113 @@ update msg model =
                         { model
                             | rsvp = { rsvp | presence = not rsvp.presence }
                         }
-                            => Cmd.none
+                            ! []
 
                     Housing ->
                         { model
                             | rsvp = { rsvp | housing = not rsvp.housing }
                         }
-                            => Cmd.none
+                            ! []
 
                     Brunch ->
                         { model
                             | rsvp = { rsvp | brunch = not rsvp.brunch }
                         }
-                            => Cmd.none
+                            ! []
 
-            RsvpCreation (Ok response) ->
+            RsvpCreation rsvpResponse ->
                 let
-                    _ =
-                        Debug.log "reponse" response
-                in
-                    model
-                        => Cmd.none
+                    errors =
+                        case rsvpResponse of
+                            RemoteData.Failure error ->
+                                errorServerToErrors (Debug.log "errors" error)
 
-            RsvpCreation (Err error) ->
-                let
-                    _ =
-                        Debug.log "error" error
+                            _ ->
+                                []
                 in
-                    model
-                        => Cmd.none
+                    { model
+                        | rsvpResponse = rsvpResponse
+                        , errors = errors
+                    }
+                        ! []
 
             Submit ->
                 case validate rsvpValidator rsvp of
                     [] ->
                         model
-                            => Http.send RsvpCreation (Request.Www.rsvpCreation rsvp)
+                            ! [ Request.Www.rsvpCreation rsvp
+                                    |> Task.perform RsvpCreation
+                              ]
 
                     errors ->
                         { model
                             | errors = errors
-                            , displayNameError = True
+                            , displayNamesError = True
                             , displayEmailError = True
                         }
-                            => Cmd.none
+                            ! []
 
 
+errorServerToErrors : Http.Error -> List Error
+errorServerToErrors error =
+    case error of
+        Http.BadStatus e ->
+            List.concat
+                [ errorServerToError e.body Names "de 3 à 255 caractéres"
+                , errorServerToError e.body Email "un email valide"
+                , errorServerToError e.body ChildrenNameAge "pas plus 255 caractéres"
+                , errorServerToError e.body Music "pas plus 255 caractéres"
+                ]
 
---let
---errors =
---Debug.log "errors fields" <| validate rsvpValidator rsvp
---rsvp =
---Debug.log "rsvp" <| model.rsvp
---v =
---Debug.log "version" <| Request.Www.rsvpCreation rsvp
-----Debug.log "rsvp" <| model.rsvp
---in
---model
---=> Cmd.none
+        Http.NetworkError ->
+            [ ( GlobalError, "Une erreur réseaux est survenue essayer plus tard" ) ]
+
+        _ ->
+            [ ( GlobalError, "Une erreur inconnue est survenue contactez-nous par un autre moyen" ) ]
+
+
+errorServerToError : String -> Field -> String -> List Error
+errorServerToError error field msg =
+    let
+        pattern =
+            "invalid field "
+                ++ (toString field)
+                |> Regex.regex
+    in
+        if Regex.contains pattern error then
+            [ ( field, msg ) ]
+        else
+            []
 
 
 view : Model -> Html Msg
 view model =
+    case model.rsvpResponse of
+        RemoteData.Success rsvpResponse ->
+            viewConfirm rsvpResponse
+
+        RemoteData.Loading ->
+            viewWrapper model True
+
+        _ ->
+            viewWrapper model False
+
+
+viewWrapper : Model -> Bool -> Html Msg
+viewWrapper model isLoading =
     styled Html.div
         [ css "position" "relative"
         , css "display" "block"
         , css "padding" "0px 5px"
         ]
-        [ viewTxtNames model
-        , viewTxtEmail model
+        [ viewNames model
+        , viewEmail model
         , viewPresence model
         , if model.rsvp.presence then
             viewHere model
           else
-            viewNotHereMsg model
-        , viewBtnSubmit model
+            viewNotHereMsg
+        , viewSubmit model isLoading
         ]
 
 
@@ -274,15 +315,15 @@ viewHere : Model -> Html Msg
 viewHere model =
     Html.div
         []
-        [ viewTxtChildrenNameAge model
+        [ viewChildrenNameAge model
         , viewHousing model
-        , viewTxtMusic model
+        , viewMusic model
         , viewBrunch model
         ]
 
 
-viewNotHereMsg : Model -> Html Msg
-viewNotHereMsg model =
+viewNotHereMsg : Html Msg
+viewNotHereMsg =
     styled Html.div
         [ css "position" "relative"
         , css "display" "block"
@@ -291,121 +332,205 @@ viewNotHereMsg model =
         , css "height" "40px"
         , css "color" "rgba(0, 0, 0, 0.6)"
         , css "font-size" "20px"
-
-        --, Typography.title
-        --, Typography.adjustMargin
+        , Typography.title
+        , Typography.adjustMargin
         ]
-        [ text "Quel dommage on se faisait une joie de votre presence." ]
+        [ text "Quel dommage on se faisait une joie de votre présence." ]
 
 
-viewBtnSubmit : Model -> Html Msg
-viewBtnSubmit model =
-    FormField.view
+viewAgenda : Html Msg
+viewAgenda =
+    styled Html.div
         [ css "position" "relative"
         , css "display" "block"
+        , css "margin" "40px 5px"
+        , css "text-align" "center"
+        , css "height" "40px"
+        , css "color" "rgba(0, 0, 0, 0.6)"
+        , css "font-size" "20px"
+        , Typography.title
+        , Typography.adjustMargin
         ]
-        [ Button.view Mdc
-            [ 0 ]
-            model.mdc
-            [ Button.ripple
-            , Options.onClick Submit
-            , css "position" "relative"
+        [ text "Nous sommes impatients de vous voir le 08.09.18." ]
+
+
+viewGlobalError : Html Msg
+viewGlobalError =
+    styled Html.div
+        [ css "position" "relative"
+        , css "display" "block"
+        , css "margin" "40px 5px"
+        , css "text-align" "center"
+        , css "height" "40px"
+        , css "border-color" "#d32f2f"
+        , css "border-top" "15px solid #d32f2f"
+        , css "color" "#d32f2f"
+        , css "font-size" "20px"
+        , Typography.title
+        , Typography.adjustMargin
+        ]
+        [ text "Une erreur s'est produite veuillez recharger la page" ]
+
+
+viewConfirm : RsvpCreationResponse -> Html Msg
+viewConfirm rsvpResponse =
+    case rsvpResponse.info of
+        Just info ->
+            if info.presence then
+                viewAgenda
+            else
+                viewNotHereMsg
+
+        _ ->
+            viewGlobalError
+
+
+viewSubmit : Model -> Bool -> Html Msg
+viewSubmit model isLoading =
+    if hasError GlobalError model.errors then
+        viewGlobalError
+    else
+        FormField.view
+            [ css "position" "relative"
             , css "display" "block"
-            , css "margin" "30px auto"
             ]
-            [ text "Envoyer" ]
-        ]
+            [ Button.view Mdc
+                [ 0 ]
+                model.mdc
+                [ Button.ripple
+                , Button.raised
+                , Options.onClick Submit |> when (not isLoading)
+                , css "position" "relative"
+                , css "display" "block"
+                , css "margin" "30px auto"
+                ]
+                [ text "Envoyer" ]
+            ]
 
 
-viewTxtEmail : Model -> Html Msg
-viewTxtEmail model =
-    FormField.view
-        [ css "position" "relative"
-        , css "display" "block"
-        ]
-        [ Textfield.view Mdc
-            [ 1 ]
-            model.mdc
-            [ Textfield.label "Une addresse email"
-            , Textfield.required
-            , Textfield.pattern "^[a-zA-Z0-9.!#$%&'*+\\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"
-            , Options.onInput EmailChange
-            , Textfield.value model.rsvp.email
-            , css "width" "100%"
+viewEmail : Model -> Html Msg
+viewEmail model =
+    let
+        invalid =
+            model.displayEmailError && hasError Email model.errors
+    in
+        FormField.view
+            [ css "position" "relative"
+            , css "display" "block"
             ]
-            []
-        , Textfield.helperText
-            [ Textfield.persistent
-            , Textfield.validationMsg
-            , css "display" "none" |> when ((not model.displayEmailError) || (not <| hasError Email model.errors))
+            [ Textfield.view Mdc
+                [ 1 ]
+                model.mdc
+                [ Textfield.label "Une addresse email"
+                , Textfield.required
+                , Textfield.pattern "^[a-zA-Z0-9.!#$%&'*+\\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"
+                , Options.onInput EmailChange
+                , Textfield.value model.rsvp.email
+                , css "width" "100%"
+                , Textfield.invalid |> when invalid
+                ]
+                []
+            , Textfield.helperText
+                [ Textfield.persistent
+                , Textfield.validationMsg
+                , css "display" "none" |> when (not invalid)
+                ]
+                [ Html.text <| errorMsg Email model.errors
+                ]
             ]
-            [ Html.text <| errorMsg Email model.errors
-            ]
-        ]
 
 
-viewTxtNames : Model -> Html Msg
-viewTxtNames model =
-    FormField.view
-        [ css "position" "relative"
-        , css "display" "block"
-        ]
-        [ Textfield.view Mdc
-            [ 2 ]
-            model.mdc
-            [ Textfield.label "Vos noms et prenoms"
-            , Textfield.required
-            , Textfield.pattern ".{3,}"
-            , Options.onInput NameChange
-            , Textfield.value model.rsvp.names
-            , css "width" "100%"
+viewNames : Model -> Html Msg
+viewNames model =
+    let
+        invalid =
+            model.displayNamesError && hasError Names model.errors
+    in
+        FormField.view
+            [ css "position" "relative"
+            , css "display" "block"
             ]
-            []
-        , Textfield.helperText
-            [ Textfield.persistent
-            , Textfield.validationMsg
-            , css "display" "none" |> when ((not model.displayNameError) || (not <| hasError Name model.errors))
+            [ Textfield.view Mdc
+                [ 2 ]
+                model.mdc
+                [ Textfield.label "Vos noms et prenoms"
+                , Textfield.required
+                , Textfield.pattern ".{3,}"
+                , Options.onInput NamesChange
+                , Textfield.value model.rsvp.names
+                , css "width" "100%"
+                , Textfield.invalid |> when invalid
+                ]
+                []
+            , Textfield.helperText
+                [ Textfield.persistent
+                , Textfield.validationMsg
+                , css "display" "none" |> when (not invalid)
+                ]
+                [ Html.text <| errorMsg Names model.errors
+                ]
             ]
-            [ Html.text <| errorMsg Name model.errors
-            ]
-        ]
 
 
-viewTxtChildrenNameAge : Model -> Html Msg
-viewTxtChildrenNameAge model =
-    FormField.view
-        [ css "position" "relative"
-        , css "display" "block"
-        ]
-        [ Textfield.view Mdc
-            [ 3 ]
-            model.mdc
-            [ Textfield.label "Prenoms et ages des enfants"
-            , Options.onInput ChildrenNameAgeChange
-            , Textfield.value model.rsvp.childrenNameAge
-            , css "width" "100%"
+viewChildrenNameAge : Model -> Html Msg
+viewChildrenNameAge model =
+    let
+        invalid =
+            model.displayChildrenNameAgeError && hasError ChildrenNameAge model.errors
+    in
+        FormField.view
+            [ css "position" "relative"
+            , css "display" "block"
             ]
-            []
-        ]
+            [ Textfield.view Mdc
+                [ 3 ]
+                model.mdc
+                [ Textfield.label "Prenoms et ages des enfants"
+                , Options.onInput ChildrenNameAgeChange
+                , Textfield.value model.rsvp.childrenNameAge
+                , css "width" "100%"
+                , Textfield.invalid |> when invalid
+                ]
+                []
+            , Textfield.helperText
+                [ Textfield.persistent
+                , Textfield.validationMsg
+                , css "display" "none" |> when (not invalid)
+                ]
+                [ Html.text <| errorMsg ChildrenNameAge model.errors
+                ]
+            ]
 
 
-viewTxtMusic : Model -> Html Msg
-viewTxtMusic model =
-    FormField.view
-        [ css "position" "relative"
-        , css "display" "block"
-        , css "margin-top" "16px"
-        ]
-        [ Textfield.view Mdc
-            [ 4 ]
-            model.mdc
-            [ Textfield.label "Sur quel morceau souhaitez-vous danser?"
-            , Options.onInput MusicChange
-            , Textfield.value model.rsvp.music
-            , css "width" "100%"
+viewMusic : Model -> Html Msg
+viewMusic model =
+    let
+        invalid =
+            model.displayMusicError && hasError Music model.errors
+    in
+        FormField.view
+            [ css "position" "relative"
+            , css "display" "block"
+            , css "margin-top" "16px"
             ]
-            []
-        ]
+            [ Textfield.view Mdc
+                [ 4 ]
+                model.mdc
+                [ Textfield.label "Sur quel morceau souhaitez-vous danser?"
+                , Options.onInput MusicChange
+                , Textfield.value model.rsvp.music
+                , css "width" "100%"
+                , Textfield.invalid |> when invalid
+                ]
+                []
+            , Textfield.helperText
+                [ Textfield.persistent
+                , Textfield.validationMsg
+                , css "display" "none" |> when (not invalid)
+                ]
+                [ Html.text <| errorMsg Music model.errors
+                ]
+            ]
 
 
 viewPresence : Model -> Html Msg
