@@ -114,13 +114,13 @@ ifeq (release,$(firstword $(MAKECMDGOALS)))
 endif
 
 define package_builder
-	@echo "$(NAME): build $(1) - $(2) on $(3)"
+	@echo "$(NAME): build $(1) - $(2) on $(3) - CC=$(4)"
 	-mkdir -p $(3)
 	cp VERSION $(3)/VERSION
 	cp LICENSE $(3)/LICENSE
 	cp CHANGELOG.md $(3)/CHANGELOG.md
 	$(eval FILE_NAME := $(shell if [ "$(1)" = "windows" ]; then echo "$(NAME).exe"; else echo "$(NAME)"; fi))
-	GOOS=$(1) GOARCH=$(2) \
+	CC=$(4) GOOS=$(1) GOARCH=$(2) \
 		CGO_ENABLED=$(GO_CGO_ENABLED) go build \
 			-ldflags '-extldflags "-lm -lstdc++ -static"' \
 			-ldflags "-X $(GO_PACKAGE_NAME)/service.version=$(VERSION) -X $(GO_PACKAGE_NAME)/service.name=$(NAME)" \
@@ -222,16 +222,43 @@ proto-clean:
 	@echo "$(NAME): proto-clean task"
 	-rm $(GO_PROTO_PACKAGE_ALIAS)/*.pb.* $(GO_PROTO_PACKAGE_ALIAS)/*.swagger.json
 
-.PHONY: package
-package: clean proto package-proto docker
-	@echo "$(NAME): package task"
-	$(call package_builder,linux,amd64,$(PACKAGE_DIR)/linux-amd64)
-	$(call package_builder,linux,arm,$(PACKAGE_DIR)/linux-arm32)
-	$(call package_builder,linux,arm64,$(PACKAGE_DIR)/linux-arm64)
-	$(call package_builder,openbsd,amd64,$(PACKAGE_DIR)/openbsd-amd64)
-	$(call package_builder,darwin,amd64,$(PACKAGE_DIR)/darwin-amd64)
-	$(call package_builder,windows,amd64,$(PACKAGE_DIR)/windows-amd64)
+.PHONY: package-arm32
+package-arm32: proto
+	@echo "$(NAME): package-arm32 task"
+	$(call package_builder,linux,arm,$(PACKAGE_DIR)/linux-arm32,arm-linux-gnueabihf-gcc)
 
+.PHONY: package-arm64
+package-arm64: proto
+	@echo "$(NAME): package-arm64 task"
+	$(call package_builder,linux,arm64,$(PACKAGE_DIR)/linux-arm64,arm-linux-gnueabihf-gcc)
+
+.PHONY: package-amd64
+package-amd64: package-amd64-linux  package-amd64-darwin  package-amd64-openbsd  package-amd64-windows
+	@echo "$(NAME): package-amd64 task"
+
+.PHONY: package-amd64-linux
+package-amd64-linux: proto
+	@echo "$(NAME): package-amd64-linux task"
+	$(call package_builder,linux,amd64,$(PACKAGE_DIR)/linux-amd64,x86_64-pc-linux-gcc)
+
+.PHONY: package-amd64-darwin
+package-amd64-darwin: proto
+	@echo "$(NAME): package-amd64-darwin task"
+	$(call package_builder,darwin,amd64,$(PACKAGE_DIR)/darwin-amd64,x86_64-pc-linux-gcc)
+
+.PHONY: package-amd64-opanbsd
+package-amd64-openbsd: proto
+	@echo "$(NAME): package-amd64-openbsd task"
+	$(call package_builder,openbsd,amd64,$(PACKAGE_DIR)/openbsd-amd64,x86_64-pc-linux-gcc)
+
+.PHONY: package-amd64-windows
+package-amd64-windows: proto
+	@echo "$(NAME): package-amd64-windows task"
+	$(call package_builder,windows,amd64,$(PACKAGE_DIR)/windows-amd64,x86_64-pc-linux-gcc)
+
+.PHONY: package
+package: clean package-proto docker package-arm32 package-arm64 package-amd64
+	@echo "$(NAME): package task"
 	cp VERSION $(PACKAGE_DIR)/VERSION
 	cp LICENSE $(PACKAGE_DIR)/LICENSE
 	cp CHANGELOG.md $(PACKAGE_DIR)/CHANGLOG.md
