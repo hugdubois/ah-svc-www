@@ -22,7 +22,7 @@ ah-svc-www help serve
   ```shell
   $ ah-svc-www cli version
   $ ah-svc-www cli services_status
-  $ ah-svc-www cli echo <uuid [string]> <content [string]>
+  $ ah-svc-www cli rsvp_creation <names [string]> <email [string]> <presence [bool]> <children_name_age [string]> <housing [bool]> <music [string]> <brunch [bool]>
   $ ah-svc-www cli --address localhost:42000 version
 
   # more info
@@ -43,8 +43,8 @@ INFO[0002] HELP :
 	┌─ services_status
 	└─ call services_status service
 
-	┌─ echo <uuid [string]> <content [string]>
-	└─ call echo service
+	┌─ rsvp_creation <names [string]> <email [string]> <presence [bool]> <children_name_age [string]> <housing [bool]> <music [string]> <brunch [bool]>
+	└─ call rsvp_creation service
 
 	┌─ service_address
 	└─ return service address
@@ -75,7 +75,7 @@ WARN[0003] Bad arguments : "unknow" unknow
   ```shell
   $ curl -X GET    http://localhost:13000/api/v1/version
   $ curl -X GET    http://localhost:13000/api/v1/services/status
-  $ curl -X POST   http://localhost:13000/api/v1/echo -d '{"uuid": "<string>", "content": "<string>"}'
+  $ curl -X POST   http://localhost:13000/api/v1/rsvp_creation -d '{"names": "<string>", "email": "<string>", "presence": <boolean>, "children_name_age": "<string>", "housing": <boolean>, "music": "<string>", "brunch": <boolean>}'
   $ curl -X GET    http://localhost:13000/
   $ curl -X GET    http://localhost:13000/version
   $ curl -X GET    http://localhost:13000/metrics

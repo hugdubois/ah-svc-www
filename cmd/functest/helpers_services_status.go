@@ -25,8 +25,8 @@ func testServicesStatusReponse(
 
 	var expected []*pb.ServiceStatus
 	// SUB-SERVICES DEFINITION : test-functest
-	expected = append(expected, &pb.ServiceStatus{svc.Name, svc.Version, pb.ServiceStatus_OK, ""})
-	// expected = append(expected, &pb.ServiceStatus{"ah-svc-{{SubServiceNameKebabCase}}, "unknow", pb.ServiceStatus_UNAVAILABLE, ""})
+	expected = append(expected, &pb.ServiceStatus{Name: svc.Name, Version: svc.Version, Status: pb.ServiceStatus_OK, EMsg: ""})
+	// expected = append(expected, &pb.ServiceStatus{Name: "ah-svc-{{SubServiceNameKebabCase}}, Version:  "unknow", Status:  pb.ServiceStatus_UNAVAILABLE, EMsg:  ""})
 	// END SUB-SERVICES DEFINITION : test-functest
 
 	sort.Sort(servicesStatusByName(expected))

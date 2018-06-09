@@ -175,19 +175,23 @@
         
           
           <li>
-            <a href="#www.proto">www.proto</a>
+            <a href="#pb%2fwww.proto">pb/www.proto</a>
             <ul>
               
                 <li>
-                  <a href="#grpc.hugdubois.www.EchoRequest"><span class="badge">M</span>EchoRequest</a>
-                </li>
-              
-                <li>
-                  <a href="#grpc.hugdubois.www.EchoResponse"><span class="badge">M</span>EchoResponse</a>
-                </li>
-              
-                <li>
                   <a href="#grpc.hugdubois.www.EmptyMessage"><span class="badge">M</span>EmptyMessage</a>
+                </li>
+              
+                <li>
+                  <a href="#grpc.hugdubois.www.RsvpCreationRequest"><span class="badge">M</span>RsvpCreationRequest</a>
+                </li>
+              
+                <li>
+                  <a href="#grpc.hugdubois.www.RsvpCreationResponse"><span class="badge">M</span>RsvpCreationResponse</a>
+                </li>
+              
+                <li>
+                  <a href="#grpc.hugdubois.www.RsvpInfo"><span class="badge">M</span>RsvpInfo</a>
                 </li>
               
                 <li>
@@ -223,74 +227,202 @@
     
       
       <div class="file-heading">
-        <h2 id="www.proto">www.proto</h2><a href="#title">Top</a>
+        <h2 id="pb/www.proto">pb/www.proto</h2><a href="#title">Top</a>
       </div>
       <p></p>
 
       
-        <h3 id="grpc.hugdubois.www.EchoRequest">EchoRequest</h3>
-        <p>EchoRequest represents a simple message sent to the Echo service.</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>uuid</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Uuid represents the message identifier. </p></td>
-                </tr>
-              
-                <tr>
-                  <td>content</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>some content </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-        
-
-        
-      
-        <h3 id="grpc.hugdubois.www.EchoResponse">EchoResponse</h3>
-        <p>EchoResponse represents a simple message that the Echo service return.</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>uuid</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Uuid represents the message identifier. </p></td>
-                </tr>
-              
-                <tr>
-                  <td>content</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>some content </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-        
-
-        
-      
         <h3 id="grpc.hugdubois.www.EmptyMessage">EmptyMessage</h3>
         <p></p>
 
+        
+
+        
+      
+        <h3 id="grpc.hugdubois.www.RsvpCreationRequest">RsvpCreationRequest</h3>
+        <p>RsvpCreationRequest encodes the request of a rsvp creation operation.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>names</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>names free this is a string field </p></td>
+                </tr>
+              
+                <tr>
+                  <td>email</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>email contact valid email </p></td>
+                </tr>
+              
+                <tr>
+                  <td>presence</td>
+                  <td><a href="#bool">bool</a></td>
+                  <td></td>
+                  <td><p>presence is a boolean that indicate the people behind this rsvp are present </p></td>
+                </tr>
+              
+                <tr>
+                  <td>children_name_age</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>names and ages of children this is a free string field </p></td>
+                </tr>
+              
+                <tr>
+                  <td>housing</td>
+                  <td><a href="#bool">bool</a></td>
+                  <td></td>
+                  <td><p>housing is boolean that indicate the people behind this rsvp use housing </p></td>
+                </tr>
+              
+                <tr>
+                  <td>music</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>wanted music this is a free string field </p></td>
+                </tr>
+              
+                <tr>
+                  <td>brunch</td>
+                  <td><a href="#bool">bool</a></td>
+                  <td></td>
+                  <td><p>brunch is boolean that indicate the people behind this rsvp are present in sunday brunch </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="grpc.hugdubois.www.RsvpCreationResponse">RsvpCreationResponse</h3>
+        <p>RsvpCreationResponse encodes the result of a rsvp creation operation.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>ok</td>
+                  <td><a href="#bool">bool</a></td>
+                  <td></td>
+                  <td><p>indicates whether the operation was successful </p></td>
+                </tr>
+              
+                <tr>
+                  <td>info</td>
+                  <td><a href="#grpc.hugdubois.www.RsvpInfo">RsvpInfo</a></td>
+                  <td></td>
+                  <td><p>rsvp information (unreliable if the operation failed) </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="grpc.hugdubois.www.RsvpInfo">RsvpInfo</h3>
+        <p>RsvpInfo encodes a rsvp.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>uuid</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>internal profile ID </p></td>
+                </tr>
+              
+                <tr>
+                  <td>names</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>names free this is a string field </p></td>
+                </tr>
+              
+                <tr>
+                  <td>email</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>email contact valid email </p></td>
+                </tr>
+              
+                <tr>
+                  <td>presence</td>
+                  <td><a href="#bool">bool</a></td>
+                  <td></td>
+                  <td><p>presence is a boolean that indicate the people behind this rsvp are present </p></td>
+                </tr>
+              
+                <tr>
+                  <td>children_name_age</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>names and ages of children this is a free string field </p></td>
+                </tr>
+              
+                <tr>
+                  <td>housing</td>
+                  <td><a href="#bool">bool</a></td>
+                  <td></td>
+                  <td><p>housing is boolean that indicate the people behind this rsvp use housing </p></td>
+                </tr>
+              
+                <tr>
+                  <td>music</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>wanted music this is a free string field </p></td>
+                </tr>
+              
+                <tr>
+                  <td>brunch</td>
+                  <td><a href="#bool">bool</a></td>
+                  <td></td>
+                  <td><p>brunch is boolean that indicate the people behind this rsvp are present in sunday brunch </p></td>
+                </tr>
+              
+                <tr>
+                  <td>created_at</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>creation time (UTC - RFC 3339 format) </p></td>
+                </tr>
+              
+                <tr>
+                  <td>updated_at</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>modification time (UTC - RFC 3339 format) </p></td>
+                </tr>
+              
+                <tr>
+                  <td>deleted_at</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>deletion time (UTC - RFC 3339 format if the profile was logically deleted, empty otherwise) </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
         
 
         
@@ -444,10 +576,10 @@
               </tr>
             
               <tr>
-                <td>Echo</td>
-                <td><a href="#grpc.hugdubois.www.EchoRequest">EchoRequest</a></td>
-                <td><a href="#grpc.hugdubois.www.EchoResponse">EchoResponse</a></td>
-                <td><p>Echo method receives a simple message and returns it.</p></td>
+                <td>RsvpCreation</td>
+                <td><a href="#grpc.hugdubois.www.RsvpCreationRequest">RsvpCreationRequest</a></td>
+                <td><a href="#grpc.hugdubois.www.RsvpCreationResponse">RsvpCreationResponse</a></td>
+                <td><p>RsvpCreation attempts to create a new rsvp.</p></td>
               </tr>
             
           </tbody>

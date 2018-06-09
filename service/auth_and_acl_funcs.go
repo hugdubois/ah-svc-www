@@ -3,7 +3,7 @@ package service
 import (
 	"errors"
 
-	"github.com/golang/protobuf/proto"
+	"github.com/gogo/protobuf/proto"
 	"golang.org/x/net/context"
 
 	gomeetContext "github.com/gomeet/gomeet/utils/context"

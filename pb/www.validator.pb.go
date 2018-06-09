@@ -12,22 +12,26 @@ It has these top-level messages:
 	VersionResponse
 	ServiceStatus
 	ServicesStatusList
-	EchoRequest
-	EchoResponse
+	RsvpCreationRequest
+	RsvpInfo
+	RsvpCreationResponse
 */
 package pb
 
-import go_proto_validators "github.com/mwitkow/go-proto-validators"
-import proto "github.com/golang/protobuf/proto"
+import regexp "regexp"
 import fmt "fmt"
+import go_proto_validators "github.com/mwitkow/go-proto-validators"
+import proto "github.com/gogo/protobuf/proto"
+import golang_proto "github.com/golang/protobuf/proto"
 import math "math"
-import _ "google.golang.org/genproto/googleapis/api/annotations"
+import _ "github.com/gogo/googleapis/google/api"
 import _ "github.com/mwitkow/go-proto-validators"
 import _ "github.com/gomeet/go-proto-gomeetfaker"
 import _ "github.com/gogo/protobuf/gogoproto"
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
+var _ = golang_proto.Marshal
 var _ = fmt.Errorf
 var _ = math.Inf
 
@@ -50,9 +54,57 @@ func (this *ServicesStatusList) Validate() error {
 	}
 	return nil
 }
-func (this *EchoRequest) Validate() error {
+
+var _regex_RsvpCreationRequest_Email = regexp.MustCompile(`^[a-zA-Z0-9.!#$%&'*+/=?^_{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$`)
+
+func (this *RsvpCreationRequest) Validate() error {
+	if !(len(this.Names) > 2) {
+		return go_proto_validators.FieldError("Names", fmt.Errorf(`value '%v' must length be greater than '2'`, this.Names))
+	}
+	if !(len(this.Names) < 256) {
+		return go_proto_validators.FieldError("Names", fmt.Errorf(`value '%v' must length be less than '256'`, this.Names))
+	}
+	if !_regex_RsvpCreationRequest_Email.MatchString(this.Email) {
+		return go_proto_validators.FieldError("Email", fmt.Errorf(`Invalid email`))
+	}
+	if !(len(this.ChildrenNameAge) < 256) {
+		return go_proto_validators.FieldError("ChildrenNameAge", fmt.Errorf(`value '%v' must length be less than '256'`, this.ChildrenNameAge))
+	}
+	if !(len(this.Music) < 256) {
+		return go_proto_validators.FieldError("Music", fmt.Errorf(`value '%v' must length be less than '256'`, this.Music))
+	}
 	return nil
 }
-func (this *EchoResponse) Validate() error {
+
+var _regex_RsvpInfo_Uuid = regexp.MustCompile(`^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$`)
+var _regex_RsvpInfo_Email = regexp.MustCompile(`^[a-zA-Z0-9.!#$%&'*+/=?^_{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$`)
+
+func (this *RsvpInfo) Validate() error {
+	if !_regex_RsvpInfo_Uuid.MatchString(this.Uuid) {
+		return go_proto_validators.FieldError("Uuid", fmt.Errorf(`Invalid uuid`))
+	}
+	if !(len(this.Names) > 2) {
+		return go_proto_validators.FieldError("Names", fmt.Errorf(`value '%v' must length be greater than '2'`, this.Names))
+	}
+	if !(len(this.Names) < 256) {
+		return go_proto_validators.FieldError("Names", fmt.Errorf(`value '%v' must length be less than '256'`, this.Names))
+	}
+	if !_regex_RsvpInfo_Email.MatchString(this.Email) {
+		return go_proto_validators.FieldError("Email", fmt.Errorf(`Invalid email`))
+	}
+	if !(len(this.ChildrenNameAge) < 256) {
+		return go_proto_validators.FieldError("ChildrenNameAge", fmt.Errorf(`value '%v' must length be less than '256'`, this.ChildrenNameAge))
+	}
+	if !(len(this.Music) < 256) {
+		return go_proto_validators.FieldError("Music", fmt.Errorf(`value '%v' must length be less than '256'`, this.Music))
+	}
+	return nil
+}
+func (this *RsvpCreationResponse) Validate() error {
+	if this.Info != nil {
+		if err := go_proto_validators.CallValidatorIfExists(this.Info); err != nil {
+			return go_proto_validators.FieldError("Info", err)
+		}
+	}
 	return nil
 }

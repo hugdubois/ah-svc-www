@@ -4,16 +4,17 @@
 package service
 
 import (
+	"errors"
 	"flag"
 	"fmt"
 	"os"
+	"sync"
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 
 	"github.com/fullstorydev/grpchan"
 	"github.com/fullstorydev/grpchan/inprocgrpc"
 	log "github.com/sirupsen/logrus"
+	"github.com/stretchr/testify/assert"
 
 	gomeetService "github.com/gomeet/gomeet/utils/service"
 
@@ -74,9 +75,36 @@ func init() {
 
 func flushAllDbTest(t *testing.T) {
 
-	flushDbTest(t)
+	var wg sync.WaitGroup
+	wg.Add(1)
+
+	go func() {
+		defer wg.Done()
+		flushDbTest(t)
+	}()
+
+	wg.Wait()
+
+}
+func migrateAllDbTest() error {
+
+	if err := migrateDbTest(); err != nil {
+		return err
+	}
+	return nil
 }
 
+func migrateDbTest() error {
+	var err error
+
+	if sqliteDSN == "" {
+		return errors.New("sqliteDSN is empty")
+	}
+	err = models.MigrateSchema(sqliteDSN)
+
+	return err
+
+}
 func flushDbTest(t *testing.T) {
 	var err error
 
@@ -113,7 +141,14 @@ func TestMain(m *testing.M) {
 		fmt.Printf("Test fail : %s\n", err.Error())
 		os.Exit(1)
 	}
+
 	cli = gCli.GetGRPCClient()
+
+	if err := migrateAllDbTest(); err != nil {
+		fmt.Printf("Test fail : %s\n", err.Error())
+		os.Exit(1)
+	}
+
 	r := m.Run()
 
 	os.Exit(r)

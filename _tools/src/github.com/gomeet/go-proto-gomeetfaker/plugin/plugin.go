@@ -2,6 +2,7 @@ package plugin
 
 import (
 	"fmt"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -90,6 +91,12 @@ func (p *plugin) generateInitFunc(file *generator.FileDescriptor) {
 		locales[l] = strings.Join(parts, "_")
 	}
 
+	localesKeys := []string{}
+	for k := range locales {
+		localesKeys = append(localesKeys, k)
+	}
+	sort.Strings(localesKeys)
+
 	locale := "en"
 	if l := getGomeetFakerLocale(file); l != nil {
 		lg := strings.ToLower(*l)
@@ -107,7 +114,8 @@ func (p *plugin) generateInitFunc(file *generator.FileDescriptor) {
 	p.P("func GomeetFakerSetLocale(l string) {")
 	p.In()
 	p.P("switch l {")
-	for k, l := range locales {
+	for _, k := range localesKeys {
+		l := locales[k]
 		p.P(`case "`, k, `":`)
 		p.In()
 		p.P(p.fakerPkg.Use(), ".Locale = ", p.fakerLocalesPkg.Use(), ".", l)

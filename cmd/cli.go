@@ -22,7 +22,7 @@ var (
 Example :
   $ ah-svc-www cli version
   $ ah-svc-www cli services_status
-  $ ah-svc-www cli echo <uuid [string]> <content [string]>
+  $ ah-svc-www cli rsvp_creation <names [string]> <email [string]> <presence [bool]> <children_name_age [string]> <housing [bool]> <music [string]> <brunch [bool]>
   $ ah-svc-www cli --address localhost:42000 version
 
 `,

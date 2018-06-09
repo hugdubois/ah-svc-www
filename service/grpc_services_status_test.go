@@ -22,8 +22,8 @@ func TestServicesStatus(t *testing.T) {
 
 	var expected []*pb.ServiceStatus
 	// SUB-SERVICES DEFINITION : test-unit
-	expected = append(expected, &pb.ServiceStatus{name, gomeetService.INPROCESS_ADDRESS, pb.ServiceStatus_OK, ""})
-	// expected = append(expected, &pb.ServiceStatus{"ah-svc-{{SubServiceNameKebabCase}}", gomeetService.INPROCESS_ADDRESS, pb.ServiceStatus_OK, ""})
+	expected = append(expected, &pb.ServiceStatus{Name: name, Version: gomeetService.INPROCESS_ADDRESS, Status: pb.ServiceStatus_OK, EMsg: ""})
+	// expected = append(expected, &pb.ServiceStatus{Name: "ah-svc-{{SubServiceNameKebabCase}}", Version:  gomeetService.INPROCESS_ADDRESS, Status:  pb.ServiceStatus_OK, EMsg:  ""})
 	// END SUB-SERVICES DEFINITION : test-unit
 
 	sort.Sort(servicesStatusByName(expected))

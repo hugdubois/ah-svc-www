@@ -1,0 +1,310 @@
+html,body,h1,h2,h3,h4,h5,h6{margin:0;padding:0}
+h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal}
+img,embed,iframe,object,audio,video{height:auto;max-width:100%}
+iframe{border:0}
+
+
+/*! Flickity v2.1.1
+https://flickity.metafizzy.co
+---------------------------------------------- */
+.flickity-enabled{position:relative}.flickity-enabled:focus{outline:0}.flickity-viewport{overflow:hidden;position:relative;height:100%}.flickity-slider{position:absolute;width:100%;height:100%}.flickity-enabled.is-draggable{-webkit-tap-highlight-color:transparent;tap-highlight-color:transparent;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.flickity-enabled.is-draggable .flickity-viewport{cursor:move;cursor:-webkit-grab;cursor:grab}.flickity-enabled.is-draggable .flickity-viewport.is-pointer-down{cursor:-webkit-grabbing;cursor:grabbing}.flickity-button{position:absolute;background:hsla(0,0%,100%,.75);border:none;color:#333}.flickity-button:hover{background:#fff;cursor:pointer}.flickity-button:focus{outline:0;box-shadow:0 0 0 5px #19f}.flickity-button:active{opacity:.6}.flickity-button:disabled{opacity:.3;cursor:auto;pointer-events:none}.flickity-button-icon{fill:#333}.flickity-prev-next-button{top:50%;width:44px;height:44px;border-radius:50%;transform:translateY(-50%)}.flickity-prev-next-button.previous{left:10px}.flickity-prev-next-button.next{right:10px}.flickity-rtl .flickity-prev-next-button.previous{left:auto;right:10px}.flickity-rtl .flickity-prev-next-button.next{right:auto;left:10px}.flickity-prev-next-button .flickity-button-icon{position:absolute;left:20%;top:20%;width:60%;height:60%}.flickity-page-dots{position:absolute;width:100%;bottom:-25px;padding:0;margin:0;list-style:none;text-align:center;line-height:1}.flickity-rtl .flickity-page-dots{direction:rtl}.flickity-page-dots .dot{display:inline-block;width:10px;height:10px;margin:0 8px;background:#333;border-radius:50%;opacity:.25;cursor:pointer}.flickity-page-dots .dot.is-selected{opacity:1}
+
+body {
+  background-color: #fff;
+  font-family: Helvetica, sans-serif;
+}
+
+.header {
+  text-align: center;
+}
+.footer {
+  /*margin-top: 10px;*/
+  padding: 10px;
+  background: #C4C7C4;
+  color: #FFFFFF;
+  min-height: 100px
+}
+.logo {
+  display: block;
+  margin: 0 0 60px 0;
+  padding: 0 10px 10px 0;
+  overflow: hidden;
+}
+.logo h2 {
+  text-align: left;
+  margin: -100px 0 0 45%;
+}
+.logo h2 span.text {
+  border: 1px solid #fff;
+  line-height: 22px;
+}
+.logo h2 span.date {
+  border: 1px solid #000;
+  padding: 0 2px 0 2px;
+}
+
+.title-wrapper {
+  display: block;
+  position: relative;
+  border: 1px solid white;
+  background-color: white;
+  width: 100%;
+  box-sizing: border-box;
+  height: 45px;
+}
+.title-wrapper.fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  box-sizing: border-box;
+  z-index: 4;
+}
+.title-wrapper.fixed.absolute {
+  position: relative;
+  display: none;
+}
+h2.title {
+  width: 100%;
+  text-align: center;
+  color: #000000;
+  border-bottom: 1px solid #CECFCA;
+  line-height: .1em;
+  margin: 20px 0 20px 0;
+  font-size: 30px;
+  text-transform: uppercase;
+}
+h2.title span {
+  background: #fff;
+  padding: 0 10px;
+}
+.not-found {
+  font-size: 30px;
+}
+.clearfix {
+  overflow: auto;
+}
+.clearfix::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+.is-marged-top {
+  /*margin-top: 30px;*/
+}
+.map-wrapper {
+  overflow: hidden;
+  padding-bottom: 56.25%;
+  position: relative;
+  height: 0;
+}
+
+.map-wrapper iframe {
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+}
+/* The actual timeline (the vertical ruler) */
+.timeline {
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.timeline * {
+  box-sizing: border-box;
+}
+
+.timeline-wrapper {
+  display: block;
+  margin-bottom: 30px;
+}
+/* Container around content */
+.container {
+  padding: 0 40px;
+  position: relative;
+  background-color: inherit;
+  width: 50%;
+  min-height: 140px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* The circles on the timeline */
+.container::after {
+  content: '';
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  right: -50px;
+  background-color: white;
+  border: 3px solid black;
+  top: 19px;
+  border-radius: 50%;
+  z-index: 1;
+  background-repeat: no-repeat;
+  background-position: bottom-left;
+}
+.is-small-icon .container::after {
+  /*background-size:contain;*/
+  background-position: center;
+}
+.container.hall::after {
+  background-image: url("../img/icons/hall.png");
+}
+.container.church::after {
+  background-image: url("../img/icons/church.png");
+}
+.container.champagne-glasses::after {
+  background-image: url("../img/icons/champagne-glasses.png");
+}
+.container.road::after {
+  background-size: contain;
+  background-image: url("../img/icons/road-small.png");
+}
+.container.park::after {
+  background-image: url("../img/icons/park.png");
+}
+.container.cocktail::after {
+  background-image: url("../img/icons/cocktail.png");
+}
+.container.dinner::after {
+  background-image: url("../img/icons/dinner.png");
+}
+.container.dancing::after {
+  background-image: url("../img/icons/dancing.png");
+}
+.container.clubbing::after {
+  background-image: url("../img/icons/clubbing.png");
+}
+.container.soup::after {
+  background-image: url("../img/icons/soup.png");
+}
+.container.brunch::after {
+  background-position: center;
+  background-image: url("../img/icons/brunch-small.png");
+}
+.is-small-icon .container.hall::after {
+  background-image: url("../img/icons/hall-small.png");
+}
+.is-small-icon .container.church::after {
+  background-image: url("../img/icons/church-small.png");
+}
+.is-small-icon .container.champagne-glasses::after {
+  background-image: url("../img/icons/champagne-glasses-small.png");
+}
+.is-small-icon .container.road::after {
+  background-image: url("../img/icons/road-small.png");
+}
+.is-small-icon .container.park::after {
+  background-image: url("../img/icons/park-small.png");
+}
+.is-small-icon .container.coktail::after {
+  background-image: url("../img/icons/coktail-small.png");
+}
+.is-small-icon .container.dinner::after {
+  background-image: url("../img/icons/dinner-small.png");
+}
+.is-small-icon .container.dancing::after {
+  background-image: url("../img/icons/dancing-small.png");
+}
+.is-small-icon .container.clubbing::after {
+  background-image: url("../img/icons/clubbing-small.png");
+}
+.is-small-icon .container.soup::after {
+  background-image: url("../img/icons/soup-small.png");
+}
+.is-small-icon .container.brunch::after {
+  background-image: url("../img/icons/brunch-small.png");
+}
+/* Place the container to the left */
+.left {
+  left: 0;
+  text-align: right;
+}
+/* Place the container to the right */
+.right {
+  left: 50%;
+}
+/* Fix the circle for containers on the right side */
+.right::after {
+  left: -50px;
+}
+
+/* The actual content */
+.content {
+  padding: 35px 30px;
+  background-color: white;
+  position: relative;
+  border-radius: 6px;
+}
+.content-time {
+  font-size:1.5em;
+}
+.content-place {
+  font-size:1em;
+}
+.content-type {
+  font-size:.8em;
+}
+.region-wrapper {
+  height: 610px;
+  width: 100%;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+#rsvp {
+  position: relative;
+  width: 90%;
+  margin: auto;
+}
+
+/* Media queries - Responsive timeline on screens less than 600px wide */
+@media screen and (max-width: 600px) {
+  .region-wrapper {
+    height: 310px;
+  }
+  .carousel {
+    height: 300px;
+  }
+  .carousel img {
+    height: 300px;
+  }
+  .logo {
+    margin-bottom: 30px;
+  }
+  /* Place the timelime to the left */
+  .timeline {
+    position: relative;
+    margin-left: 50px;
+  }
+  .timeline::after {
+    left: 31px;
+  }
+  /* Full-width containers */
+  .container {
+    width: 100%;
+    padding-left: 70px;
+    padding-right: 25px;
+  }
+  /* Make sure that all arrows are pointing leftwards */
+  .container::before {
+    left: 60px;
+    border: medium solid white;
+    border-width: 10px 10px 10px 0;
+    border-color: transparent white transparent transparent;
+  }
+  .left, .right {
+    text-align: left;
+  }
+  /* Make sure all circles are at the same spot */
+  .left::after, .right::after {
+    left: -20px;
+  }
+  /* Make all right containers behave like the left ones */
+  .right {
+    left: 0%;
+  }
+}

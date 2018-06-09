@@ -3,96 +3,236 @@
   <title>Protocol Documentation</title>
   
   <section>
-    <title>www.proto</title>
+    <title>pb/www.proto</title>
     <para></para>
-    
-    <section id="grpc.hugdubois.www.EchoRequest">
-      <title>EchoRequest</title>
-      <para>EchoRequest represents a simple message sent to the Echo service.</para>
-      
-      <table frame="all">
-        <title><classname>EchoRequest</classname> Fields</title>
-        <tgroup cols="4">
-          <colspec colwidth="*"/>
-          <colspec colwidth="*"/>
-          <colspec colwidth="0.5*"/>
-          <colspec colwidth="3*"/>
-          <thead>
-            <row>
-              <entry>Field</entry>
-              <entry>Type</entry>
-              <entry>Label</entry>
-              <entry>Description</entry>
-            </row>
-          </thead>
-          <tbody>
-            
-            <row>
-              <entry>uuid</entry>
-              <entry><link linkend="string">string</link></entry>
-              <entry></entry>
-              <entry><para>Uuid represents the message identifier.</para></entry>
-            </row>
-            
-            <row>
-              <entry>content</entry>
-              <entry><link linkend="string">string</link></entry>
-              <entry></entry>
-              <entry><para>some content</para></entry>
-            </row>
-            
-          </tbody>
-        </tgroup>
-      </table>
-      
-      
-    </section>
-    
-    <section id="grpc.hugdubois.www.EchoResponse">
-      <title>EchoResponse</title>
-      <para>EchoResponse represents a simple message that the Echo service return.</para>
-      
-      <table frame="all">
-        <title><classname>EchoResponse</classname> Fields</title>
-        <tgroup cols="4">
-          <colspec colwidth="*"/>
-          <colspec colwidth="*"/>
-          <colspec colwidth="0.5*"/>
-          <colspec colwidth="3*"/>
-          <thead>
-            <row>
-              <entry>Field</entry>
-              <entry>Type</entry>
-              <entry>Label</entry>
-              <entry>Description</entry>
-            </row>
-          </thead>
-          <tbody>
-            
-            <row>
-              <entry>uuid</entry>
-              <entry><link linkend="string">string</link></entry>
-              <entry></entry>
-              <entry><para>Uuid represents the message identifier.</para></entry>
-            </row>
-            
-            <row>
-              <entry>content</entry>
-              <entry><link linkend="string">string</link></entry>
-              <entry></entry>
-              <entry><para>some content</para></entry>
-            </row>
-            
-          </tbody>
-        </tgroup>
-      </table>
-      
-      
-    </section>
     
     <section id="grpc.hugdubois.www.EmptyMessage">
       <title>EmptyMessage</title>
       <para></para>
+      
+      
+    </section>
+    
+    <section id="grpc.hugdubois.www.RsvpCreationRequest">
+      <title>RsvpCreationRequest</title>
+      <para>RsvpCreationRequest encodes the request of a rsvp creation operation.</para>
+      
+      <table frame="all">
+        <title><classname>RsvpCreationRequest</classname> Fields</title>
+        <tgroup cols="4">
+          <colspec colwidth="*"/>
+          <colspec colwidth="*"/>
+          <colspec colwidth="0.5*"/>
+          <colspec colwidth="3*"/>
+          <thead>
+            <row>
+              <entry>Field</entry>
+              <entry>Type</entry>
+              <entry>Label</entry>
+              <entry>Description</entry>
+            </row>
+          </thead>
+          <tbody>
+            
+            <row>
+              <entry>names</entry>
+              <entry><link linkend="string">string</link></entry>
+              <entry></entry>
+              <entry><para>names free this is a string field</para></entry>
+            </row>
+            
+            <row>
+              <entry>email</entry>
+              <entry><link linkend="string">string</link></entry>
+              <entry></entry>
+              <entry><para>email contact valid email</para></entry>
+            </row>
+            
+            <row>
+              <entry>presence</entry>
+              <entry><link linkend="bool">bool</link></entry>
+              <entry></entry>
+              <entry><para>presence is a boolean that indicate the people behind this rsvp are present</para></entry>
+            </row>
+            
+            <row>
+              <entry>children_name_age</entry>
+              <entry><link linkend="string">string</link></entry>
+              <entry></entry>
+              <entry><para>names and ages of children this is a free string field</para></entry>
+            </row>
+            
+            <row>
+              <entry>housing</entry>
+              <entry><link linkend="bool">bool</link></entry>
+              <entry></entry>
+              <entry><para>housing is boolean that indicate the people behind this rsvp use housing</para></entry>
+            </row>
+            
+            <row>
+              <entry>music</entry>
+              <entry><link linkend="string">string</link></entry>
+              <entry></entry>
+              <entry><para>wanted music this is a free string field</para></entry>
+            </row>
+            
+            <row>
+              <entry>brunch</entry>
+              <entry><link linkend="bool">bool</link></entry>
+              <entry></entry>
+              <entry><para>brunch is boolean that indicate the people behind this rsvp are present in sunday brunch</para></entry>
+            </row>
+            
+          </tbody>
+        </tgroup>
+      </table>
+      
+      
+    </section>
+    
+    <section id="grpc.hugdubois.www.RsvpCreationResponse">
+      <title>RsvpCreationResponse</title>
+      <para>RsvpCreationResponse encodes the result of a rsvp creation operation.</para>
+      
+      <table frame="all">
+        <title><classname>RsvpCreationResponse</classname> Fields</title>
+        <tgroup cols="4">
+          <colspec colwidth="*"/>
+          <colspec colwidth="*"/>
+          <colspec colwidth="0.5*"/>
+          <colspec colwidth="3*"/>
+          <thead>
+            <row>
+              <entry>Field</entry>
+              <entry>Type</entry>
+              <entry>Label</entry>
+              <entry>Description</entry>
+            </row>
+          </thead>
+          <tbody>
+            
+            <row>
+              <entry>ok</entry>
+              <entry><link linkend="bool">bool</link></entry>
+              <entry></entry>
+              <entry><para>indicates whether the operation was successful</para></entry>
+            </row>
+            
+            <row>
+              <entry>info</entry>
+              <entry><link linkend="grpc.hugdubois.www.RsvpInfo">RsvpInfo</link></entry>
+              <entry></entry>
+              <entry><para>rsvp information (unreliable if the operation failed)</para></entry>
+            </row>
+            
+          </tbody>
+        </tgroup>
+      </table>
+      
+      
+    </section>
+    
+    <section id="grpc.hugdubois.www.RsvpInfo">
+      <title>RsvpInfo</title>
+      <para>RsvpInfo encodes a rsvp.</para>
+      
+      <table frame="all">
+        <title><classname>RsvpInfo</classname> Fields</title>
+        <tgroup cols="4">
+          <colspec colwidth="*"/>
+          <colspec colwidth="*"/>
+          <colspec colwidth="0.5*"/>
+          <colspec colwidth="3*"/>
+          <thead>
+            <row>
+              <entry>Field</entry>
+              <entry>Type</entry>
+              <entry>Label</entry>
+              <entry>Description</entry>
+            </row>
+          </thead>
+          <tbody>
+            
+            <row>
+              <entry>uuid</entry>
+              <entry><link linkend="string">string</link></entry>
+              <entry></entry>
+              <entry><para>internal profile ID</para></entry>
+            </row>
+            
+            <row>
+              <entry>names</entry>
+              <entry><link linkend="string">string</link></entry>
+              <entry></entry>
+              <entry><para>names free this is a string field</para></entry>
+            </row>
+            
+            <row>
+              <entry>email</entry>
+              <entry><link linkend="string">string</link></entry>
+              <entry></entry>
+              <entry><para>email contact valid email</para></entry>
+            </row>
+            
+            <row>
+              <entry>presence</entry>
+              <entry><link linkend="bool">bool</link></entry>
+              <entry></entry>
+              <entry><para>presence is a boolean that indicate the people behind this rsvp are present</para></entry>
+            </row>
+            
+            <row>
+              <entry>children_name_age</entry>
+              <entry><link linkend="string">string</link></entry>
+              <entry></entry>
+              <entry><para>names and ages of children this is a free string field</para></entry>
+            </row>
+            
+            <row>
+              <entry>housing</entry>
+              <entry><link linkend="bool">bool</link></entry>
+              <entry></entry>
+              <entry><para>housing is boolean that indicate the people behind this rsvp use housing</para></entry>
+            </row>
+            
+            <row>
+              <entry>music</entry>
+              <entry><link linkend="string">string</link></entry>
+              <entry></entry>
+              <entry><para>wanted music this is a free string field</para></entry>
+            </row>
+            
+            <row>
+              <entry>brunch</entry>
+              <entry><link linkend="bool">bool</link></entry>
+              <entry></entry>
+              <entry><para>brunch is boolean that indicate the people behind this rsvp are present in sunday brunch</para></entry>
+            </row>
+            
+            <row>
+              <entry>created_at</entry>
+              <entry><link linkend="string">string</link></entry>
+              <entry></entry>
+              <entry><para>creation time (UTC - RFC 3339 format)</para></entry>
+            </row>
+            
+            <row>
+              <entry>updated_at</entry>
+              <entry><link linkend="string">string</link></entry>
+              <entry></entry>
+              <entry><para>modification time (UTC - RFC 3339 format)</para></entry>
+            </row>
+            
+            <row>
+              <entry>deleted_at</entry>
+              <entry><link linkend="string">string</link></entry>
+              <entry></entry>
+              <entry><para>deletion time (UTC - RFC 3339 format if the profile was logically deleted, empty otherwise)</para></entry>
+            </row>
+            
+          </tbody>
+        </tgroup>
+      </table>
       
       
     </section>
@@ -305,10 +445,10 @@
             </row>
             
             <row>
-              <entry>Echo</entry>
-              <entry><link linkend="grpc.hugdubois.www.EchoRequest">EchoRequest</link></entry>
-              <entry><link linkend="grpc.hugdubois.www.EchoResponse">EchoResponse</link></entry>
-              <entry><para>Echo method receives a simple message and returns it.</para></entry>
+              <entry>RsvpCreation</entry>
+              <entry><link linkend="grpc.hugdubois.www.RsvpCreationRequest">RsvpCreationRequest</link></entry>
+              <entry><link linkend="grpc.hugdubois.www.RsvpCreationResponse">RsvpCreationResponse</link></entry>
+              <entry><para>RsvpCreation attempts to create a new rsvp.</para></entry>
             </row>
             
           </tbody>

@@ -8,6 +8,7 @@ import (
 
 	"github.com/auth0/go-jwt-middleware"
 	"github.com/fullstorydev/grpchan"
+	"github.com/gogo/gateway"
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/prometheus/client_golang/prometheus"
@@ -101,10 +102,19 @@ func (svc *Service) RegisterHTTPServices(
 		jwtMiddleware: jwtMiddleware,
 	}
 
-	svc.httpController.RegisterRoutes(mux)
-
 	// get server mux
-	gwmux := runtime.NewServeMux()
+	jsonpb := &gateway.JSONPb{
+		EmitDefaults: true,
+		Indent:       "  ",
+		OrigName:     true,
+	}
+	gwmux := runtime.NewServeMux(
+		runtime.WithMarshalerOption(runtime.MIMEWildcard, jsonpb),
+		// This is necessary to get error details properly
+		// marshalled in unary requests.
+		runtime.WithProtoErrorHandler(runtime.DefaultHTTPProtoErrorHandler),
+	)
+
 	err := pb.RegisterWwwHandlerFromEndpoint(ctx, gwmux, addr, opts)
 	if err != nil {
 		log.Fatalf("RegisterGRPCGateway error : %s\n", err)
@@ -121,8 +131,8 @@ func (svc *Service) RegisterHTTPServices(
 	// api gateway handlers with metrics instrumentations
 	routeMap := map[string]string{
 		"/api/v1/services/status": "Api.ServicesStatus",
+		"/api/v1/rsvp_creation":   "Api.RsvpCreation",
 		"/api/v1/version":         "Api.Version",
-		"/api/v1/echo":            "Api.Echo",
 	}
 	for route, label := range routeMap {
 		mux.PathPrefix(route).Handler(instrf(label, gwmux.ServeHTTP))
@@ -131,4 +141,6 @@ func (svc *Service) RegisterHTTPServices(
 	// prometheus metrics handler
 	mux.
 		Handle("/metrics", prometheus.Handler())
+
+	svc.httpController.RegisterRoutes(mux)
 }

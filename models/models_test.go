@@ -5,12 +5,10 @@ package models
 import (
 	"flag"
 	"fmt"
+	log "github.com/sirupsen/logrus"
+	"github.com/stretchr/testify/assert"
 	"os"
 	"testing"
-
-	"github.com/stretchr/testify/assert"
-
-	log "github.com/sirupsen/logrus"
 )
 
 var (

@@ -12,8 +12,9 @@ It has these top-level messages:
 	VersionResponse
 	ServiceStatus
 	ServicesStatusList
-	EchoRequest
-	EchoResponse
+	RsvpCreationRequest
+	RsvpInfo
+	RsvpCreationResponse
 */
 package pb
 
@@ -25,7 +26,7 @@ import jsonpb "github.com/gogo/protobuf/jsonpb"
 import golang_proto "github.com/golang/protobuf/proto"
 import fmt "fmt"
 import math "math"
-import _ "google.golang.org/genproto/googleapis/api/annotations"
+import _ "github.com/gogo/googleapis/google/api"
 import _ "github.com/mwitkow/go-proto-validators"
 import _ "github.com/gomeet/go-proto-gomeetfaker"
 import _ "github.com/gogo/protobuf/gogoproto"
@@ -160,15 +161,15 @@ func TestServicesStatusListProto(t *testing.T) {
 	}
 }
 
-func TestEchoRequestProto(t *testing.T) {
+func TestRsvpCreationRequestProto(t *testing.T) {
 	seed := time.Now().UnixNano()
 	popr := rand.New(rand.NewSource(seed))
-	p := NewPopulatedEchoRequest(popr, false)
+	p := NewPopulatedRsvpCreationRequest(popr, false)
 	dAtA, err := proto.Marshal(p)
 	if err != nil {
 		t.Fatalf("seed = %d, err = %v", seed, err)
 	}
-	msg := &EchoRequest{}
+	msg := &RsvpCreationRequest{}
 	if err := proto.Unmarshal(dAtA, msg); err != nil {
 		t.Fatalf("seed = %d, err = %v", seed, err)
 	}
@@ -191,15 +192,46 @@ func TestEchoRequestProto(t *testing.T) {
 	}
 }
 
-func TestEchoResponseProto(t *testing.T) {
+func TestRsvpInfoProto(t *testing.T) {
 	seed := time.Now().UnixNano()
 	popr := rand.New(rand.NewSource(seed))
-	p := NewPopulatedEchoResponse(popr, false)
+	p := NewPopulatedRsvpInfo(popr, false)
 	dAtA, err := proto.Marshal(p)
 	if err != nil {
 		t.Fatalf("seed = %d, err = %v", seed, err)
 	}
-	msg := &EchoResponse{}
+	msg := &RsvpInfo{}
+	if err := proto.Unmarshal(dAtA, msg); err != nil {
+		t.Fatalf("seed = %d, err = %v", seed, err)
+	}
+	littlefuzz := make([]byte, len(dAtA))
+	copy(littlefuzz, dAtA)
+	for i := range dAtA {
+		dAtA[i] = byte(popr.Intn(256))
+	}
+	if !p.Equal(msg) {
+		t.Fatalf("seed = %d, %#v !Proto %#v", seed, msg, p)
+	}
+	if len(littlefuzz) > 0 {
+		fuzzamount := 100
+		for i := 0; i < fuzzamount; i++ {
+			littlefuzz[popr.Intn(len(littlefuzz))] = byte(popr.Intn(256))
+			littlefuzz = append(littlefuzz, byte(popr.Intn(256)))
+		}
+		// shouldn't panic
+		_ = proto.Unmarshal(littlefuzz, msg)
+	}
+}
+
+func TestRsvpCreationResponseProto(t *testing.T) {
+	seed := time.Now().UnixNano()
+	popr := rand.New(rand.NewSource(seed))
+	p := NewPopulatedRsvpCreationResponse(popr, false)
+	dAtA, err := proto.Marshal(p)
+	if err != nil {
+		t.Fatalf("seed = %d, err = %v", seed, err)
+	}
+	msg := &RsvpCreationResponse{}
 	if err := proto.Unmarshal(dAtA, msg); err != nil {
 		t.Fatalf("seed = %d, err = %v", seed, err)
 	}
@@ -294,16 +326,16 @@ func TestServicesStatusListJSON(t *testing.T) {
 		t.Fatalf("seed = %d, %#v !Json Equal %#v", seed, msg, p)
 	}
 }
-func TestEchoRequestJSON(t *testing.T) {
+func TestRsvpCreationRequestJSON(t *testing.T) {
 	seed := time.Now().UnixNano()
 	popr := rand.New(rand.NewSource(seed))
-	p := NewPopulatedEchoRequest(popr, true)
+	p := NewPopulatedRsvpCreationRequest(popr, true)
 	marshaler := jsonpb.Marshaler{}
 	jsondata, err := marshaler.MarshalToString(p)
 	if err != nil {
 		t.Fatalf("seed = %d, err = %v", seed, err)
 	}
-	msg := &EchoRequest{}
+	msg := &RsvpCreationRequest{}
 	err = jsonpb.UnmarshalString(jsondata, msg)
 	if err != nil {
 		t.Fatalf("seed = %d, err = %v", seed, err)
@@ -312,16 +344,34 @@ func TestEchoRequestJSON(t *testing.T) {
 		t.Fatalf("seed = %d, %#v !Json Equal %#v", seed, msg, p)
 	}
 }
-func TestEchoResponseJSON(t *testing.T) {
+func TestRsvpInfoJSON(t *testing.T) {
 	seed := time.Now().UnixNano()
 	popr := rand.New(rand.NewSource(seed))
-	p := NewPopulatedEchoResponse(popr, true)
+	p := NewPopulatedRsvpInfo(popr, true)
 	marshaler := jsonpb.Marshaler{}
 	jsondata, err := marshaler.MarshalToString(p)
 	if err != nil {
 		t.Fatalf("seed = %d, err = %v", seed, err)
 	}
-	msg := &EchoResponse{}
+	msg := &RsvpInfo{}
+	err = jsonpb.UnmarshalString(jsondata, msg)
+	if err != nil {
+		t.Fatalf("seed = %d, err = %v", seed, err)
+	}
+	if !p.Equal(msg) {
+		t.Fatalf("seed = %d, %#v !Json Equal %#v", seed, msg, p)
+	}
+}
+func TestRsvpCreationResponseJSON(t *testing.T) {
+	seed := time.Now().UnixNano()
+	popr := rand.New(rand.NewSource(seed))
+	p := NewPopulatedRsvpCreationResponse(popr, true)
+	marshaler := jsonpb.Marshaler{}
+	jsondata, err := marshaler.MarshalToString(p)
+	if err != nil {
+		t.Fatalf("seed = %d, err = %v", seed, err)
+	}
+	msg := &RsvpCreationResponse{}
 	err = jsonpb.UnmarshalString(jsondata, msg)
 	if err != nil {
 		t.Fatalf("seed = %d, err = %v", seed, err)
@@ -442,12 +492,12 @@ func TestServicesStatusListProtoCompactText(t *testing.T) {
 	}
 }
 
-func TestEchoRequestProtoText(t *testing.T) {
+func TestRsvpCreationRequestProtoText(t *testing.T) {
 	seed := time.Now().UnixNano()
 	popr := rand.New(rand.NewSource(seed))
-	p := NewPopulatedEchoRequest(popr, true)
+	p := NewPopulatedRsvpCreationRequest(popr, true)
 	dAtA := proto.MarshalTextString(p)
-	msg := &EchoRequest{}
+	msg := &RsvpCreationRequest{}
 	if err := proto.UnmarshalText(dAtA, msg); err != nil {
 		t.Fatalf("seed = %d, err = %v", seed, err)
 	}
@@ -456,12 +506,12 @@ func TestEchoRequestProtoText(t *testing.T) {
 	}
 }
 
-func TestEchoRequestProtoCompactText(t *testing.T) {
+func TestRsvpCreationRequestProtoCompactText(t *testing.T) {
 	seed := time.Now().UnixNano()
 	popr := rand.New(rand.NewSource(seed))
-	p := NewPopulatedEchoRequest(popr, true)
+	p := NewPopulatedRsvpCreationRequest(popr, true)
 	dAtA := proto.CompactTextString(p)
-	msg := &EchoRequest{}
+	msg := &RsvpCreationRequest{}
 	if err := proto.UnmarshalText(dAtA, msg); err != nil {
 		t.Fatalf("seed = %d, err = %v", seed, err)
 	}
@@ -470,12 +520,12 @@ func TestEchoRequestProtoCompactText(t *testing.T) {
 	}
 }
 
-func TestEchoResponseProtoText(t *testing.T) {
+func TestRsvpInfoProtoText(t *testing.T) {
 	seed := time.Now().UnixNano()
 	popr := rand.New(rand.NewSource(seed))
-	p := NewPopulatedEchoResponse(popr, true)
+	p := NewPopulatedRsvpInfo(popr, true)
 	dAtA := proto.MarshalTextString(p)
-	msg := &EchoResponse{}
+	msg := &RsvpInfo{}
 	if err := proto.UnmarshalText(dAtA, msg); err != nil {
 		t.Fatalf("seed = %d, err = %v", seed, err)
 	}
@@ -484,12 +534,40 @@ func TestEchoResponseProtoText(t *testing.T) {
 	}
 }
 
-func TestEchoResponseProtoCompactText(t *testing.T) {
+func TestRsvpInfoProtoCompactText(t *testing.T) {
 	seed := time.Now().UnixNano()
 	popr := rand.New(rand.NewSource(seed))
-	p := NewPopulatedEchoResponse(popr, true)
+	p := NewPopulatedRsvpInfo(popr, true)
 	dAtA := proto.CompactTextString(p)
-	msg := &EchoResponse{}
+	msg := &RsvpInfo{}
+	if err := proto.UnmarshalText(dAtA, msg); err != nil {
+		t.Fatalf("seed = %d, err = %v", seed, err)
+	}
+	if !p.Equal(msg) {
+		t.Fatalf("seed = %d, %#v !Proto %#v", seed, msg, p)
+	}
+}
+
+func TestRsvpCreationResponseProtoText(t *testing.T) {
+	seed := time.Now().UnixNano()
+	popr := rand.New(rand.NewSource(seed))
+	p := NewPopulatedRsvpCreationResponse(popr, true)
+	dAtA := proto.MarshalTextString(p)
+	msg := &RsvpCreationResponse{}
+	if err := proto.UnmarshalText(dAtA, msg); err != nil {
+		t.Fatalf("seed = %d, err = %v", seed, err)
+	}
+	if !p.Equal(msg) {
+		t.Fatalf("seed = %d, %#v !Proto %#v", seed, msg, p)
+	}
+}
+
+func TestRsvpCreationResponseProtoCompactText(t *testing.T) {
+	seed := time.Now().UnixNano()
+	popr := rand.New(rand.NewSource(seed))
+	p := NewPopulatedRsvpCreationResponse(popr, true)
+	dAtA := proto.CompactTextString(p)
+	msg := &RsvpCreationResponse{}
 	if err := proto.UnmarshalText(dAtA, msg); err != nil {
 		t.Fatalf("seed = %d, err = %v", seed, err)
 	}

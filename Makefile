@@ -1,4 +1,5 @@
 DEBUG_TEST?=0
+USE_GOGO?=1
 DEFAULT_PREFIXES=ah-svc-,gomeet-svc-,svc-
 SVC_PREFIX=ah-svc-
 NAME = $(SVC_PREFIX)www
@@ -19,6 +20,11 @@ OS_ARCH=$(shell go env GOARCH)
 EXTRA_SERVE_FLAGS=
 
 DB_TYPES=sqlite
+
+# <sub-services-go-package>[version@<default: 0.0.1+dev>][db_types@<mysql,sqlite,.... comma separed>][<flag-name-kebab-case>@<type [string|int]>|<description ...>|<default value ...>]...
+# ex: github.com/my-project/prj-svc-aaa[version@0.0.1+dev][db_types@mysql][my-extra-flag@string|My extra flag description|my default value][my-extra-flag2@int|My extra flag2 description|5],github.com/my-project/prj-svc-bbb[sub_services@github.com/my-project/prj-svc-aaa|github.com/my-project/prj-svc-ccc][db_types@mysql]
+SUB_SERVICES=
+
 DOCKER_TAG = $(shell cat VERSION | tr +- __)
 DOCKER_IMAGE_NAME = hugdubois/$(NAME)
 DOCKER_REGISTRY?=docker.io
@@ -28,12 +34,14 @@ DOCKER_CONSOLE_CONTAINER = console-$(NAME)
 
 
 
+DOCKER_ENV_HUGDUBOIS_JWT_SECRET?=KWJx86/dOuDsNWW6vMYhi0jElZP0fs6S/38e8T8pCCY=
 DOCKER_ENV_AH_SVC_WWW_SQLITE_DB_FILE?=ah_svc_www.sqlite3.db
 
 
 
 
 
+TEST_ENV_HUGDUBOIS_JWT_SECRET?=KWJx86/dOuDsNWW6vMYhi0jElZP0fs6S/38e8T8pCCY=
 TEST_ENV_AH_SVC_WWW_SQLITE_DB_FILE?=ah_svc_www_test.sqlite3.db
 TEST_ENV_AH_SVC_WWW_SQLITE_DB_DSN?=/tmp/$(TEST_ENV_AH_SVC_WWW_SQLITE_DB_FILE)
 
@@ -42,13 +50,6 @@ TEST_ENV_AH_SVC_WWW_SQLITE_DB_DSN?=/tmp/$(TEST_ENV_AH_SVC_WWW_SQLITE_DB_FILE)
 
 
 
-
-# <sub-services-go-package>[db_types@<mysql,sqlite,.... comma separed>][<flag-name-kebab-case>@<type [string|int]>|<description ...>|<default value ...>]...
-# ex: github.com/my-project/prj-svc-aaa[db_types@mysql][my-extra-flag@string|My extra flag description|my default value][my-extra-flag2@int|My extra flag2 description|5],github.com/my-project/prj-svc-bbb[sub_services@github.com/my-project/prj-svc-aaa|github.com/my-project/prj-svc-ccc][db_types@mysql]
-SUB_SERVICES=
-# SUB-SERVICES DEFINITION : make-tag-docker-compose
-# DOCKER_TAG_SVC_{{SubServiceNameUpperSnakeCase}} = $(shell cat ./vendor/github.com/hugdubois/ah-svc-{{SubServiceNameKebabCase}}/VERSION | tr +- __)
-# END SUB-SERVICES DEFINITION : make-tag-docker-compose
 
 PACKAGE_DIR = _build/packaged
 PACKAGE_PROTO_NAME = proto.tar.gz
@@ -61,6 +62,12 @@ ifeq ($(DEBUG_TEST),0)
 DEBUG_TEST_FLAG=
 else
 DEBUG_TEST_FLAG=-d
+endif
+
+ifeq ($(USE_GOGO),0)
+NO_GOGO_FLAG=--no-gogo
+else
+NO_GOGO_FLAG=
 endif
 
 ifeq ($(OS_NAME),windows)
@@ -107,13 +114,13 @@ ifeq (release,$(firstword $(MAKECMDGOALS)))
 endif
 
 define package_builder
-	@echo "$(NAME): build $(1) - $(2) on $(3)"
+	@echo "$(NAME): build $(1) - $(2) on $(3) - CC=$(4)"
 	-mkdir -p $(3)
 	cp VERSION $(3)/VERSION
 	cp LICENSE $(3)/LICENSE
 	cp CHANGELOG.md $(3)/CHANGELOG.md
 	$(eval FILE_NAME := $(shell if [ "$(1)" = "windows" ]; then echo "$(NAME).exe"; else echo "$(NAME)"; fi))
-	GOOS=$(1) GOARCH=$(2) \
+	CC=$(4) GOOS=$(1) GOARCH=$(2) \
 		CGO_ENABLED=$(GO_CGO_ENABLED) go build \
 			-ldflags '-extldflags "-lm -lstdc++ -static"' \
 			-ldflags "-X $(GO_PACKAGE_NAME)/service.version=$(VERSION) -X $(GO_PACKAGE_NAME)/service.name=$(NAME)" \
@@ -132,7 +139,7 @@ define package_shasum
 endef
 
 .PHONY: build
-build: proto
+build: proto ui
 	@echo "$(NAME): build task"
 	-mkdir -p _build
 	CGO_ENABLED=$(GO_CGO_ENABLED) go build \
@@ -145,6 +152,12 @@ build: proto
 clean: tools-clean package-clean proto-clean
 	@echo "$(NAME): clean task"
 
+.PHONY: ui
+ui: tools
+	@echo "$(NAME): ui task"
+	cd ui/elm && make build
+	_tools/bin/go-bindata -o ui/assets.go -pkg ui -prefix ui ui/assets/...
+
 .PHONY: proto
 proto: tools proto-gen-doc
 	@echo "$(NAME): proto task"
@@ -152,13 +165,33 @@ proto: tools proto-gen-doc
 		for f in $(GO_PROTO_PACKAGE_ALIAS)/*.proto; do \
 			protoc -I. \
 				-I$(shell pwd)/third_party \
-				--gogo_out=plugins="grpc:${GOPATH}/src" \
+				--gogo_out=plugins=grpc,\
+Mgoogle/protobuf/timestamp.proto=github.com/gogo/protobuf/types,\
+Mgoogle/protobuf/empty.proto=github.com/gogo/protobuf/types,\
+Mgoogle/api/annotations.proto=github.com/gogo/googleapis/google/api,\
+Mgoogle/protobuf/field_mask.proto=github.com/gogo/protobuf/types:\
+"${GOPATH}/src" \
 				--grpchan_out="${GOPATH}/src" \
-				--govalidators_out="${GOPATH}/src" \
-				--grpc-gateway_out="logtostderr=true:${GOPATH}/src" \
+				--govalidators_out=gogoimport=true,\
+Mgoogle/protobuf/timestamp.proto=github.com/gogo/protobuf/types,\
+Mgoogle/protobuf/empty.proto=github.com/gogo/protobuf/types,\
+Mgoogle/api/annotations.proto=github.com/gogo/googleapis/google/api,\
+Mgoogle/protobuf/field_mask.proto=github.com/gogo/protobuf/types:\
+"${GOPATH}/src" \
+				--grpc-gateway_out=logtostderr=true,\
+Mgoogle/protobuf/timestamp.proto=github.com/gogo/protobuf/types,\
+Mgoogle/protobuf/empty.proto=github.com/gogo/protobuf/types,\
+Mgoogle/api/annotations.proto=github.com/gogo/googleapis/google/api,\
+Mgoogle/protobuf/field_mask.proto=github.com/gogo/protobuf/types:\
+"${GOPATH}/src" \
 				--swagger_out="logtostderr=true:." \
-				--gomeetfaker_out="${GOPATH}/src" \
-				--gomeet-service_out="project_pkg=${GO_PACKAGE_NAME};db_types=${DB_TYPES};extra_serve_flags=${EXTRA_SERVE_FLAGS};default_prefixes=${DEFAULT_PREFIXES};sub_services=${SUB_SERVICES}:${GOPATH}/src" \
+				--gomeetfaker_out=gogoimport=true,\
+Mgoogle/protobuf/timestamp.proto=github.com/gogo/protobuf/types,\
+Mgoogle/protobuf/empty.proto=github.com/gogo/protobuf/types,\
+Mgoogle/api/annotations.proto=github.com/gogo/googleapis/google/api,\
+Mgoogle/protobuf/field_mask.proto=github.com/gogo/protobuf/types:\
+"${GOPATH}/src" \
+				--gomeet-service_out="gogoimport=true;project_pkg=${GO_PACKAGE_NAME};db_types=${DB_TYPES};extra_serve_flags=${EXTRA_SERVE_FLAGS};default_prefixes=${DEFAULT_PREFIXES};sub_services=${SUB_SERVICES}:${GOPATH}/src" \
 			$$f; \
 		echo "$(NAME): compiled proto file - " $$f; \
 		echo ""; \
@@ -189,16 +222,43 @@ proto-clean:
 	@echo "$(NAME): proto-clean task"
 	-rm $(GO_PROTO_PACKAGE_ALIAS)/*.pb.* $(GO_PROTO_PACKAGE_ALIAS)/*.swagger.json
 
-.PHONY: package
-package: clean proto package-proto docker
-	@echo "$(NAME): package task"
-	$(call package_builder,linux,amd64,$(PACKAGE_DIR)/linux-amd64)
-	$(call package_builder,linux,arm,$(PACKAGE_DIR)/linux-arm32)
-	$(call package_builder,linux,arm64,$(PACKAGE_DIR)/linux-arm64)
-	$(call package_builder,openbsd,amd64,$(PACKAGE_DIR)/openbsd-amd64)
-	$(call package_builder,darwin,amd64,$(PACKAGE_DIR)/darwin-amd64)
-	$(call package_builder,windows,amd64,$(PACKAGE_DIR)/windows-amd64)
+.PHONY: package-arm32
+package-arm32: proto
+	@echo "$(NAME): package-arm32 task"
+	$(call package_builder,linux,arm,$(PACKAGE_DIR)/linux-arm32,arm-linux-gnueabihf-gcc)
 
+.PHONY: package-arm64
+package-arm64: proto
+	@echo "$(NAME): package-arm64 task"
+	$(call package_builder,linux,arm64,$(PACKAGE_DIR)/linux-arm64,arm-linux-gnueabihf-gcc)
+
+.PHONY: package-amd64
+package-amd64: package-amd64-linux  package-amd64-darwin  package-amd64-openbsd  package-amd64-windows
+	@echo "$(NAME): package-amd64 task"
+
+.PHONY: package-amd64-linux
+package-amd64-linux: proto
+	@echo "$(NAME): package-amd64-linux task"
+	$(call package_builder,linux,amd64,$(PACKAGE_DIR)/linux-amd64,x86_64-pc-linux-gcc)
+
+.PHONY: package-amd64-darwin
+package-amd64-darwin: proto
+	@echo "$(NAME): package-amd64-darwin task"
+	$(call package_builder,darwin,amd64,$(PACKAGE_DIR)/darwin-amd64,x86_64-pc-linux-gcc)
+
+.PHONY: package-amd64-opanbsd
+package-amd64-openbsd: proto
+	@echo "$(NAME): package-amd64-openbsd task"
+	$(call package_builder,openbsd,amd64,$(PACKAGE_DIR)/openbsd-amd64,x86_64-pc-linux-gcc)
+
+.PHONY: package-amd64-windows
+package-amd64-windows: proto
+	@echo "$(NAME): package-amd64-windows task"
+	$(call package_builder,windows,amd64,$(PACKAGE_DIR)/windows-amd64,x86_64-pc-linux-gcc)
+
+.PHONY: package
+package: clean package-proto docker package-arm32 package-arm64 package-amd64
+	@echo "$(NAME): package task"
 	cp VERSION $(PACKAGE_DIR)/VERSION
 	cp LICENSE $(PACKAGE_DIR)/LICENSE
 	cp CHANGELOG.md $(PACKAGE_DIR)/CHANGLOG.md
@@ -267,8 +327,8 @@ docker:
 	echo "TAG=$(DOCKER_TAG)" > .env
 
 	echo 'AH_SVC_WWW_SQLITE_DB_FILE=$(DOCKER_ENV_AH_SVC_WWW_SQLITE_DB_FILE)' >> .env
-	
-	
+
+
 	-docker build -t $(DOCKER_IMAGE_NAME):$(DOCKER_TAG) .
 
 .PHONY: docker-push
@@ -382,21 +442,21 @@ tools-upgrade: tools
 .PHONY: test-func
 test-func: build
 	@echo "$(NAME): test-func task"
-	@_build/$(NAME) functest $(DEBUG_TEST_FLAG) -e --random-port --sqlite-migrate --sqlite-dsn="$(TEST_ENV_AH_SVC_WWW_SQLITE_DB_DSN)" 
+	@_build/$(NAME) functest $(DEBUG_TEST_FLAG) -e --jwt-secret=$(TEST_ENV_HUGDUBOIS_JWT_SECRET) --random-port --sqlite-migrate --sqlite-dsn="$(TEST_ENV_AH_SVC_WWW_SQLITE_DB_DSN)"
 
 .PHONY: test-unit
 test-unit:
 	@echo "$(NAME): test-unit task"
-	@if ls models/*_test.go 1> /dev/null 2>&1; then cd models && go test  -sqlite-dsn="$(TEST_ENV_AH_SVC_WWW_SQLITE_DB_DSN)"; fi
+	@if ls models/*_test.go 1> /dev/null 2>&1; then cd models && go test -sqlite-dsn="$(TEST_ENV_AH_SVC_WWW_SQLITE_DB_DSN)"; fi
 	@if ls $(GO_PROTO_PACKAGE_ALIAS)/*_test.go 1> /dev/null 2>&1; then cd $(GO_PROTO_PACKAGE_ALIAS) && go test; fi
-	@cd service && go test $(DEBUG_TEST_FLAG) -sqlite-dsn="$(TEST_ENV_AH_SVC_WWW_SQLITE_DB_DSN)" 
+	@cd service && go test $(DEBUG_TEST_FLAG) -sqlite-dsn="$(TEST_ENV_AH_SVC_WWW_SQLITE_DB_DSN)"
 
 .PHONY: test-race
 test-race:
 	@echo "$(NAME): test-race task"
-	@if ls models/*_test.go 1> /dev/null 2>&1; then cd models && go test -race  -sqlite-dsn="$(TEST_ENV_AH_SVC_WWW_SQLITE_DB_DSN)" ; fi
+	@if ls models/*_test.go 1> /dev/null 2>&1; then cd models && go test -race -sqlite-dsn="$(TEST_ENV_AH_SVC_WWW_SQLITE_DB_DSN)"; fi
 	@if ls $(GO_PROTO_PACKAGE_ALIAS)/*_test.go 1> /dev/null 2>&1; then cd $(GO_PROTO_PACKAGE_ALIAS) && go test -race; fi
-	@cd service && go test $(DEBUG_TEST_FLAG) -race  -sqlite-dsn="$(TEST_ENV_AH_SVC_WWW_SQLITE_DB_DSN)" 
+	@cd service && go test $(DEBUG_TEST_FLAG) -race -sqlite-dsn="$(TEST_ENV_AH_SVC_WWW_SQLITE_DB_DSN)"
 
 .PHONY: test
 test:
@@ -423,5 +483,5 @@ gomeet-regenerate-project: tools
 		--sub-services='${SUB_SERVICES}' \
 		--db-types='${DB_TYPES}' \
 		--extra-serve-flags='${EXTRA_SERVE_FLAGS}' \
-		--force
+		--force $(NO_GOGO_FLAG)
 

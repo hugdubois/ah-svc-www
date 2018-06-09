@@ -3,7 +3,7 @@
 package functest
 
 import (
-	"github.com/golang/protobuf/proto"
+	"github.com/gogo/protobuf/proto"
 )
 
 const FUNCTEST_HTTP = "HTTP"
