@@ -11392,7 +11392,6 @@ var _lukewestby$elm_http_builder$HttpBuilder$RequestBuilder = F9(
 
 var _rtfeldman$elm_validate$Validate$validEmail = _elm_lang$core$Regex$caseInsensitive(
 	_elm_lang$core$Regex$regex('^[a-zA-Z0-9.!#$%&\'*+\\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$'));
-var _rtfeldman$elm_validate$Validate$lacksNonWhitespaceChars = _elm_lang$core$Regex$regex('^\\s*$');
 var _rtfeldman$elm_validate$Validate$isInt = function (str) {
 	var _p0 = _elm_lang$core$String$toInt(str);
 	if (_p0.ctor === 'Ok') {
@@ -11401,26 +11400,59 @@ var _rtfeldman$elm_validate$Validate$isInt = function (str) {
 		return false;
 	}
 };
+var _rtfeldman$elm_validate$Validate$isFloat = function (str) {
+	var _p1 = _elm_lang$core$String$toFloat(str);
+	if (_p1.ctor === 'Ok') {
+		return true;
+	} else {
+		return false;
+	}
+};
 var _rtfeldman$elm_validate$Validate$isValidEmail = function (email) {
 	return A2(_elm_lang$core$Regex$contains, _rtfeldman$elm_validate$Validate$validEmail, email);
 };
+var _rtfeldman$elm_validate$Validate$isWhitespaceChar = function ($char) {
+	return _elm_lang$core$Native_Utils.eq(
+		$char,
+		_elm_lang$core$Native_Utils.chr(' ')) || (_elm_lang$core$Native_Utils.eq(
+		$char,
+		_elm_lang$core$Native_Utils.chr('\n')) || (_elm_lang$core$Native_Utils.eq(
+		$char,
+		_elm_lang$core$Native_Utils.chr('\t')) || _elm_lang$core$Native_Utils.eq(
+		$char,
+		_elm_lang$core$Native_Utils.chr('\r'))));
+};
 var _rtfeldman$elm_validate$Validate$isBlank = function (str) {
-	return A2(_elm_lang$core$Regex$contains, _rtfeldman$elm_validate$Validate$lacksNonWhitespaceChars, str);
+	isBlank:
+	while (true) {
+		var _p2 = _elm_lang$core$String$uncons(str);
+		if (_p2.ctor === 'Just') {
+			if (_rtfeldman$elm_validate$Validate$isWhitespaceChar(_p2._0._0)) {
+				var _v3 = _p2._0._1;
+				str = _v3;
+				continue isBlank;
+			} else {
+				return false;
+			}
+		} else {
+			return true;
+		}
+	}
 };
 var _rtfeldman$elm_validate$Validate$any = F2(
 	function (validators, subject) {
 		any:
 		while (true) {
-			var _p1 = validators;
-			if (_p1.ctor === '[]') {
+			var _p3 = validators;
+			if (_p3.ctor === '[]') {
 				return true;
 			} else {
-				var _p2 = _p1._0._0(subject);
-				if (_p2.ctor === '[]') {
-					var _v3 = _p1._1,
-						_v4 = subject;
-					validators = _v3;
-					subject = _v4;
+				var _p4 = _p3._0._0(subject);
+				if (_p4.ctor === '[]') {
+					var _v6 = _p3._1,
+						_v7 = subject;
+					validators = _v6;
+					subject = _v7;
 					continue any;
 				} else {
 					return false;
@@ -11432,27 +11464,27 @@ var _rtfeldman$elm_validate$Validate$firstErrorHelp = F2(
 	function (validators, subject) {
 		firstErrorHelp:
 		while (true) {
-			var _p3 = validators;
-			if (_p3.ctor === '[]') {
+			var _p5 = validators;
+			if (_p5.ctor === '[]') {
 				return {ctor: '[]'};
 			} else {
-				var _p4 = _p3._0._0(subject);
-				if (_p4.ctor === '[]') {
-					var _v7 = _p3._1,
-						_v8 = subject;
-					validators = _v7;
-					subject = _v8;
+				var _p6 = _p5._0._0(subject);
+				if (_p6.ctor === '[]') {
+					var _v10 = _p5._1,
+						_v11 = subject;
+					validators = _v10;
+					subject = _v11;
 					continue firstErrorHelp;
 				} else {
-					return _p4;
+					return _p6;
 				}
 			}
 		}
 	});
 var _rtfeldman$elm_validate$Validate$validate = F2(
-	function (_p5, subject) {
-		var _p6 = _p5;
-		return _p6._0(subject);
+	function (_p7, subject) {
+		var _p8 = _p7;
+		return _p8._0(subject);
 	});
 var _rtfeldman$elm_validate$Validate$Validator = function (a) {
 	return {ctor: 'Validator', _0: a};
@@ -11546,6 +11578,16 @@ var _rtfeldman$elm_validate$Validate$ifNothing = F2(
 			},
 			error);
 	});
+var _rtfeldman$elm_validate$Validate$ifNotFloat = F2(
+	function (subjectToString, error) {
+		return A2(
+			_rtfeldman$elm_validate$Validate$ifTrue,
+			function (subject) {
+				return _rtfeldman$elm_validate$Validate$isFloat(
+					subjectToString(subject));
+			},
+			error);
+	});
 var _rtfeldman$elm_validate$Validate$ifFalse = F2(
 	function (test, error) {
 		var getErrors = function (subject) {
@@ -11560,12 +11602,12 @@ var _rtfeldman$elm_validate$Validate$ifFalse = F2(
 var _rtfeldman$elm_validate$Validate$all = function (validators) {
 	var newGetErrors = function (subject) {
 		var accumulateErrors = F2(
-			function (_p7, totalErrors) {
-				var _p8 = _p7;
+			function (_p9, totalErrors) {
+				var _p10 = _p9;
 				return A2(
 					_elm_lang$core$Basics_ops['++'],
 					totalErrors,
-					_p8._0(subject));
+					_p10._0(subject));
 			});
 		return A3(
 			_elm_lang$core$List$foldl,
@@ -11777,6 +11819,7 @@ var _user$project$Internal_Button_Model$RippleMsg = function (a) {
 	return {ctor: 'RippleMsg', _0: a};
 };
 
+
 var _user$project$Internal_Checkbox_Model$defaultModel = {isFocused: false, lastKnownState: _elm_lang$core$Maybe$Nothing, animation: _elm_lang$core$Maybe$Nothing};
 var _user$project$Internal_Checkbox_Model$Model = F3(
 	function (a, b, c) {
@@ -11799,6 +11842,17 @@ var _user$project$Internal_Checkbox_Model$CheckedIndeterminate = {ctor: 'Checked
 var _user$project$Internal_Checkbox_Model$CheckedUnchecked = {ctor: 'CheckedUnchecked'};
 var _user$project$Internal_Checkbox_Model$UncheckedIndeterminate = {ctor: 'UncheckedIndeterminate'};
 var _user$project$Internal_Checkbox_Model$UncheckedChecked = {ctor: 'UncheckedChecked'};
+
+var _user$project$Internal_Chip_Model$defaultModel = {ripple: _user$project$Internal_Ripple_Model$defaultModel};
+var _user$project$Internal_Chip_Model$Model = function (a) {
+	return {ripple: a};
+};
+var _user$project$Internal_Chip_Model$Click = function (a) {
+	return {ctor: 'Click', _0: a};
+};
+var _user$project$Internal_Chip_Model$RippleMsg = function (a) {
+	return {ctor: 'RippleMsg', _0: a};
+};
 
 var _user$project$Internal_Dialog_Model$defaultModel = {animating: false, open: false};
 var _user$project$Internal_Dialog_Model$Model = F2(
@@ -11925,35 +11979,26 @@ var _user$project$Internal_RadioButton_Model$RippleMsg = function (a) {
 	return {ctor: 'RippleMsg', _0: a};
 };
 
-var _user$project$Internal_Select_Model$defaultGeometry = {
-	boundingClientRect: {top: 0, left: 0, width: 0, height: 0},
-	windowInnerHeight: 0,
-	menuHeight: 0,
-	itemOffsetTops: {ctor: '[]'}
-};
-var _user$project$Internal_Select_Model$defaultModel = {menu: _user$project$Internal_Menu_Model$defaultModel, geometry: _elm_lang$core$Maybe$Nothing, index: _elm_lang$core$Maybe$Nothing};
+var _user$project$Internal_Select_Model$defaultModel = {focused: false, isDirty: false, ripple: _user$project$Internal_Ripple_Model$defaultModel};
 var _user$project$Internal_Select_Model$Model = F3(
 	function (a, b, c) {
-		return {menu: a, geometry: b, index: c};
+		return {focused: a, isDirty: b, ripple: c};
 	});
-var _user$project$Internal_Select_Model$Geometry = F4(
-	function (a, b, c, d) {
-		return {boundingClientRect: a, windowInnerHeight: b, menuHeight: c, itemOffsetTops: d};
-	});
-var _user$project$Internal_Select_Model$Init = function (a) {
-	return {ctor: 'Init', _0: a};
+var _user$project$Internal_Select_Model$RippleMsg = function (a) {
+	return {ctor: 'RippleMsg', _0: a};
 };
-var _user$project$Internal_Select_Model$MenuMsg = F2(
-	function (a, b) {
-		return {ctor: 'MenuMsg', _0: a, _1: b};
-	});
+var _user$project$Internal_Select_Model$Change = function (a) {
+	return {ctor: 'Change', _0: a};
+};
+var _user$project$Internal_Select_Model$Focus = {ctor: 'Focus'};
+var _user$project$Internal_Select_Model$Blur = {ctor: 'Blur'};
 
 var _user$project$Internal_Slider_Model$defaultGeometry = {
 	rect: {left: 0, width: 0},
 	discrete: false,
 	min: 0,
 	max: 100,
-	steps: _elm_lang$core$Maybe$Nothing
+	step: _elm_lang$core$Maybe$Nothing
 };
 var _user$project$Internal_Slider_Model$defaultModel = {focus: false, active: false, geometry: _elm_lang$core$Maybe$Nothing, activeValue: _elm_lang$core$Maybe$Nothing, inTransit: false, preventFocus: false};
 var _user$project$Internal_Slider_Model$Model = F6(
@@ -11962,12 +12007,13 @@ var _user$project$Internal_Slider_Model$Model = F6(
 	});
 var _user$project$Internal_Slider_Model$Geometry = F5(
 	function (a, b, c, d, e) {
-		return {rect: a, discrete: b, steps: c, min: d, max: e};
+		return {rect: a, discrete: b, step: c, min: d, max: e};
 	});
 var _user$project$Internal_Slider_Model$Rect = F2(
 	function (a, b) {
 		return {left: a, width: b};
 	});
+var _user$project$Internal_Slider_Model$ActualUp = {ctor: 'ActualUp'};
 var _user$project$Internal_Slider_Model$Up = {ctor: 'Up'};
 var _user$project$Internal_Slider_Model$Drag = function (a) {
 	return {ctor: 'Drag', _0: a};
@@ -12211,6 +12257,10 @@ var _user$project$Internal_Msg$DrawerMsg = F2(
 var _user$project$Internal_Msg$DialogMsg = F2(
 	function (a, b) {
 		return {ctor: 'DialogMsg', _0: a, _1: b};
+	});
+var _user$project$Internal_Msg$ChipMsg = F2(
+	function (a, b) {
+		return {ctor: 'ChipMsg', _0: a, _1: b};
 	});
 var _user$project$Internal_Msg$CheckboxMsg = F2(
 	function (a, b) {
@@ -12873,6 +12923,14 @@ var _user$project$Internal_Options$nativeControl = function (options) {
 				});
 		});
 };
+var _user$project$Internal_Options$id_ = function (id_) {
+	return _user$project$Internal_Options$option(
+		function (config) {
+			return _elm_lang$core$Native_Utils.update(
+				config,
+				{id_: id_});
+		});
+};
 var _user$project$Internal_Options$Many = function (a) {
 	return {ctor: 'Many', _0: a};
 };
@@ -12882,6 +12940,10 @@ var _user$project$Internal_Options$Internal = function (a) {
 };
 var _user$project$Internal_Options$Attribute = function (a) {
 	return {ctor: 'Attribute', _0: a};
+};
+var _user$project$Internal_Options$for = function (_p5) {
+	return _user$project$Internal_Options$Attribute(
+		_elm_lang$html$Html_Attributes$for(_p5));
 };
 var _user$project$Internal_Options$data = F2(
 	function (key, val) {
@@ -12899,9 +12961,29 @@ var _user$project$Internal_Options$aria = F2(
 				A2(_elm_lang$core$Basics_ops['++'], 'aria-', key),
 				val));
 	});
-var _user$project$Internal_Options$attribute = function (_p5) {
+var _user$project$Internal_Options$autocomplete = function (autocomplete) {
 	return _user$project$Internal_Options$Attribute(
-		A2(_elm_lang$html$Html_Attributes$map, _elm_lang$core$Basics$never, _p5));
+		A2(_elm_lang$html$Html_Attributes$attribute, 'autocomplete', autocomplete));
+};
+var _user$project$Internal_Options$tabindex = function (tabindex) {
+	return _user$project$Internal_Options$Attribute(
+		_elm_lang$html$Html_Attributes$tabindex(tabindex));
+};
+var _user$project$Internal_Options$autofocus = function (autofocus) {
+	return _user$project$Internal_Options$Attribute(
+		_elm_lang$html$Html_Attributes$autofocus(autofocus));
+};
+var _user$project$Internal_Options$role = function (role) {
+	return _user$project$Internal_Options$Attribute(
+		A2(_elm_lang$html$Html_Attributes$attribute, 'role', role));
+};
+var _user$project$Internal_Options$attribute = function (_p6) {
+	return _user$project$Internal_Options$Attribute(
+		A2(_elm_lang$html$Html_Attributes$map, _elm_lang$core$Basics$never, _p6));
+};
+var _user$project$Internal_Options$id = function (_p7) {
+	return _user$project$Internal_Options$Attribute(
+		_elm_lang$html$Html_Attributes$id(_p7));
 };
 var _user$project$Internal_Options$CSS = function (a) {
 	return {ctor: 'CSS', _0: a};
@@ -13048,7 +13130,11 @@ var _user$project$Internal_Icon_Implementation$view = F2(
 			{
 				ctor: '::',
 				_0: _user$project$Internal_Options$cs('material-icons'),
-				_1: options
+				_1: {
+					ctor: '::',
+					_0: A2(_user$project$Internal_Options$aria, 'hidden', 'true'),
+					_1: {ctor: '[]'}
+				}
 			},
 			{ctor: '[]'},
 			{
@@ -13118,7 +13204,7 @@ var _user$project$Internal_Ripple_Implementation$decodeGeometry = function (type
 			_elm_lang$core$Json_Decode$map,
 			function (_p2) {
 				var _p3 = _p2;
-				return {top: _p3.top, left: _p3.left, width: _p3.width, height: _p3.height};
+				return {top: _p3.top - pageOffset.y, left: _p3.left, width: _p3.width, height: _p3.height};
 			},
 			_debois$elm_dom$DOM$boundingClientRect);
 	};
@@ -13941,6 +14027,7 @@ var _user$project$Internal_Button_Implementation$Config = F5(
 		return {ripple: a, link: b, disabled: c, icon: d, onClick: e};
 	});
 
+var _user$project$Material_Options$id = _user$project$Internal_Options$id;
 var _user$project$Material_Options$onWithOptions = _user$project$Internal_Options$onWithOptions;
 var _user$project$Material_Options$onSubmit = _user$project$Internal_Options$onSubmit;
 var _user$project$Material_Options$onChange = _user$project$Internal_Options$onChange;
@@ -13958,6 +14045,8 @@ var _user$project$Material_Options$onDoubleClick = _user$project$Internal_Option
 var _user$project$Material_Options$onClick = _user$project$Internal_Options$onClick;
 var _user$project$Material_Options$on = _user$project$Internal_Options$on;
 var _user$project$Material_Options$attribute = _user$project$Internal_Options$attribute;
+var _user$project$Material_Options$for = _user$project$Internal_Options$for;
+var _user$project$Material_Options$tabindex = _user$project$Internal_Options$tabindex;
 var _user$project$Material_Options$aria = _user$project$Internal_Options$aria;
 var _user$project$Material_Options$data = _user$project$Internal_Options$data;
 var _user$project$Material_Options$when = _user$project$Internal_Options$when;
@@ -14116,7 +14205,8 @@ var _user$project$Internal_Checkbox_Implementation$disabled = _user$project$Inte
 var _user$project$Internal_Checkbox_Implementation$defaultConfig = {
 	state: _elm_lang$core$Maybe$Nothing,
 	disabled: false,
-	nativeControl: {ctor: '[]'}
+	nativeControl: {ctor: '[]'},
+	id_: ''
 };
 var _user$project$Internal_Checkbox_Implementation$checkbox = F4(
 	function (lift, model, options, _p2) {
@@ -14226,21 +14316,25 @@ var _user$project$Internal_Checkbox_Implementation$checkbox = F4(
 									_0: _elm_lang$html$Html_Attributes$type_('checkbox'),
 									_1: {
 										ctor: '::',
-										_0: A2(
-											_elm_lang$html$Html_Attributes$property,
-											'indeterminate',
-											_elm_lang$core$Json_Encode$bool(
-												_elm_lang$core$Native_Utils.eq(currentState, _elm_lang$core$Maybe$Nothing))),
+										_0: _elm_lang$html$Html_Attributes$id(config.id_),
 										_1: {
 											ctor: '::',
-											_0: _elm_lang$html$Html_Attributes$checked(
-												_elm_lang$core$Native_Utils.eq(
-													currentState,
-													_elm_lang$core$Maybe$Just(_user$project$Internal_Checkbox_Model$Checked))),
+											_0: A2(
+												_elm_lang$html$Html_Attributes$property,
+												'indeterminate',
+												_elm_lang$core$Json_Encode$bool(
+													_elm_lang$core$Native_Utils.eq(currentState, _elm_lang$core$Maybe$Nothing))),
 											_1: {
 												ctor: '::',
-												_0: _elm_lang$html$Html_Attributes$disabled(config.disabled),
-												_1: {ctor: '[]'}
+												_0: _elm_lang$html$Html_Attributes$checked(
+													_elm_lang$core$Native_Utils.eq(
+														currentState,
+														_elm_lang$core$Maybe$Just(_user$project$Internal_Checkbox_Model$Checked))),
+												_1: {
+													ctor: '::',
+													_0: _elm_lang$html$Html_Attributes$disabled(config.disabled),
+													_1: {ctor: '[]'}
+												}
 											}
 										}
 									}
@@ -14344,7 +14438,22 @@ var _user$project$Internal_Checkbox_Implementation$checkbox = F4(
 				}
 			});
 	});
-var _user$project$Internal_Checkbox_Implementation$view = A3(_user$project$Internal_Component$render, _user$project$Internal_Checkbox_Implementation$get, _user$project$Internal_Checkbox_Implementation$checkbox, _user$project$Internal_Msg$CheckboxMsg);
+var _user$project$Internal_Checkbox_Implementation$view = F4(
+	function (lift, index, store, options) {
+		return A7(
+			_user$project$Internal_Component$render,
+			_user$project$Internal_Checkbox_Implementation$get,
+			_user$project$Internal_Checkbox_Implementation$checkbox,
+			_user$project$Internal_Msg$CheckboxMsg,
+			lift,
+			index,
+			store,
+			{
+				ctor: '::',
+				_0: _user$project$Internal_Options$id_(index),
+				_1: options
+			});
+	});
 var _user$project$Internal_Checkbox_Implementation$update = F3(
 	function (_p6, msg, model) {
 		var _p7 = msg;
@@ -14389,9 +14498,358 @@ var _user$project$Internal_Checkbox_Implementation$update = F3(
 		}
 	});
 var _user$project$Internal_Checkbox_Implementation$react = A4(_user$project$Internal_Component$react, _user$project$Internal_Checkbox_Implementation$get, _user$project$Internal_Checkbox_Implementation$set, _user$project$Internal_Msg$CheckboxMsg, _user$project$Internal_Checkbox_Implementation$update);
-var _user$project$Internal_Checkbox_Implementation$Config = F3(
-	function (a, b, c) {
-		return {state: a, disabled: b, nativeControl: c};
+var _user$project$Internal_Checkbox_Implementation$Config = F4(
+	function (a, b, c, d) {
+		return {state: a, disabled: b, nativeControl: c, id_: d};
+	});
+
+var _user$project$Internal_Chip_Implementation$_p0 = A3(
+	_user$project$Internal_Component$indexed,
+	function (_) {
+		return _.chip;
+	},
+	F2(
+		function (x, y) {
+			return _elm_lang$core$Native_Utils.update(
+				y,
+				{chip: x});
+		}),
+	_user$project$Internal_Chip_Model$defaultModel);
+var _user$project$Internal_Chip_Implementation$get = _user$project$Internal_Chip_Implementation$_p0._0;
+var _user$project$Internal_Chip_Implementation$set = _user$project$Internal_Chip_Implementation$_p0._1;
+var _user$project$Internal_Chip_Implementation$input = _user$project$Internal_Options$cs('mdc-chip-set--input');
+var _user$project$Internal_Chip_Implementation$choice = _user$project$Internal_Options$cs('mdc-chip-set--choice');
+var _user$project$Internal_Chip_Implementation$filter = _user$project$Internal_Options$cs('mdc-chip-set--filter');
+var _user$project$Internal_Chip_Implementation$decodeKeyCode = _elm_lang$html$Html_Events$keyCode;
+var _user$project$Internal_Chip_Implementation$decodeKey = A2(
+	_elm_lang$core$Json_Decode$at,
+	{
+		ctor: '::',
+		_0: 'key',
+		_1: {ctor: '[]'}
+	},
+	_elm_lang$core$Json_Decode$string);
+var _user$project$Internal_Chip_Implementation$onClick = function (msg) {
+	var trigger = F2(
+		function (key, keyCode) {
+			var isEnter = _elm_lang$core$Native_Utils.eq(key, 'Enter') || _elm_lang$core$Native_Utils.eq(keyCode, 13);
+			return isEnter ? _elm_lang$core$Json_Decode$succeed(msg) : _elm_lang$core$Json_Decode$fail('');
+		});
+	return _user$project$Internal_Options$many(
+		{
+			ctor: '::',
+			_0: _user$project$Internal_Options$onClick(msg),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_user$project$Internal_Options$on,
+					'keyup',
+					A2(
+						_elm_lang$core$Json_Decode$andThen,
+						_elm_lang$core$Basics$identity,
+						A3(_elm_lang$core$Json_Decode$map2, trigger, _user$project$Internal_Chip_Implementation$decodeKey, _user$project$Internal_Chip_Implementation$decodeKeyCode))),
+				_1: {ctor: '[]'}
+			}
+		});
+};
+var _user$project$Internal_Chip_Implementation$checkmark = _user$project$Internal_Options$option(
+	function (config) {
+		return _elm_lang$core$Native_Utils.update(
+			config,
+			{checkmark: true});
+	});
+var _user$project$Internal_Chip_Implementation$selected = _user$project$Internal_Options$option(
+	function (config) {
+		return _elm_lang$core$Native_Utils.update(
+			config,
+			{selected: true});
+	});
+var _user$project$Internal_Chip_Implementation$trailingIcon = function (str) {
+	return _user$project$Internal_Options$option(
+		function (config) {
+			return _elm_lang$core$Native_Utils.update(
+				config,
+				{
+					trailingIcon: _elm_lang$core$Maybe$Just(str)
+				});
+		});
+};
+var _user$project$Internal_Chip_Implementation$leadingIcon = function (str) {
+	return _user$project$Internal_Options$option(
+		function (config) {
+			return _elm_lang$core$Native_Utils.update(
+				config,
+				{
+					leadingIcon: _elm_lang$core$Maybe$Just(str)
+				});
+		});
+};
+var _user$project$Internal_Chip_Implementation$defaultConfig = {leadingIcon: _elm_lang$core$Maybe$Nothing, trailingIcon: _elm_lang$core$Maybe$Nothing, onClick: _elm_lang$core$Maybe$Nothing, selected: false, checkmark: false};
+var _user$project$Internal_Chip_Implementation$chipset = F2(
+	function (options, nodes) {
+		var _p1 = A2(_user$project$Internal_Options$collect, _user$project$Internal_Chip_Implementation$defaultConfig, options);
+		var summary = _p1;
+		var config = _p1.config;
+		return A5(
+			_user$project$Internal_Options$apply,
+			summary,
+			_elm_lang$html$Html$div,
+			{
+				ctor: '::',
+				_0: _user$project$Internal_Options$cs('mdc-chip-set'),
+				_1: {ctor: '[]'}
+			},
+			{ctor: '[]'},
+			nodes);
+	});
+var _user$project$Internal_Chip_Implementation$chip = F4(
+	function (lift, model, options, nodes) {
+		var ripple = A4(
+			_user$project$Internal_Ripple_Implementation$view,
+			false,
+			function (_p2) {
+				return lift(
+					_user$project$Internal_Chip_Model$RippleMsg(_p2));
+			},
+			model.ripple,
+			{ctor: '[]'});
+		var _p3 = A2(_user$project$Internal_Options$collect, _user$project$Internal_Chip_Implementation$defaultConfig, options);
+		var summary = _p3;
+		var config = _p3.config;
+		return A5(
+			_user$project$Internal_Options$apply,
+			summary,
+			_elm_lang$html$Html$div,
+			{
+				ctor: '::',
+				_0: _user$project$Internal_Options$cs('mdc-chip'),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_user$project$Internal_Options$when,
+						config.selected,
+						_user$project$Internal_Options$cs('mdc-chip--selected')),
+					_1: {
+						ctor: '::',
+						_0: _user$project$Internal_Options$cs('mdc-js-ripple-effect'),
+						_1: {
+							ctor: '::',
+							_0: _user$project$Internal_Options$many(
+								{
+									ctor: '::',
+									_0: ripple.interactionHandler,
+									_1: {
+										ctor: '::',
+										_0: ripple.properties,
+										_1: {ctor: '[]'}
+									}
+								}),
+							_1: {
+								ctor: '::',
+								_0: A2(
+									_elm_lang$core$Maybe$withDefault,
+									_user$project$Internal_Options$nop,
+									A2(
+										_elm_lang$core$Maybe$map,
+										function (_p4) {
+											return _user$project$Internal_Options$onClick(
+												lift(
+													_user$project$Internal_Chip_Model$Click(_p4)));
+										},
+										config.onClick)),
+								_1: {
+									ctor: '::',
+									_0: _user$project$Internal_Options$attribute(
+										_elm_lang$html$Html_Attributes$tabindex(0)),
+									_1: {ctor: '[]'}
+								}
+							}
+						}
+					}
+				}
+			},
+			{ctor: '[]'},
+			_elm_lang$core$List$concat(
+				{
+					ctor: '::',
+					_0: A2(
+						_elm_lang$core$Maybe$withDefault,
+						{ctor: '[]'},
+						A2(
+							_elm_lang$core$Maybe$map,
+							function (icon) {
+								return {
+									ctor: '::',
+									_0: A2(
+										_user$project$Internal_Icon_Implementation$view,
+										{
+											ctor: '::',
+											_0: _user$project$Internal_Options$cs('mdc-chip__icon mdc-chip__icon--leading'),
+											_1: {
+												ctor: '::',
+												_0: A2(
+													_user$project$Internal_Options$when,
+													config.selected && config.checkmark,
+													_user$project$Internal_Options$cs('mdc-chip__icon--leading-hidden')),
+												_1: {
+													ctor: '::',
+													_0: A2(_user$project$Internal_Options$css, 'font-size', '20px'),
+													_1: {ctor: '[]'}
+												}
+											}
+										},
+										icon),
+									_1: {ctor: '[]'}
+								};
+							},
+							config.leadingIcon)),
+					_1: {
+						ctor: '::',
+						_0: {
+							ctor: '::',
+							_0: config.checkmark ? A3(
+								_user$project$Internal_Options$styled,
+								_elm_lang$html$Html$div,
+								{
+									ctor: '::',
+									_0: _user$project$Internal_Options$cs('mdc-chip__checkmark'),
+									_1: {ctor: '[]'}
+								},
+								{
+									ctor: '::',
+									_0: A2(
+										_elm_lang$svg$Svg$svg,
+										{
+											ctor: '::',
+											_0: _elm_lang$svg$Svg_Attributes$class('mdc-chip__checkmark-svg'),
+											_1: {
+												ctor: '::',
+												_0: _elm_lang$svg$Svg_Attributes$viewBox('-2 -3 30 30'),
+												_1: {ctor: '[]'}
+											}
+										},
+										{
+											ctor: '::',
+											_0: A2(
+												_elm_lang$svg$Svg$path,
+												{
+													ctor: '::',
+													_0: _elm_lang$svg$Svg_Attributes$class('mdc-chip__checkmark-path'),
+													_1: {
+														ctor: '::',
+														_0: _elm_lang$svg$Svg_Attributes$fill('none'),
+														_1: {
+															ctor: '::',
+															_0: _elm_lang$svg$Svg_Attributes$stroke('white'),
+															_1: {
+																ctor: '::',
+																_0: _elm_lang$svg$Svg_Attributes$d('M1.73,12.91 8.1,19.28 22.79,4.59'),
+																_1: {ctor: '[]'}
+															}
+														}
+													}
+												},
+												{ctor: '[]'}),
+											_1: {ctor: '[]'}
+										}),
+									_1: {ctor: '[]'}
+								}) : _elm_lang$html$Html$text(''),
+							_1: {ctor: '[]'}
+						},
+						_1: {
+							ctor: '::',
+							_0: {
+								ctor: '::',
+								_0: A3(
+									_user$project$Internal_Options$styled,
+									_elm_lang$html$Html$div,
+									{
+										ctor: '::',
+										_0: _user$project$Internal_Options$cs('mdc-chip__text'),
+										_1: {ctor: '[]'}
+									},
+									nodes),
+								_1: {ctor: '[]'}
+							},
+							_1: {
+								ctor: '::',
+								_0: A2(
+									_elm_lang$core$Maybe$withDefault,
+									{ctor: '[]'},
+									A2(
+										_elm_lang$core$Maybe$map,
+										function (icon) {
+											return {
+												ctor: '::',
+												_0: A2(
+													_user$project$Internal_Icon_Implementation$view,
+													{
+														ctor: '::',
+														_0: _user$project$Internal_Options$cs('mdc-chip__icon mdc-chip__icon--trailing'),
+														_1: {
+															ctor: '::',
+															_0: _user$project$Internal_Options$attribute(
+																_elm_lang$html$Html_Attributes$tabindex(0)),
+															_1: {
+																ctor: '::',
+																_0: _user$project$Internal_Options$role('button'),
+																_1: {ctor: '[]'}
+															}
+														}
+													},
+													icon),
+												_1: {ctor: '[]'}
+											};
+										},
+										config.trailingIcon)),
+								_1: {
+									ctor: '::',
+									_0: {
+										ctor: '::',
+										_0: ripple.style,
+										_1: {ctor: '[]'}
+									},
+									_1: {ctor: '[]'}
+								}
+							}
+						}
+					}
+				}));
+	});
+var _user$project$Internal_Chip_Implementation$view = A3(_user$project$Internal_Component$render, _user$project$Internal_Chip_Implementation$get, _user$project$Internal_Chip_Implementation$chip, _user$project$Internal_Msg$ChipMsg);
+var _user$project$Internal_Chip_Implementation$update = F3(
+	function (lift, msg, model) {
+		var _p5 = msg;
+		if (_p5.ctor === 'RippleMsg') {
+			var _p6 = A2(_user$project$Internal_Ripple_Implementation$update, _p5._0, model.ripple);
+			var ripple = _p6._0;
+			var cmd = _p6._1;
+			return {
+				ctor: '_Tuple2',
+				_0: _elm_lang$core$Maybe$Just(
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{ripple: ripple})),
+				_1: A2(
+					_elm_lang$core$Platform_Cmd$map,
+					function (_p7) {
+						return lift(
+							_user$project$Internal_Chip_Model$RippleMsg(_p7));
+					},
+					cmd)
+			};
+		} else {
+			return {
+				ctor: '_Tuple2',
+				_0: _elm_lang$core$Maybe$Nothing,
+				_1: A2(_user$project$Internal_Helpers$delayedCmd, 150, _p5._0)
+			};
+		}
+	});
+var _user$project$Internal_Chip_Implementation$react = A4(_user$project$Internal_Component$react, _user$project$Internal_Chip_Implementation$get, _user$project$Internal_Chip_Implementation$set, _user$project$Internal_Msg$ChipMsg, _user$project$Internal_Chip_Implementation$update);
+var _user$project$Internal_Chip_Implementation$Config = F5(
+	function (a, b, c, d, e) {
+		return {leadingIcon: a, trailingIcon: b, onClick: c, selected: d, checkmark: e};
 	});
 
 var _user$project$Internal_Dialog_Implementation$close = _debois$elm_dom$DOM$target(
@@ -14804,10 +15262,25 @@ var _user$project$Internal_List_Implementation$ul = function (options) {
 		},
 		{ctor: '[]'});
 };
-var _user$project$Internal_List_Implementation$nav = function (options) {
+var _user$project$Internal_List_Implementation$ol = function (options) {
 	var _p1 = A2(_user$project$Internal_Options$collect, _user$project$Internal_List_Implementation$defaultConfig, options);
 	var summary = _p1;
 	var config = _p1.config;
+	return A4(
+		_user$project$Internal_Options$apply,
+		summary,
+		A2(_elm_lang$core$Maybe$withDefault, _elm_lang$html$Html$ol, config.node),
+		{
+			ctor: '::',
+			_0: _user$project$Internal_Options$cs('mdc-list'),
+			_1: {ctor: '[]'}
+		},
+		{ctor: '[]'});
+};
+var _user$project$Internal_List_Implementation$nav = function (options) {
+	var _p2 = A2(_user$project$Internal_Options$collect, _user$project$Internal_List_Implementation$defaultConfig, options);
+	var summary = _p2;
+	var config = _p2.config;
 	return A4(
 		_user$project$Internal_Options$apply,
 		summary,
@@ -14820,9 +15293,9 @@ var _user$project$Internal_List_Implementation$nav = function (options) {
 		{ctor: '[]'});
 };
 var _user$project$Internal_List_Implementation$li = function (options) {
-	var _p2 = A2(_user$project$Internal_Options$collect, _user$project$Internal_List_Implementation$defaultConfig, options);
-	var summary = _p2;
-	var config = _p2.config;
+	var _p3 = A2(_user$project$Internal_Options$collect, _user$project$Internal_List_Implementation$defaultConfig, options);
+	var summary = _p3;
+	var config = _p3.config;
 	return A4(
 		_user$project$Internal_Options$apply,
 		summary,
@@ -14835,9 +15308,9 @@ var _user$project$Internal_List_Implementation$li = function (options) {
 		{ctor: '[]'});
 };
 var _user$project$Internal_List_Implementation$a = function (options) {
-	var _p3 = A2(_user$project$Internal_Options$collect, _user$project$Internal_List_Implementation$defaultConfig, options);
-	var summary = _p3;
-	var config = _p3.config;
+	var _p4 = A2(_user$project$Internal_Options$collect, _user$project$Internal_List_Implementation$defaultConfig, options);
+	var summary = _p4;
+	var config = _p4.config;
 	return A4(
 		_user$project$Internal_Options$apply,
 		summary,
@@ -14850,9 +15323,9 @@ var _user$project$Internal_List_Implementation$a = function (options) {
 		{ctor: '[]'});
 };
 var _user$project$Internal_List_Implementation$divider = function (options) {
-	var _p4 = A2(_user$project$Internal_Options$collect, _user$project$Internal_List_Implementation$defaultConfig, options);
-	var summary = _p4;
-	var config = _p4.config;
+	var _p5 = A2(_user$project$Internal_Options$collect, _user$project$Internal_List_Implementation$defaultConfig, options);
+	var summary = _p5;
+	var config = _p5.config;
 	return A4(
 		_user$project$Internal_Options$apply,
 		summary,
@@ -14862,17 +15335,16 @@ var _user$project$Internal_List_Implementation$divider = function (options) {
 			_0: _user$project$Internal_Options$cs('mdc-list-divider'),
 			_1: {
 				ctor: '::',
-				_0: _user$project$Internal_Options$attribute(
-					A2(_elm_lang$html$Html_Attributes$attribute, 'role', 'separator')),
+				_0: _user$project$Internal_Options$role('separator'),
 				_1: {ctor: '[]'}
 			}
 		},
 		{ctor: '[]'});
 };
 var _user$project$Internal_List_Implementation$groupDivider = function (options) {
-	var _p5 = A2(_user$project$Internal_Options$collect, _user$project$Internal_List_Implementation$defaultConfig, options);
-	var summary = _p5;
-	var config = _p5.config;
+	var _p6 = A2(_user$project$Internal_Options$collect, _user$project$Internal_List_Implementation$defaultConfig, options);
+	var summary = _p6;
+	var config = _p6.config;
 	return A4(
 		_user$project$Internal_Options$apply,
 		summary,
@@ -15497,6 +15969,10 @@ var _user$project$Internal_IconToggle_Implementation$label = function (label) {
 				{label: label});
 		});
 };
+var _user$project$Internal_IconToggle_Implementation$label1 = function (value) {
+	return _user$project$Internal_IconToggle_Implementation$label(
+		{on: value, off: value});
+};
 var _user$project$Internal_IconToggle_Implementation$icon = function (icon) {
 	return _user$project$Internal_Options$option(
 		function (config) {
@@ -15504,6 +15980,10 @@ var _user$project$Internal_IconToggle_Implementation$icon = function (icon) {
 				config,
 				{icon: icon});
 		});
+};
+var _user$project$Internal_IconToggle_Implementation$icon1 = function (value) {
+	return _user$project$Internal_IconToggle_Implementation$icon(
+		{on: value, off: value});
 };
 var _user$project$Internal_IconToggle_Implementation$className = function (className) {
 	return _user$project$Internal_Options$option(
@@ -16370,7 +16850,7 @@ var _user$project$Internal_Menu_Implementation$update = F3(
 								{
 									geometry: _elm_lang$core$Maybe$Just(_p46._1),
 									quickOpen: _elm_lang$core$Maybe$Just(_p46._0.quickOpen),
-									focusedItemAtIndex: A2(_elm_lang$core$Debug$log, 'index', _p46._0.index)
+									focusedItemAtIndex: _p46._0.index
 								})),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
@@ -16557,7 +17037,8 @@ var _user$project$Internal_RadioButton_Implementation$disabled = _user$project$I
 var _user$project$Internal_RadioButton_Implementation$defaultConfig = {
 	value: false,
 	disabled: false,
-	nativeControl: {ctor: '[]'}
+	nativeControl: {ctor: '[]'},
+	id_: ''
 };
 var _user$project$Internal_RadioButton_Implementation$radioButton = F4(
 	function (lift, model, options, _p1) {
@@ -16608,49 +17089,53 @@ var _user$project$Internal_RadioButton_Implementation$radioButton = F4(
 						_0: _user$project$Internal_Options$cs('mdc-radio__native-control'),
 						_1: {
 							ctor: '::',
-							_0: _user$project$Internal_Options$attribute(
-								_elm_lang$html$Html_Attributes$type_('radio')),
+							_0: _user$project$Internal_Options$id(config.id_),
 							_1: {
 								ctor: '::',
 								_0: _user$project$Internal_Options$attribute(
-									_elm_lang$html$Html_Attributes$checked(config.value)),
+									_elm_lang$html$Html_Attributes$type_('radio')),
 								_1: {
 									ctor: '::',
-									_0: _user$project$Internal_Options$onFocus(
-										lift(
-											_user$project$Internal_RadioButton_Model$SetFocus(true))),
+									_0: _user$project$Internal_Options$attribute(
+										_elm_lang$html$Html_Attributes$checked(config.value)),
 									_1: {
 										ctor: '::',
-										_0: _user$project$Internal_Options$onBlur(
+										_0: _user$project$Internal_Options$onFocus(
 											lift(
-												_user$project$Internal_RadioButton_Model$SetFocus(false))),
+												_user$project$Internal_RadioButton_Model$SetFocus(true))),
 										_1: {
 											ctor: '::',
-											_0: A3(
-												_user$project$Internal_Options$onWithOptions,
-												'click',
-												preventDefault,
-												_elm_lang$core$Json_Decode$succeed(
-													lift(_user$project$Internal_RadioButton_Model$NoOp))),
+											_0: _user$project$Internal_Options$onBlur(
+												lift(
+													_user$project$Internal_RadioButton_Model$SetFocus(false))),
 											_1: {
 												ctor: '::',
-												_0: function (_p4) {
-													return A2(
-														_user$project$Internal_Options$when,
-														config.disabled,
-														_user$project$Internal_Options$many(_p4));
-												}(
-													{
-														ctor: '::',
-														_0: _user$project$Internal_Options$cs('mdc-radio--disabled'),
-														_1: {
+												_0: A3(
+													_user$project$Internal_Options$onWithOptions,
+													'click',
+													preventDefault,
+													_elm_lang$core$Json_Decode$succeed(
+														lift(_user$project$Internal_RadioButton_Model$NoOp))),
+												_1: {
+													ctor: '::',
+													_0: function (_p4) {
+														return A2(
+															_user$project$Internal_Options$when,
+															config.disabled,
+															_user$project$Internal_Options$many(_p4));
+													}(
+														{
 															ctor: '::',
-															_0: _user$project$Internal_Options$attribute(
-																_elm_lang$html$Html_Attributes$disabled(true)),
-															_1: {ctor: '[]'}
-														}
-													}),
-												_1: {ctor: '[]'}
+															_0: _user$project$Internal_Options$cs('mdc-radio--disabled'),
+															_1: {
+																ctor: '::',
+																_0: _user$project$Internal_Options$attribute(
+																	_elm_lang$html$Html_Attributes$disabled(true)),
+																_1: {ctor: '[]'}
+															}
+														}),
+													_1: {ctor: '[]'}
+												}
 											}
 										}
 									}
@@ -16702,7 +17187,22 @@ var _user$project$Internal_RadioButton_Implementation$radioButton = F4(
 				}
 			});
 	});
-var _user$project$Internal_RadioButton_Implementation$view = A3(_user$project$Internal_Component$render, _user$project$Internal_RadioButton_Implementation$get, _user$project$Internal_RadioButton_Implementation$radioButton, _user$project$Internal_Msg$RadioButtonMsg);
+var _user$project$Internal_RadioButton_Implementation$view = F4(
+	function (lift, index, store, options) {
+		return A7(
+			_user$project$Internal_Component$render,
+			_user$project$Internal_RadioButton_Implementation$get,
+			_user$project$Internal_RadioButton_Implementation$radioButton,
+			_user$project$Internal_Msg$RadioButtonMsg,
+			lift,
+			index,
+			store,
+			{
+				ctor: '::',
+				_0: _user$project$Internal_Options$id_(index),
+				_1: options
+			});
+	});
 var _user$project$Internal_RadioButton_Implementation$update = F3(
 	function (lift, msg, model) {
 		var _p5 = msg;
@@ -16739,96 +17239,11 @@ var _user$project$Internal_RadioButton_Implementation$update = F3(
 		}
 	});
 var _user$project$Internal_RadioButton_Implementation$react = A4(_user$project$Internal_Component$react, _user$project$Internal_RadioButton_Implementation$get, _user$project$Internal_RadioButton_Implementation$set, _user$project$Internal_Msg$RadioButtonMsg, _user$project$Internal_RadioButton_Implementation$update);
-var _user$project$Internal_RadioButton_Implementation$Config = F3(
-	function (a, b, c) {
-		return {value: a, disabled: b, nativeControl: c};
+var _user$project$Internal_RadioButton_Implementation$Config = F4(
+	function (a, b, c, d) {
+		return {value: a, disabled: b, nativeControl: c, id_: d};
 	});
 
-var _user$project$Internal_Select_Implementation$decodeGeometry = function () {
-	var itemOffsetTops = A2(
-		_debois$elm_dom$DOM$childNode,
-		1,
-		A2(
-			_debois$elm_dom$DOM$childNode,
-			0,
-			_debois$elm_dom$DOM$childNodes(_debois$elm_dom$DOM$offsetTop)));
-	var menuHeight = A2(_debois$elm_dom$DOM$childNode, 1, _debois$elm_dom$DOM$offsetHeight);
-	var boundingClientRect = A2(
-		_elm_lang$core$Json_Decode$at,
-		{
-			ctor: '::',
-			_0: 'targetRect',
-			_1: {ctor: '[]'}
-		},
-		A5(
-			_elm_lang$core$Json_Decode$map4,
-			F4(
-				function (top, left, width, height) {
-					return {top: top, left: left, width: width, height: height};
-				}),
-			A2(
-				_elm_lang$core$Json_Decode$at,
-				{
-					ctor: '::',
-					_0: 'top',
-					_1: {ctor: '[]'}
-				},
-				_elm_lang$core$Json_Decode$float),
-			A2(
-				_elm_lang$core$Json_Decode$at,
-				{
-					ctor: '::',
-					_0: 'left',
-					_1: {ctor: '[]'}
-				},
-				_elm_lang$core$Json_Decode$float),
-			A2(
-				_elm_lang$core$Json_Decode$at,
-				{
-					ctor: '::',
-					_0: 'width',
-					_1: {ctor: '[]'}
-				},
-				_elm_lang$core$Json_Decode$float),
-			A2(
-				_elm_lang$core$Json_Decode$at,
-				{
-					ctor: '::',
-					_0: 'height',
-					_1: {ctor: '[]'}
-				},
-				_elm_lang$core$Json_Decode$float)));
-	var windowInnerHeight = A2(
-		_elm_lang$core$Json_Decode$at,
-		{
-			ctor: '::',
-			_0: 'ownerDocument',
-			_1: {
-				ctor: '::',
-				_0: 'defaultView',
-				_1: {ctor: '[]'}
-			}
-		},
-		A2(
-			_elm_lang$core$Json_Decode$at,
-			{
-				ctor: '::',
-				_0: 'innerHeight',
-				_1: {ctor: '[]'}
-			},
-			_elm_lang$core$Json_Decode$float));
-	return A2(
-		_elm_lang$core$Json_Decode$andThen,
-		function (boundingClientRect) {
-			return A4(
-				_elm_lang$core$Json_Decode$map3,
-				_user$project$Internal_Select_Model$Geometry(boundingClientRect),
-				_debois$elm_dom$DOM$target(windowInnerHeight),
-				_debois$elm_dom$DOM$target(menuHeight),
-				_debois$elm_dom$DOM$target(itemOffsetTops));
-		},
-		boundingClientRect);
-}();
 var _user$project$Internal_Select_Implementation$_p0 = A3(
 	_user$project$Internal_Component$indexed,
 	function (_) {
@@ -16843,6 +17258,13 @@ var _user$project$Internal_Select_Implementation$_p0 = A3(
 	_user$project$Internal_Select_Model$defaultModel);
 var _user$project$Internal_Select_Implementation$get = _user$project$Internal_Select_Implementation$_p0._0;
 var _user$project$Internal_Select_Implementation$set = _user$project$Internal_Select_Implementation$_p0._1;
+var _user$project$Internal_Select_Implementation$selected = _user$project$Internal_Options$attribute(
+	_elm_lang$html$Html_Attributes$selected(true));
+var _user$project$Internal_Select_Implementation$value = function (_p1) {
+	return _user$project$Internal_Options$attribute(
+		_elm_lang$html$Html_Attributes$value(_p1));
+};
+var _user$project$Internal_Select_Implementation$option = _user$project$Internal_Options$styled(_elm_lang$html$Html$option);
 var _user$project$Internal_Select_Implementation$box = _user$project$Internal_Options$cs('mdc-select--box');
 var _user$project$Internal_Select_Implementation$disabled = _user$project$Internal_Options$option(
 	function (config) {
@@ -16850,81 +17272,49 @@ var _user$project$Internal_Select_Implementation$disabled = _user$project$Intern
 			config,
 			{disabled: true});
 	});
-var _user$project$Internal_Select_Implementation$selectedText = function (selectedText) {
-	return _user$project$Internal_Options$option(
-		function (config) {
-			return _elm_lang$core$Native_Utils.update(
-				config,
-				{
-					selectedText: _elm_lang$core$Maybe$Just(selectedText)
-				});
-		});
-};
-var _user$project$Internal_Select_Implementation$index = function (index) {
-	return _user$project$Internal_Options$option(
-		function (config) {
-			return _elm_lang$core$Native_Utils.update(
-				config,
-				{
-					index: _elm_lang$core$Maybe$Just(index)
-				});
-		});
-};
-var _user$project$Internal_Select_Implementation$label = function (_p1) {
+var _user$project$Internal_Select_Implementation$preselected = _user$project$Internal_Options$option(
+	function (config) {
+		return _elm_lang$core$Native_Utils.update(
+			config,
+			{preselected: true});
+	});
+var _user$project$Internal_Select_Implementation$label = function (_p2) {
 	return _user$project$Internal_Options$option(
 		F2(
 			function (value, config) {
 				return _elm_lang$core$Native_Utils.update(
 					config,
 					{label: value});
-			})(_p1));
+			})(_p2));
 };
-var _user$project$Internal_Select_Implementation$defaultConfig = {label: '', index: _elm_lang$core$Maybe$Nothing, selectedText: _elm_lang$core$Maybe$Nothing, disabled: false};
+var _user$project$Internal_Select_Implementation$defaultConfig = {label: '', box: false, disabled: false, preselected: false, id_: ''};
 var _user$project$Internal_Select_Implementation$select = F4(
-	function (lift, model, options, items) {
-		var isOpen = model.menu.animating ? (model.menu.open && (!_elm_lang$core$Native_Utils.eq(model.menu.geometry, _elm_lang$core$Maybe$Nothing))) : model.menu.open;
-		var geometry = A2(_elm_lang$core$Maybe$withDefault, _user$project$Internal_Select_Model$defaultGeometry, model.geometry);
-		var left = geometry.boundingClientRect.left;
-		var top = geometry.boundingClientRect.top;
-		var _p2 = A2(_user$project$Internal_Options$collect, _user$project$Internal_Select_Implementation$defaultConfig, options);
-		var summary = _p2;
-		var config = _p2.config;
-		var itemOffsetTop = A2(
-			_elm_lang$core$Maybe$withDefault,
-			0,
-			A2(
-				_elm_lang$core$Maybe$withDefault,
-				_elm_lang$core$List$head(
-					A2(
-						_elm_lang$core$List$drop,
-						A2(_elm_lang$core$Maybe$withDefault, 0, config.index),
-						geometry.itemOffsetTops)),
-				A2(
-					_elm_lang$core$Maybe$map,
-					_elm_lang$core$Maybe$Just,
-					A2(
-						_elm_lang$core$Maybe$andThen,
-						function (index) {
-							return _elm_lang$core$List$head(
-								A2(
-									_elm_lang$core$List$drop,
-									A2(_elm_lang$core$Maybe$withDefault, 0, model.index),
-									geometry.itemOffsetTops));
-						},
-						model.index))));
-		var adjustedTop = function () {
-			var adjustedTop_ = top - itemOffsetTop;
-			var overflowsTop = _elm_lang$core$Native_Utils.cmp(adjustedTop_, 0) < 0;
-			var overflowsBottom = _elm_lang$core$Native_Utils.cmp(adjustedTop_ + geometry.menuHeight, geometry.windowInnerHeight) > 0;
-			return overflowsTop ? 0 : (overflowsBottom ? A2(_elm_lang$core$Basics$max, 0, geometry.windowInnerHeight - geometry.menuHeight) : adjustedTop_);
-		}();
-		var transformOrigin = A2(
-			_elm_lang$core$Basics_ops['++'],
-			'center ',
-			A2(
-				_elm_lang$core$Basics_ops['++'],
-				_elm_lang$core$Basics$toString(itemOffsetTop),
-				'px'));
+	function (lift, model, options, items_) {
+		var isDirty = model.isDirty;
+		var _p3 = A2(_user$project$Internal_Options$collect, _user$project$Internal_Select_Implementation$defaultConfig, options);
+		var summary = _p3;
+		var config = _p3.config;
+		var focused = model.focused && (!config.disabled);
+		var items = config.preselected ? items_ : {
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$option,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$value(''),
+					_1: {
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$disabled(true),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$selected(true),
+							_1: {ctor: '[]'}
+						}
+					}
+				},
+				{ctor: '[]'}),
+			_1: items_
+		};
 		return A5(
 			_user$project$Internal_Options$apply,
 			summary,
@@ -16936,271 +17326,182 @@ var _user$project$Internal_Select_Implementation$select = F4(
 					ctor: '::',
 					_0: A2(
 						_user$project$Internal_Options$when,
-						isOpen,
-						_user$project$Internal_Options$cs('mdc-select--open')),
+						config.disabled,
+						_user$project$Internal_Options$cs('mdc-select--disabled')),
 					_1: {
 						ctor: '::',
-						_0: A2(
-							_user$project$Internal_Options$when,
-							model.menu.animating && _elm_lang$core$Native_Utils.eq(model.menu.geometry, _elm_lang$core$Maybe$Nothing),
-							A2(
-								_user$project$Internal_GlobalEvents$onTickWith,
-								{targetRect: true, parentRect: false},
-								A2(
-									_elm_lang$core$Json_Decode$map,
-									function (_p3) {
-										return lift(
-											_user$project$Internal_Select_Model$Init(_p3));
-									},
-									_user$project$Internal_Select_Implementation$decodeGeometry))),
-						_1: {
-							ctor: '::',
-							_0: A2(
-								_user$project$Internal_Options$when,
-								!config.disabled,
-								_user$project$Internal_Menu_Implementation$connect(
-									function (_p4) {
-										return lift(
-											A2(_user$project$Internal_Select_Model$MenuMsg, config.index, _p4));
-									})),
-							_1: {
-								ctor: '::',
-								_0: A2(
-									_user$project$Internal_Options$when,
-									config.disabled,
-									_user$project$Internal_Options$cs('mdc-select--disabled')),
-								_1: {ctor: '[]'}
-							}
-						}
+						_0: _user$project$Internal_Options$role('listbox'),
+						_1: {ctor: '[]'}
 					}
 				}
 			},
 			{
 				ctor: '::',
-				_0: A2(_elm_lang$html$Html_Attributes$attribute, 'role', 'listbox'),
-				_1: {
-					ctor: '::',
-					_0: _elm_lang$html$Html_Attributes$tabindex(0),
-					_1: {ctor: '[]'}
-				}
+				_0: _elm_lang$html$Html_Attributes$tabindex(0),
+				_1: {ctor: '[]'}
 			},
 			{
 				ctor: '::',
 				_0: A3(
 					_user$project$Internal_Options$styled,
-					_elm_lang$html$Html$div,
+					_elm_lang$html$Html$select,
 					{
 						ctor: '::',
-						_0: _user$project$Internal_Options$cs('mdc-select__surface'),
-						_1: {ctor: '[]'}
+						_0: _user$project$Internal_Options$cs('mdc-select__native-control'),
+						_1: {
+							ctor: '::',
+							_0: _user$project$Internal_Options$id(config.id_),
+							_1: {
+								ctor: '::',
+								_0: _user$project$Internal_Options$onFocus(
+									lift(_user$project$Internal_Select_Model$Focus)),
+								_1: {
+									ctor: '::',
+									_0: _user$project$Internal_Options$onBlur(
+										lift(_user$project$Internal_Select_Model$Blur)),
+									_1: {
+										ctor: '::',
+										_0: _user$project$Internal_Options$onChange(
+											function (_p4) {
+												return lift(
+													_user$project$Internal_Select_Model$Change(_p4));
+											}),
+										_1: {
+											ctor: '::',
+											_0: A2(
+												_user$project$Internal_Options$when,
+												config.disabled,
+												_user$project$Internal_Options$attribute(
+													_elm_lang$html$Html_Attributes$disabled(true))),
+											_1: {ctor: '[]'}
+										}
+									}
+								}
+							}
+						}
 					},
-					{
+					items),
+				_1: {
+					ctor: '::',
+					_0: A3(
+						_user$project$Internal_Options$styled,
+						_elm_lang$html$Html$label,
+						{
+							ctor: '::',
+							_0: _user$project$Internal_Options$cs('mdc-floating-label'),
+							_1: {
+								ctor: '::',
+								_0: _user$project$Internal_Options$for(config.id_),
+								_1: {
+									ctor: '::',
+									_0: A2(
+										_user$project$Internal_Options$when,
+										focused || (isDirty || config.preselected),
+										_user$project$Internal_Options$cs('mdc-floating-label--float-above')),
+									_1: {ctor: '[]'}
+								}
+							}
+						},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text(config.label),
+							_1: {ctor: '[]'}
+						}),
+					_1: {
 						ctor: '::',
 						_0: A3(
 							_user$project$Internal_Options$styled,
 							_elm_lang$html$Html$div,
 							{
 								ctor: '::',
-								_0: _user$project$Internal_Options$cs('mdc-select__label'),
+								_0: _user$project$Internal_Options$cs('mdc-line-ripple'),
 								_1: {
 									ctor: '::',
 									_0: A2(
 										_user$project$Internal_Options$when,
-										model.menu.open || (!_elm_lang$core$Native_Utils.eq(config.selectedText, _elm_lang$core$Maybe$Nothing)),
-										_user$project$Internal_Options$cs('mdc-select__label--float-above')),
+										focused,
+										_user$project$Internal_Options$cs('mdc-line-ripple--active')),
 									_1: {ctor: '[]'}
 								}
 							},
-							{
-								ctor: '::',
-								_0: _elm_lang$html$Html$text(config.label),
-								_1: {ctor: '[]'}
-							}),
-						_1: {
-							ctor: '::',
-							_0: A3(
-								_user$project$Internal_Options$styled,
-								_elm_lang$html$Html$div,
-								{
-									ctor: '::',
-									_0: _user$project$Internal_Options$cs('mdc-select__selected-text'),
-									_1: {
-										ctor: '::',
-										_0: A2(_user$project$Internal_Options$css, 'pointer-events', 'none'),
-										_1: {ctor: '[]'}
-									}
-								},
-								{
-									ctor: '::',
-									_0: _elm_lang$html$Html$text(
-										A2(_elm_lang$core$Maybe$withDefault, '', config.selectedText)),
-									_1: {ctor: '[]'}
-								}),
-							_1: {
-								ctor: '::',
-								_0: A3(
-									_user$project$Internal_Options$styled,
-									_elm_lang$html$Html$div,
-									{
-										ctor: '::',
-										_0: _user$project$Internal_Options$cs('mdc-select__bottom-line'),
-										_1: {
-											ctor: '::',
-											_0: A2(
-												_user$project$Internal_Options$when,
-												model.menu.open,
-												_user$project$Internal_Options$cs('mdc-select__bottom-line--active')),
-											_1: {ctor: '[]'}
-										}
-									},
-									{ctor: '[]'}),
-								_1: {ctor: '[]'}
-							}
-						}
-					}),
-				_1: {
-					ctor: '::',
-					_0: A4(
-						_user$project$Internal_Menu_Implementation$menu,
-						function (_p5) {
-							return lift(
-								A2(_user$project$Internal_Select_Model$MenuMsg, config.index, _p5));
-						},
-						model.menu,
-						{
-							ctor: '::',
-							_0: _user$project$Internal_Options$cs('mdc-select__menu'),
-							_1: {
-								ctor: '::',
-								_0: _user$project$Internal_Menu_Implementation$index(
-									A2(_elm_lang$core$Maybe$withDefault, 0, config.index)),
-								_1: {
-									ctor: '::',
-									_0: function (_p6) {
-										return A2(
-											_user$project$Internal_Options$when,
-											isOpen,
-											_user$project$Internal_Options$many(_p6));
-									}(
-										{
-											ctor: '::',
-											_0: A2(_user$project$Internal_Options$css, 'position', 'fixed'),
-											_1: {
-												ctor: '::',
-												_0: A2(_user$project$Internal_Options$css, 'transform-origin', transformOrigin),
-												_1: {
-													ctor: '::',
-													_0: A2(
-														_user$project$Internal_Options$css,
-														'left',
-														A2(
-															_elm_lang$core$Basics_ops['++'],
-															_elm_lang$core$Basics$toString(left),
-															'px')),
-													_1: {
-														ctor: '::',
-														_0: A2(
-															_user$project$Internal_Options$css,
-															'top',
-															A2(
-																_elm_lang$core$Basics_ops['++'],
-																_elm_lang$core$Basics$toString(adjustedTop),
-																'px')),
-														_1: {
-															ctor: '::',
-															_0: A2(_user$project$Internal_Options$css, 'bottom', 'unset'),
-															_1: {
-																ctor: '::',
-																_0: A2(_user$project$Internal_Options$css, 'right', 'unset'),
-																_1: {ctor: '[]'}
-															}
-														}
-													}
-												}
-											}
-										}),
-									_1: {ctor: '[]'}
-								}
-							}
-						},
-						A2(
-							_user$project$Internal_Menu_Implementation$ul,
-							{ctor: '[]'},
-							items)),
-					_1: {ctor: '[]'}
+							{ctor: '[]'}),
+						_1: {ctor: '[]'}
+					}
 				}
 			});
 	});
-var _user$project$Internal_Select_Implementation$view = A3(_user$project$Internal_Component$render, _user$project$Internal_Select_Implementation$get, _user$project$Internal_Select_Implementation$select, _user$project$Internal_Msg$SelectMsg);
+var _user$project$Internal_Select_Implementation$view = F4(
+	function (lift, index, store, options) {
+		return A7(
+			_user$project$Internal_Component$render,
+			_user$project$Internal_Select_Implementation$get,
+			_user$project$Internal_Select_Implementation$select,
+			_user$project$Internal_Msg$SelectMsg,
+			lift,
+			index,
+			store,
+			{
+				ctor: '::',
+				_0: _user$project$Internal_Options$id_(index),
+				_1: options
+			});
+	});
 var _user$project$Internal_Select_Implementation$update = F3(
 	function (lift, msg, model) {
-		var _p7 = msg;
-		if (_p7.ctor === 'MenuMsg') {
-			var _p13 = _p7._1;
-			var _p12 = _p7._0;
-			var _p8 = A3(
-				_user$project$Internal_Menu_Implementation$update,
-				function (_p9) {
-					return lift(
-						A2(_user$project$Internal_Select_Model$MenuMsg, _p12, _p9));
-				},
-				_p13,
-				model.menu);
-			var menu = _p8._0;
-			var menuCmd = _p8._1;
-			var _p10 = menu;
-			if (_p10.ctor === 'Just') {
+		var _p5 = msg;
+		switch (_p5.ctor) {
+			case 'Change':
+				var dirty = !_elm_lang$core$Native_Utils.eq(_p5._0, '');
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Maybe$Just(
 						_elm_lang$core$Native_Utils.update(
 							model,
-							{
-								menu: _p10._0,
-								index: function () {
-									var _p11 = _p13;
-									if (_p11.ctor === 'Toggle') {
-										return (!model.menu.open) ? _p12 : _elm_lang$core$Maybe$Nothing;
-									} else {
-										return model.index;
-									}
-								}()
-							})),
-					_1: menuCmd
+							{isDirty: dirty})),
+					_1: _elm_lang$core$Platform_Cmd$none
 				};
-			} else {
-				return {ctor: '_Tuple2', _0: _elm_lang$core$Maybe$Nothing, _1: menuCmd};
-			}
-		} else {
-			return {
-				ctor: '_Tuple2',
-				_0: _elm_lang$core$Maybe$Just(
-					_elm_lang$core$Native_Utils.update(
-						model,
-						{
-							geometry: _elm_lang$core$Maybe$Just(_p7._0)
-						})),
-				_1: _elm_lang$core$Platform_Cmd$none
-			};
+			case 'Blur':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Maybe$Just(
+						_elm_lang$core$Native_Utils.update(
+							model,
+							{focused: false})),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'Focus':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Maybe$Just(
+						_elm_lang$core$Native_Utils.update(
+							model,
+							{focused: true})),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			default:
+				var _p6 = A2(_user$project$Internal_Ripple_Implementation$update, _p5._0, model.ripple);
+				var ripple = _p6._0;
+				var effects = _p6._1;
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Maybe$Just(
+						_elm_lang$core$Native_Utils.update(
+							model,
+							{ripple: ripple})),
+					_1: A2(
+						_elm_lang$core$Platform_Cmd$map,
+						function (_p7) {
+							return lift(
+								_user$project$Internal_Select_Model$RippleMsg(_p7));
+						},
+						effects)
+				};
 		}
 	});
 var _user$project$Internal_Select_Implementation$react = A4(_user$project$Internal_Component$react, _user$project$Internal_Select_Implementation$get, _user$project$Internal_Select_Implementation$set, _user$project$Internal_Msg$SelectMsg, _user$project$Internal_Select_Implementation$update);
-var _user$project$Internal_Select_Implementation$subscriptions = function (model) {
-	return A2(
-		_elm_lang$core$Platform_Sub$map,
-		_user$project$Internal_Select_Model$MenuMsg(_elm_lang$core$Maybe$Nothing),
-		_user$project$Internal_Menu_Implementation$subscriptions(model.menu));
-};
-var _user$project$Internal_Select_Implementation$subs = A3(
-	_user$project$Internal_Component$subs,
-	_user$project$Internal_Msg$SelectMsg,
-	function (_) {
-		return _.select;
-	},
-	_user$project$Internal_Select_Implementation$subscriptions);
-var _user$project$Internal_Select_Implementation$Config = F4(
-	function (a, b, c, d) {
-		return {label: a, index: b, selectedText: c, disabled: d};
+var _user$project$Internal_Select_Implementation$Config = F5(
+	function (a, b, c, d, e) {
+		return {label: a, box: b, disabled: c, preselected: d, id_: e};
 	});
 
 var _user$project$Internal_Slider_Implementation$trackMarkers = _user$project$Internal_Options$option(
@@ -17209,13 +17510,13 @@ var _user$project$Internal_Slider_Implementation$trackMarkers = _user$project$In
 			config,
 			{trackMarkers: true});
 	});
-var _user$project$Internal_Slider_Implementation$steps = function (_p0) {
+var _user$project$Internal_Slider_Implementation$step = function (_p0) {
 	return _user$project$Internal_Options$option(
 		F2(
-			function (steps, config) {
+			function (step, config) {
 				return _elm_lang$core$Native_Utils.update(
 					config,
-					{steps: steps});
+					{step: step});
 			})(_p0));
 };
 var _user$project$Internal_Slider_Implementation$onInput = function (_p1) {
@@ -17297,13 +17598,13 @@ var _user$project$Internal_Slider_Implementation$decodeGeometry = function () {
 			A7(
 				_elm_lang$core$Json_Decode$map6,
 				F6(
-					function (offsetWidth, offsetLeft, discrete, min, max, steps) {
+					function (offsetWidth, offsetLeft, discrete, min, max, step) {
 						return {
 							rect: {width: offsetWidth, left: offsetLeft},
 							discrete: discrete,
 							min: min,
 							max: max,
-							steps: steps
+							step: step
 						};
 					}),
 				_debois$elm_dom$DOM$offsetWidth,
@@ -17338,12 +17639,12 @@ var _user$project$Internal_Slider_Implementation$decodeGeometry = function () {
 						ctor: '::',
 						_0: A2(
 							_user$project$Internal_Slider_Implementation$data,
-							'steps',
+							'step',
 							A2(
 								_elm_lang$core$Json_Decode$map,
 								function (_p6) {
 									return _elm_lang$core$Result$toMaybe(
-										_elm_lang$core$String$toInt(_p6));
+										_elm_lang$core$String$toFloat(_p6));
 								},
 								_elm_lang$core$Json_Decode$string)),
 						_1: {
@@ -17414,20 +17715,19 @@ var _user$project$Internal_Slider_Implementation$discretize = F2(
 		var steps = function (steps) {
 			return _elm_lang$core$Native_Utils.eq(steps, 0) ? 1 : steps;
 		}(
-			A2(
-				_elm_lang$core$Maybe$withDefault,
-				1,
-				A2(_elm_lang$core$Maybe$map, _elm_lang$core$Basics$toFloat, geometry.steps)));
+			A2(_elm_lang$core$Maybe$withDefault, 1, geometry.step));
 		var _p7 = geometry;
 		var discrete = _p7.discrete;
+		var step = _p7.step;
 		var min = _p7.min;
 		var max = _p7.max;
+		var continuous = !discrete;
 		return A3(
 			_elm_lang$core$Basics$clamp,
 			min,
 			max,
 			function () {
-				if (!discrete) {
+				if (continuous) {
 					return continuousValue;
 				} else {
 					var numSteps = _elm_lang$core$Basics$round(continuousValue / steps);
@@ -17498,7 +17798,7 @@ var _user$project$Internal_Slider_Implementation$value = function (_p11) {
 					{value: value});
 			})(_p11));
 };
-var _user$project$Internal_Slider_Implementation$defaultConfig = {value: 0, min: 0, max: 100, steps: 1, discrete: false, onInput: _elm_lang$core$Maybe$Nothing, onChange: _elm_lang$core$Maybe$Nothing, trackMarkers: false};
+var _user$project$Internal_Slider_Implementation$defaultConfig = {value: 0, min: 0, max: 100, step: 1, discrete: false, onInput: _elm_lang$core$Maybe$Nothing, onChange: _elm_lang$core$Maybe$Nothing, trackMarkers: false};
 var _user$project$Internal_Slider_Implementation$valueForKey = F4(
 	function (key, keyCode, geometry, value) {
 		var pageFactor = 4;
@@ -17529,17 +17829,14 @@ var _user$project$Internal_Slider_Implementation$valueForKey = F4(
 		var _p12 = geometry;
 		var max = _p12.max;
 		var min = _p12.min;
-		var steps = _p12.steps;
+		var step = _p12.step;
 		var discrete = _p12.discrete;
 		var isRtl = false;
 		var delta = ((isRtl && (isArrowLeft || isArrowRight)) ? F2(
 			function (x, y) {
 				return x * y;
 			})(-1) : _elm_lang$core$Basics$identity)(
-			discrete ? A2(
-				_elm_lang$core$Maybe$withDefault,
-				1,
-				A2(_elm_lang$core$Maybe$map, _elm_lang$core$Basics$toFloat, steps)) : ((max - min) / 100));
+			discrete ? A2(_elm_lang$core$Maybe$withDefault, 1, step) : ((max - min) / 100));
 		return A2(
 			_elm_lang$core$Maybe$map,
 			A2(_elm_lang$core$Basics$clamp, min, max),
@@ -17608,6 +17905,14 @@ var _user$project$Internal_Slider_Implementation$slider = F4(
 			return c * geometry.rect.width;
 		}();
 		var trackScale = _elm_lang$core$Native_Utils.eq(config.max - config.min, 0) ? 0 : ((value - config.min) / (config.max - config.min));
+		var stepChanged = !_elm_lang$core$Native_Utils.eq(
+			_elm_lang$core$Maybe$Just(config.step),
+			A2(
+				_elm_lang$core$Maybe$andThen,
+				function (_) {
+					return _.step;
+				},
+				model.geometry));
 		return A3(
 			_user$project$Internal_Options$styled,
 			_elm_lang$html$Html$div,
@@ -17728,363 +18033,260 @@ var _user$project$Internal_Slider_Implementation$slider = F4(
 															_1: {
 																ctor: '::',
 																_0: A2(
-																	_user$project$Internal_Options$when,
-																	config.discrete,
-																	A2(
-																		_user$project$Internal_Options$data,
-																		'steps',
-																		_elm_lang$core$Basics$toString(config.steps))),
+																	_user$project$Internal_Options$data,
+																	'step',
+																	_elm_lang$core$Basics$toString(config.step)),
 																_1: {
 																	ctor: '::',
-																	_0: A2(
-																		_user$project$Internal_Options$when,
-																		_elm_lang$core$Native_Utils.eq(model.geometry, _elm_lang$core$Maybe$Nothing),
-																		_user$project$Internal_GlobalEvents$onTick(
-																			A2(
-																				_elm_lang$core$Json_Decode$map,
-																				function (_p16) {
-																					return lift(
-																						_user$project$Internal_Slider_Model$Init(_p16));
-																				},
-																				_user$project$Internal_Slider_Implementation$decodeGeometry))),
+																	_0: _user$project$Internal_Options$role('slider'),
 																	_1: {
 																		ctor: '::',
-																		_0: _user$project$Internal_GlobalEvents$onResize(
-																			A2(
-																				_elm_lang$core$Json_Decode$map,
-																				function (_p17) {
-																					return lift(
-																						_user$project$Internal_Slider_Model$Resize(_p17));
-																				},
-																				_user$project$Internal_Slider_Implementation$decodeGeometry)),
+																		_0: A2(
+																			_user$project$Internal_Options$aria,
+																			'valuemin',
+																			_elm_lang$core$Basics$toString(config.min)),
 																		_1: {
 																			ctor: '::',
 																			_0: A2(
-																				_user$project$Internal_Options$on,
-																				'keydown',
-																				A2(
-																					_elm_lang$core$Json_Decode$map,
-																					lift,
-																					A3(
-																						_elm_lang$core$Json_Decode$map2,
-																						F2(
-																							function (key, keyCode) {
-																								var activeValue = A4(_user$project$Internal_Slider_Implementation$valueForKey, key, keyCode, geometry, config.value);
-																								return (!_elm_lang$core$Native_Utils.eq(activeValue, _elm_lang$core$Maybe$Nothing)) ? _user$project$Internal_Slider_Model$KeyDown : _user$project$Internal_Slider_Model$NoOp;
-																							}),
-																						_elm_lang$core$Json_Decode$oneOf(
-																							{
-																								ctor: '::',
-																								_0: A2(
-																									_elm_lang$core$Json_Decode$map,
-																									_elm_lang$core$Maybe$Just,
-																									A2(
-																										_elm_lang$core$Json_Decode$at,
-																										{
-																											ctor: '::',
-																											_0: 'key',
-																											_1: {ctor: '[]'}
-																										},
-																										_elm_lang$core$Json_Decode$string)),
-																								_1: {
-																									ctor: '::',
-																									_0: _elm_lang$core$Json_Decode$succeed(_elm_lang$core$Maybe$Nothing),
-																									_1: {ctor: '[]'}
-																								}
-																							}),
-																						A2(
-																							_elm_lang$core$Json_Decode$at,
-																							{
-																								ctor: '::',
-																								_0: 'keyCode',
-																								_1: {ctor: '[]'}
-																							},
-																							_elm_lang$core$Json_Decode$int)))),
+																				_user$project$Internal_Options$aria,
+																				'valuemax',
+																				_elm_lang$core$Basics$toString(config.min)),
 																			_1: {
 																				ctor: '::',
 																				_0: A2(
-																					_user$project$Internal_Options$when,
-																					!_elm_lang$core$Native_Utils.eq(config.onChange, _elm_lang$core$Maybe$Nothing),
-																					A2(
-																						_user$project$Internal_Options$on,
-																						'keydown',
-																						A3(
-																							_elm_lang$core$Json_Decode$map2,
-																							F2(
-																								function (key, keyCode) {
-																									var activeValue = A2(
-																										_elm_lang$core$Maybe$map,
-																										_user$project$Internal_Slider_Implementation$discretize(geometry),
-																										A4(_user$project$Internal_Slider_Implementation$valueForKey, key, keyCode, geometry, config.value));
-																									return A2(
-																										_elm_lang$core$Maybe$withDefault,
-																										lift(_user$project$Internal_Slider_Model$NoOp),
-																										A3(
-																											_elm_lang$core$Maybe$map2,
-																											F2(
-																												function (x, y) {
-																													return x(y);
-																												}),
-																											config.onChange,
-																											activeValue));
-																								}),
-																							_elm_lang$core$Json_Decode$oneOf(
-																								{
-																									ctor: '::',
-																									_0: A2(
-																										_elm_lang$core$Json_Decode$map,
-																										_elm_lang$core$Maybe$Just,
-																										A2(
-																											_elm_lang$core$Json_Decode$at,
-																											{
-																												ctor: '::',
-																												_0: 'key',
-																												_1: {ctor: '[]'}
-																											},
-																											_elm_lang$core$Json_Decode$string)),
-																									_1: {
-																										ctor: '::',
-																										_0: _elm_lang$core$Json_Decode$succeed(_elm_lang$core$Maybe$Nothing),
-																										_1: {ctor: '[]'}
-																									}
-																								}),
-																							A2(
-																								_elm_lang$core$Json_Decode$at,
-																								{
-																									ctor: '::',
-																									_0: 'keyCode',
-																									_1: {ctor: '[]'}
-																								},
-																								_elm_lang$core$Json_Decode$int)))),
+																					_user$project$Internal_Options$aria,
+																					'valuenow',
+																					_elm_lang$core$Basics$toString(value)),
 																				_1: {
 																					ctor: '::',
 																					_0: A2(
 																						_user$project$Internal_Options$when,
-																						!_elm_lang$core$Native_Utils.eq(config.onInput, _elm_lang$core$Maybe$Nothing),
-																						A2(
-																							_user$project$Internal_Options$on,
-																							'keydown',
-																							A3(
-																								_elm_lang$core$Json_Decode$map2,
-																								F2(
-																									function (key, keyCode) {
-																										var activeValue = A2(
-																											_elm_lang$core$Maybe$map,
-																											_user$project$Internal_Slider_Implementation$discretize(geometry),
-																											A4(_user$project$Internal_Slider_Implementation$valueForKey, key, keyCode, geometry, config.value));
-																										return A2(
-																											_elm_lang$core$Maybe$withDefault,
-																											lift(_user$project$Internal_Slider_Model$NoOp),
-																											A3(
-																												_elm_lang$core$Maybe$map2,
-																												F2(
-																													function (x, y) {
-																														return x(y);
-																													}),
-																												config.onInput,
-																												activeValue));
-																									}),
-																								_elm_lang$core$Json_Decode$oneOf(
-																									{
-																										ctor: '::',
-																										_0: A2(
-																											_elm_lang$core$Json_Decode$map,
-																											_elm_lang$core$Maybe$Just,
-																											A2(
-																												_elm_lang$core$Json_Decode$at,
-																												{
-																													ctor: '::',
-																													_0: 'key',
-																													_1: {ctor: '[]'}
-																												},
-																												_elm_lang$core$Json_Decode$string)),
-																										_1: {
-																											ctor: '::',
-																											_0: _elm_lang$core$Json_Decode$succeed(_elm_lang$core$Maybe$Nothing),
-																											_1: {ctor: '[]'}
-																										}
-																									}),
-																								A2(
-																									_elm_lang$core$Json_Decode$at,
-																									{
-																										ctor: '::',
-																										_0: 'keyCode',
-																										_1: {ctor: '[]'}
-																									},
-																									_elm_lang$core$Json_Decode$int)))),
+																						_elm_lang$core$Native_Utils.eq(model.geometry, _elm_lang$core$Maybe$Nothing) || stepChanged,
+																						_user$project$Internal_GlobalEvents$onTick(
+																							A2(
+																								_elm_lang$core$Json_Decode$map,
+																								function (_p16) {
+																									return lift(
+																										_user$project$Internal_Slider_Model$Init(_p16));
+																								},
+																								_user$project$Internal_Slider_Implementation$decodeGeometry))),
 																					_1: {
 																						ctor: '::',
-																						_0: A2(
-																							_user$project$Internal_Options$on,
-																							'focus',
-																							_elm_lang$core$Json_Decode$succeed(
-																								lift(_user$project$Internal_Slider_Model$Focus))),
+																						_0: _user$project$Internal_GlobalEvents$onResize(
+																							A2(
+																								_elm_lang$core$Json_Decode$map,
+																								function (_p17) {
+																									return lift(
+																										_user$project$Internal_Slider_Model$Resize(_p17));
+																								},
+																								_user$project$Internal_Slider_Implementation$decodeGeometry)),
 																						_1: {
 																							ctor: '::',
 																							_0: A2(
 																								_user$project$Internal_Options$on,
-																								'blur',
-																								_elm_lang$core$Json_Decode$succeed(
-																									lift(_user$project$Internal_Slider_Model$Blur))),
+																								'keydown',
+																								A2(
+																									_elm_lang$core$Json_Decode$map,
+																									lift,
+																									A3(
+																										_elm_lang$core$Json_Decode$map2,
+																										F2(
+																											function (key, keyCode) {
+																												var activeValue = A4(_user$project$Internal_Slider_Implementation$valueForKey, key, keyCode, geometry, config.value);
+																												return (!_elm_lang$core$Native_Utils.eq(activeValue, _elm_lang$core$Maybe$Nothing)) ? _user$project$Internal_Slider_Model$KeyDown : _user$project$Internal_Slider_Model$NoOp;
+																											}),
+																										_elm_lang$core$Json_Decode$oneOf(
+																											{
+																												ctor: '::',
+																												_0: A2(
+																													_elm_lang$core$Json_Decode$map,
+																													_elm_lang$core$Maybe$Just,
+																													A2(
+																														_elm_lang$core$Json_Decode$at,
+																														{
+																															ctor: '::',
+																															_0: 'key',
+																															_1: {ctor: '[]'}
+																														},
+																														_elm_lang$core$Json_Decode$string)),
+																												_1: {
+																													ctor: '::',
+																													_0: _elm_lang$core$Json_Decode$succeed(_elm_lang$core$Maybe$Nothing),
+																													_1: {ctor: '[]'}
+																												}
+																											}),
+																										A2(
+																											_elm_lang$core$Json_Decode$at,
+																											{
+																												ctor: '::',
+																												_0: 'keyCode',
+																												_1: {ctor: '[]'}
+																											},
+																											_elm_lang$core$Json_Decode$int)))),
 																							_1: {
 																								ctor: '::',
-																								_0: _user$project$Internal_Options$many(
+																								_0: A2(
+																									_user$project$Internal_Options$when,
+																									!_elm_lang$core$Native_Utils.eq(config.onChange, _elm_lang$core$Maybe$Nothing),
 																									A2(
-																										_elm_lang$core$List$map,
-																										function (event) {
-																											return A2(
-																												_user$project$Internal_Options$on,
-																												event,
-																												A2(
-																													_elm_lang$core$Json_Decode$map,
-																													function (_p18) {
-																														return lift(
-																															A2(_user$project$Internal_Slider_Model$InteractionStart, event, _p18));
-																													},
-																													_user$project$Internal_Slider_Implementation$decodePageX));
-																										},
-																										downs)),
+																										_user$project$Internal_Options$on,
+																										'keydown',
+																										A3(
+																											_elm_lang$core$Json_Decode$map2,
+																											F2(
+																												function (key, keyCode) {
+																													var activeValue = A2(
+																														_elm_lang$core$Maybe$map,
+																														_user$project$Internal_Slider_Implementation$discretize(geometry),
+																														A4(_user$project$Internal_Slider_Implementation$valueForKey, key, keyCode, geometry, config.value));
+																													return A2(
+																														_elm_lang$core$Maybe$withDefault,
+																														lift(_user$project$Internal_Slider_Model$NoOp),
+																														A3(
+																															_elm_lang$core$Maybe$map2,
+																															F2(
+																																function (x, y) {
+																																	return x(y);
+																																}),
+																															config.onChange,
+																															activeValue));
+																												}),
+																											_elm_lang$core$Json_Decode$oneOf(
+																												{
+																													ctor: '::',
+																													_0: A2(
+																														_elm_lang$core$Json_Decode$map,
+																														_elm_lang$core$Maybe$Just,
+																														A2(
+																															_elm_lang$core$Json_Decode$at,
+																															{
+																																ctor: '::',
+																																_0: 'key',
+																																_1: {ctor: '[]'}
+																															},
+																															_elm_lang$core$Json_Decode$string)),
+																													_1: {
+																														ctor: '::',
+																														_0: _elm_lang$core$Json_Decode$succeed(_elm_lang$core$Maybe$Nothing),
+																														_1: {ctor: '[]'}
+																													}
+																												}),
+																											A2(
+																												_elm_lang$core$Json_Decode$at,
+																												{
+																													ctor: '::',
+																													_0: 'keyCode',
+																													_1: {ctor: '[]'}
+																												},
+																												_elm_lang$core$Json_Decode$int)))),
 																								_1: {
 																									ctor: '::',
 																									_0: A2(
 																										_user$project$Internal_Options$when,
-																										!_elm_lang$core$Native_Utils.eq(config.onChange, _elm_lang$core$Maybe$Nothing),
-																										_user$project$Internal_Options$many(
-																											A2(
-																												_elm_lang$core$List$map,
-																												function (event) {
-																													return A2(
-																														_user$project$Internal_Options$on,
-																														event,
-																														A2(
+																										!_elm_lang$core$Native_Utils.eq(config.onInput, _elm_lang$core$Maybe$Nothing),
+																										A2(
+																											_user$project$Internal_Options$on,
+																											'keydown',
+																											A3(
+																												_elm_lang$core$Json_Decode$map2,
+																												F2(
+																													function (key, keyCode) {
+																														var activeValue = A2(
+																															_elm_lang$core$Maybe$map,
+																															_user$project$Internal_Slider_Implementation$discretize(geometry),
+																															A4(_user$project$Internal_Slider_Implementation$valueForKey, key, keyCode, geometry, config.value));
+																														return A2(
+																															_elm_lang$core$Maybe$withDefault,
+																															lift(_user$project$Internal_Slider_Model$NoOp),
+																															A3(
+																																_elm_lang$core$Maybe$map2,
+																																F2(
+																																	function (x, y) {
+																																		return x(y);
+																																	}),
+																																config.onInput,
+																																activeValue));
+																													}),
+																												_elm_lang$core$Json_Decode$oneOf(
+																													{
+																														ctor: '::',
+																														_0: A2(
 																															_elm_lang$core$Json_Decode$map,
-																															function (_p19) {
-																																var _p20 = _p19;
-																																var activeValue = A2(
-																																	_user$project$Internal_Slider_Implementation$discretize,
-																																	geometry,
-																																	A2(_user$project$Internal_Slider_Implementation$valueFromPageX, geometry, _p20.pageX));
-																																return A2(
-																																	_elm_lang$core$Maybe$withDefault,
-																																	lift(_user$project$Internal_Slider_Model$NoOp),
-																																	A2(
-																																		_elm_lang$core$Maybe$map,
-																																		A2(
-																																			_elm_lang$core$Basics$flip,
-																																			F2(
-																																				function (x, y) {
-																																					return x(y);
-																																				}),
-																																			activeValue),
-																																		config.onChange));
-																															},
-																															_user$project$Internal_Slider_Implementation$decodePageX));
-																												},
-																												downs))),
+																															_elm_lang$core$Maybe$Just,
+																															A2(
+																																_elm_lang$core$Json_Decode$at,
+																																{
+																																	ctor: '::',
+																																	_0: 'key',
+																																	_1: {ctor: '[]'}
+																																},
+																																_elm_lang$core$Json_Decode$string)),
+																														_1: {
+																															ctor: '::',
+																															_0: _elm_lang$core$Json_Decode$succeed(_elm_lang$core$Maybe$Nothing),
+																															_1: {ctor: '[]'}
+																														}
+																													}),
+																												A2(
+																													_elm_lang$core$Json_Decode$at,
+																													{
+																														ctor: '::',
+																														_0: 'keyCode',
+																														_1: {ctor: '[]'}
+																													},
+																													_elm_lang$core$Json_Decode$int)))),
 																									_1: {
 																										ctor: '::',
 																										_0: A2(
-																											_user$project$Internal_Options$when,
-																											!_elm_lang$core$Native_Utils.eq(config.onInput, _elm_lang$core$Maybe$Nothing),
-																											_user$project$Internal_Options$many(
-																												A2(
-																													_elm_lang$core$List$map,
-																													function (event) {
-																														return A2(
-																															_user$project$Internal_Options$on,
-																															event,
-																															A2(
-																																_elm_lang$core$Json_Decode$map,
-																																function (_p21) {
-																																	var _p22 = _p21;
-																																	var activeValue = A2(
-																																		_user$project$Internal_Slider_Implementation$discretize,
-																																		geometry,
-																																		A2(_user$project$Internal_Slider_Implementation$valueFromPageX, geometry, _p22.pageX));
-																																	return A2(
-																																		_elm_lang$core$Maybe$withDefault,
-																																		lift(_user$project$Internal_Slider_Model$NoOp),
-																																		A2(
-																																			_elm_lang$core$Maybe$map,
-																																			A2(
-																																				_elm_lang$core$Basics$flip,
-																																				F2(
-																																					function (x, y) {
-																																						return x(y);
-																																					}),
-																																				activeValue),
-																																			config.onInput));
-																																},
-																																_user$project$Internal_Slider_Implementation$decodePageX));
-																													},
-																													downs))),
+																											_user$project$Internal_Options$on,
+																											'focus',
+																											_elm_lang$core$Json_Decode$succeed(
+																												lift(_user$project$Internal_Slider_Model$Focus))),
 																										_1: {
 																											ctor: '::',
 																											_0: A2(
-																												_user$project$Internal_Options$when,
-																												model.active,
-																												_user$project$Internal_Options$many(
-																													A2(
-																														_elm_lang$core$List$map,
-																														function (handler) {
-																															return handler(
-																																_elm_lang$core$Json_Decode$succeed(
-																																	lift(_user$project$Internal_Slider_Model$Up)));
-																														},
-																														ups))),
+																												_user$project$Internal_Options$on,
+																												'blur',
+																												_elm_lang$core$Json_Decode$succeed(
+																													lift(_user$project$Internal_Slider_Model$Blur))),
 																											_1: {
 																												ctor: '::',
-																												_0: A2(
-																													_user$project$Internal_Options$when,
-																													(!_elm_lang$core$Native_Utils.eq(config.onChange, _elm_lang$core$Maybe$Nothing)) && model.active,
-																													_user$project$Internal_Options$many(
-																														A2(
-																															_elm_lang$core$List$map,
-																															function (handler) {
-																																return handler(
-																																	A2(
-																																		_elm_lang$core$Json_Decode$map,
-																																		function (_p23) {
-																																			var _p24 = _p23;
-																																			var activeValue = A2(
-																																				_user$project$Internal_Slider_Implementation$discretize,
-																																				geometry,
-																																				A2(_user$project$Internal_Slider_Implementation$valueFromPageX, geometry, _p24.pageX));
-																																			return A2(
-																																				_elm_lang$core$Maybe$withDefault,
-																																				lift(_user$project$Internal_Slider_Model$NoOp),
-																																				A2(
-																																					_elm_lang$core$Maybe$map,
-																																					A2(
-																																						_elm_lang$core$Basics$flip,
-																																						F2(
-																																							function (x, y) {
-																																								return x(y);
-																																							}),
-																																						activeValue),
-																																					config.onChange));
-																																		},
-																																		_user$project$Internal_Slider_Implementation$decodePageX));
-																															},
-																															ups))),
+																												_0: _user$project$Internal_Options$many(
+																													A2(
+																														_elm_lang$core$List$map,
+																														function (event) {
+																															return A2(
+																																_user$project$Internal_Options$on,
+																																event,
+																																A2(
+																																	_elm_lang$core$Json_Decode$map,
+																																	function (_p18) {
+																																		return lift(
+																																			A2(_user$project$Internal_Slider_Model$InteractionStart, event, _p18));
+																																	},
+																																	_user$project$Internal_Slider_Implementation$decodePageX));
+																														},
+																														downs)),
 																												_1: {
 																													ctor: '::',
 																													_0: A2(
 																														_user$project$Internal_Options$when,
-																														(!_elm_lang$core$Native_Utils.eq(config.onInput, _elm_lang$core$Maybe$Nothing)) && model.active,
+																														!_elm_lang$core$Native_Utils.eq(config.onChange, _elm_lang$core$Maybe$Nothing),
 																														_user$project$Internal_Options$many(
 																															A2(
 																																_elm_lang$core$List$map,
-																																function (handler) {
-																																	return handler(
+																																function (event) {
+																																	return A2(
+																																		_user$project$Internal_Options$on,
+																																		event,
 																																		A2(
 																																			_elm_lang$core$Json_Decode$map,
-																																			function (_p25) {
-																																				var _p26 = _p25;
+																																			function (_p19) {
+																																				var _p20 = _p19;
 																																				var activeValue = A2(
 																																					_user$project$Internal_Slider_Implementation$discretize,
 																																					geometry,
-																																					A2(_user$project$Internal_Slider_Implementation$valueFromPageX, geometry, _p26.pageX));
+																																					A2(_user$project$Internal_Slider_Implementation$valueFromPageX, geometry, _p20.pageX));
 																																				return A2(
 																																					_elm_lang$core$Maybe$withDefault,
 																																					lift(_user$project$Internal_Slider_Model$NoOp),
@@ -18097,66 +18299,188 @@ var _user$project$Internal_Slider_Implementation$slider = F4(
 																																									return x(y);
 																																								}),
 																																							activeValue),
-																																						config.onInput));
+																																						config.onChange));
 																																			},
 																																			_user$project$Internal_Slider_Implementation$decodePageX));
 																																},
-																																ups))),
+																																downs))),
 																													_1: {
 																														ctor: '::',
 																														_0: A2(
 																															_user$project$Internal_Options$when,
-																															model.active,
+																															!_elm_lang$core$Native_Utils.eq(config.onInput, _elm_lang$core$Maybe$Nothing),
 																															_user$project$Internal_Options$many(
+																																A2(
+																																	_elm_lang$core$List$map,
+																																	function (event) {
+																																		return A2(
+																																			_user$project$Internal_Options$on,
+																																			event,
+																																			A2(
+																																				_elm_lang$core$Json_Decode$map,
+																																				function (_p21) {
+																																					var _p22 = _p21;
+																																					var activeValue = A2(
+																																						_user$project$Internal_Slider_Implementation$discretize,
+																																						geometry,
+																																						A2(_user$project$Internal_Slider_Implementation$valueFromPageX, geometry, _p22.pageX));
+																																					return A2(
+																																						_elm_lang$core$Maybe$withDefault,
+																																						lift(_user$project$Internal_Slider_Model$NoOp),
+																																						A2(
+																																							_elm_lang$core$Maybe$map,
+																																							A2(
+																																								_elm_lang$core$Basics$flip,
+																																								F2(
+																																									function (x, y) {
+																																										return x(y);
+																																									}),
+																																								activeValue),
+																																							config.onInput));
+																																				},
+																																				_user$project$Internal_Slider_Implementation$decodePageX));
+																																	},
+																																	downs))),
+																														_1: {
+																															ctor: '::',
+																															_0: _user$project$Internal_Options$many(
 																																A2(
 																																	_elm_lang$core$List$map,
 																																	function (handler) {
 																																		return handler(
-																																			A2(
-																																				_elm_lang$core$Json_Decode$map,
-																																				function (_p27) {
-																																					return lift(
-																																						_user$project$Internal_Slider_Model$Drag(_p27));
-																																				},
-																																				_user$project$Internal_Slider_Implementation$decodePageX));
+																																			_elm_lang$core$Json_Decode$succeed(
+																																				lift(_user$project$Internal_Slider_Model$Up)));
 																																	},
-																																	moves))),
-																														_1: {
-																															ctor: '::',
-																															_0: A2(
-																																_user$project$Internal_Options$when,
-																																(!_elm_lang$core$Native_Utils.eq(config.onInput, _elm_lang$core$Maybe$Nothing)) && model.active,
-																																_user$project$Internal_Options$many(
-																																	A2(
-																																		_elm_lang$core$List$map,
-																																		function (handler) {
-																																			return handler(
-																																				A2(
-																																					_elm_lang$core$Json_Decode$map,
-																																					function (_p28) {
-																																						var _p29 = _p28;
-																																						var activeValue = A2(
-																																							_user$project$Internal_Slider_Implementation$discretize,
-																																							geometry,
-																																							A2(_user$project$Internal_Slider_Implementation$valueFromPageX, geometry, _p29.pageX));
-																																						return A2(
-																																							_elm_lang$core$Maybe$withDefault,
-																																							lift(_user$project$Internal_Slider_Model$NoOp),
-																																							A2(
-																																								_elm_lang$core$Maybe$map,
+																																	ups)),
+																															_1: {
+																																ctor: '::',
+																																_0: A2(
+																																	_user$project$Internal_Options$when,
+																																	(!_elm_lang$core$Native_Utils.eq(config.onChange, _elm_lang$core$Maybe$Nothing)) && model.active,
+																																	_user$project$Internal_Options$many(
+																																		A2(
+																																			_elm_lang$core$List$map,
+																																			function (handler) {
+																																				return handler(
+																																					A2(
+																																						_elm_lang$core$Json_Decode$map,
+																																						function (_p23) {
+																																							var _p24 = _p23;
+																																							var activeValue = A2(
+																																								_user$project$Internal_Slider_Implementation$discretize,
+																																								geometry,
+																																								A2(_user$project$Internal_Slider_Implementation$valueFromPageX, geometry, _p24.pageX));
+																																							return A2(
+																																								_elm_lang$core$Maybe$withDefault,
+																																								lift(_user$project$Internal_Slider_Model$NoOp),
 																																								A2(
-																																									_elm_lang$core$Basics$flip,
-																																									F2(
-																																										function (x, y) {
-																																											return x(y);
-																																										}),
-																																									activeValue),
-																																								config.onInput));
+																																									_elm_lang$core$Maybe$map,
+																																									A2(
+																																										_elm_lang$core$Basics$flip,
+																																										F2(
+																																											function (x, y) {
+																																												return x(y);
+																																											}),
+																																										activeValue),
+																																									config.onChange));
+																																						},
+																																						_user$project$Internal_Slider_Implementation$decodePageX));
+																																			},
+																																			ups))),
+																																_1: {
+																																	ctor: '::',
+																																	_0: A2(
+																																		_user$project$Internal_Options$when,
+																																		(!_elm_lang$core$Native_Utils.eq(config.onInput, _elm_lang$core$Maybe$Nothing)) && model.active,
+																																		_user$project$Internal_Options$many(
+																																			A2(
+																																				_elm_lang$core$List$map,
+																																				function (handler) {
+																																					return handler(
+																																						A2(
+																																							_elm_lang$core$Json_Decode$map,
+																																							function (_p25) {
+																																								var _p26 = _p25;
+																																								var activeValue = A2(
+																																									_user$project$Internal_Slider_Implementation$discretize,
+																																									geometry,
+																																									A2(_user$project$Internal_Slider_Implementation$valueFromPageX, geometry, _p26.pageX));
+																																								return A2(
+																																									_elm_lang$core$Maybe$withDefault,
+																																									lift(_user$project$Internal_Slider_Model$NoOp),
+																																									A2(
+																																										_elm_lang$core$Maybe$map,
+																																										A2(
+																																											_elm_lang$core$Basics$flip,
+																																											F2(
+																																												function (x, y) {
+																																													return x(y);
+																																												}),
+																																											activeValue),
+																																										config.onInput));
+																																							},
+																																							_user$project$Internal_Slider_Implementation$decodePageX));
+																																				},
+																																				ups))),
+																																	_1: {
+																																		ctor: '::',
+																																		_0: A2(
+																																			_user$project$Internal_Options$when,
+																																			model.active,
+																																			_user$project$Internal_Options$many(
+																																				A2(
+																																					_elm_lang$core$List$map,
+																																					function (handler) {
+																																						return handler(
+																																							A2(
+																																								_elm_lang$core$Json_Decode$map,
+																																								function (_p27) {
+																																									return lift(
+																																										_user$project$Internal_Slider_Model$Drag(_p27));
+																																								},
+																																								_user$project$Internal_Slider_Implementation$decodePageX));
 																																					},
-																																					_user$project$Internal_Slider_Implementation$decodePageX));
-																																		},
-																																		moves))),
-																															_1: {ctor: '[]'}
+																																					moves))),
+																																		_1: {
+																																			ctor: '::',
+																																			_0: A2(
+																																				_user$project$Internal_Options$when,
+																																				(!_elm_lang$core$Native_Utils.eq(config.onInput, _elm_lang$core$Maybe$Nothing)) && model.active,
+																																				_user$project$Internal_Options$many(
+																																					A2(
+																																						_elm_lang$core$List$map,
+																																						function (handler) {
+																																							return handler(
+																																								A2(
+																																									_elm_lang$core$Json_Decode$map,
+																																									function (_p28) {
+																																										var _p29 = _p28;
+																																										var activeValue = A2(
+																																											_user$project$Internal_Slider_Implementation$discretize,
+																																											geometry,
+																																											A2(_user$project$Internal_Slider_Implementation$valueFromPageX, geometry, _p29.pageX));
+																																										return A2(
+																																											_elm_lang$core$Maybe$withDefault,
+																																											lift(_user$project$Internal_Slider_Model$NoOp),
+																																											A2(
+																																												_elm_lang$core$Maybe$map,
+																																												A2(
+																																													_elm_lang$core$Basics$flip,
+																																													F2(
+																																														function (x, y) {
+																																															return x(y);
+																																														}),
+																																													activeValue),
+																																												config.onInput));
+																																									},
+																																									_user$project$Internal_Slider_Implementation$decodePageX));
+																																						},
+																																						moves))),
+																																			_1: {ctor: '[]'}
+																																		}
+																																	}
+																																}
+																															}
 																														}
 																													}
 																												}
@@ -18237,7 +18561,7 @@ var _user$project$Internal_Slider_Implementation$slider = F4(
 												},
 												A2(
 													_elm_lang$core$List$repeat,
-													(_elm_lang$core$Basics$round(config.max - config.min) / config.steps) | 0,
+													_elm_lang$core$Basics$round((config.max - config.min) / config.step),
 													A3(
 														_user$project$Internal_Options$styled,
 														_elm_lang$html$Html$div,
@@ -18512,6 +18836,15 @@ var _user$project$Internal_Slider_Implementation$update = F3(
 								{focus: true})),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
+				case 'Up':
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Maybe$Just(model),
+						_1: A2(
+							_elm_lang$core$Task$perform,
+							lift,
+							_elm_lang$core$Task$succeed(_user$project$Internal_Slider_Model$ActualUp))
+					};
 				default:
 					return {
 						ctor: '_Tuple2',
@@ -18527,7 +18860,7 @@ var _user$project$Internal_Slider_Implementation$update = F3(
 var _user$project$Internal_Slider_Implementation$react = A4(_user$project$Internal_Component$react, _user$project$Internal_Slider_Implementation$get, _user$project$Internal_Slider_Implementation$set, _user$project$Internal_Msg$SliderMsg, _user$project$Internal_Slider_Implementation$update);
 var _user$project$Internal_Slider_Implementation$Config = F8(
 	function (a, b, c, d, e, f, g, h) {
-		return {value: a, min: b, max: c, discrete: d, steps: e, onInput: f, onChange: g, trackMarkers: h};
+		return {value: a, min: b, max: c, discrete: d, step: e, onInput: f, onChange: g, trackMarkers: h};
 	});
 
 var _user$project$Internal_Snackbar_Implementation$_p0 = A3(
@@ -18627,7 +18960,19 @@ var _user$project$Internal_Snackbar_Implementation$snackbar = F4(
 								_user$project$Internal_Options$when,
 								actionOnBottom,
 								_user$project$Internal_Options$cs('mdc-snackbar--action-on-bottom')),
-							_1: {ctor: '[]'}
+							_1: {
+								ctor: '::',
+								_0: A2(_user$project$Internal_Options$aria, 'live', 'assertive'),
+								_1: {
+									ctor: '::',
+									_0: A2(_user$project$Internal_Options$aria, 'atomic', 'true'),
+									_1: {
+										ctor: '::',
+										_0: A2(_user$project$Internal_Options$aria, 'hidden', 'true'),
+										_1: {ctor: '[]'}
+									}
+								}
+							}
 						}
 					}
 				}
@@ -18940,7 +19285,8 @@ var _user$project$Internal_Switch_Implementation$disabled = _user$project$Intern
 var _user$project$Internal_Switch_Implementation$defaultConfig = {
 	value: false,
 	disabled: false,
-	nativeControl: {ctor: '[]'}
+	nativeControl: {ctor: '[]'},
+	id_: ''
 };
 var _user$project$Internal_Switch_Implementation$switch = F4(
 	function (lift, model, options, _p1) {
@@ -18969,49 +19315,53 @@ var _user$project$Internal_Switch_Implementation$switch = F4(
 						_0: _user$project$Internal_Options$cs('mdc-switch__native-control'),
 						_1: {
 							ctor: '::',
-							_0: _user$project$Internal_Options$attribute(
-								_elm_lang$html$Html_Attributes$type_('checkbox')),
+							_0: _user$project$Internal_Options$id(config.id_),
 							_1: {
 								ctor: '::',
 								_0: _user$project$Internal_Options$attribute(
-									_elm_lang$html$Html_Attributes$checked(config.value)),
+									_elm_lang$html$Html_Attributes$type_('checkbox')),
 								_1: {
 									ctor: '::',
-									_0: _user$project$Internal_Options$onFocus(
-										lift(
-											_user$project$Internal_Switch_Model$SetFocus(true))),
+									_0: _user$project$Internal_Options$attribute(
+										_elm_lang$html$Html_Attributes$checked(config.value)),
 									_1: {
 										ctor: '::',
-										_0: _user$project$Internal_Options$onBlur(
+										_0: _user$project$Internal_Options$onFocus(
 											lift(
-												_user$project$Internal_Switch_Model$SetFocus(false))),
+												_user$project$Internal_Switch_Model$SetFocus(true))),
 										_1: {
 											ctor: '::',
-											_0: A3(
-												_user$project$Internal_Options$onWithOptions,
-												'click',
-												preventDefault,
-												_elm_lang$core$Json_Decode$succeed(
-													lift(_user$project$Internal_Switch_Model$NoOp))),
+											_0: _user$project$Internal_Options$onBlur(
+												lift(
+													_user$project$Internal_Switch_Model$SetFocus(false))),
 											_1: {
 												ctor: '::',
-												_0: function (_p3) {
-													return A2(
-														_user$project$Internal_Options$when,
-														config.disabled,
-														_user$project$Internal_Options$many(_p3));
-												}(
-													{
-														ctor: '::',
-														_0: _user$project$Internal_Options$cs('mdc-checkbox--disabled'),
-														_1: {
+												_0: A3(
+													_user$project$Internal_Options$onWithOptions,
+													'click',
+													preventDefault,
+													_elm_lang$core$Json_Decode$succeed(
+														lift(_user$project$Internal_Switch_Model$NoOp))),
+												_1: {
+													ctor: '::',
+													_0: function (_p3) {
+														return A2(
+															_user$project$Internal_Options$when,
+															config.disabled,
+															_user$project$Internal_Options$many(_p3));
+													}(
+														{
 															ctor: '::',
-															_0: _user$project$Internal_Options$attribute(
-																_elm_lang$html$Html_Attributes$disabled(true)),
-															_1: {ctor: '[]'}
-														}
-													}),
-												_1: {ctor: '[]'}
+															_0: _user$project$Internal_Options$cs('mdc-checkbox--disabled'),
+															_1: {
+																ctor: '::',
+																_0: _user$project$Internal_Options$attribute(
+																	_elm_lang$html$Html_Attributes$disabled(true)),
+																_1: {ctor: '[]'}
+															}
+														}),
+													_1: {ctor: '[]'}
+												}
 											}
 										}
 									}
@@ -19047,7 +19397,22 @@ var _user$project$Internal_Switch_Implementation$switch = F4(
 				}
 			});
 	});
-var _user$project$Internal_Switch_Implementation$view = A3(_user$project$Internal_Component$render, _user$project$Internal_Switch_Implementation$get, _user$project$Internal_Switch_Implementation$switch, _user$project$Internal_Msg$SwitchMsg);
+var _user$project$Internal_Switch_Implementation$view = F4(
+	function (lift, index, store, options) {
+		return A7(
+			_user$project$Internal_Component$render,
+			_user$project$Internal_Switch_Implementation$get,
+			_user$project$Internal_Switch_Implementation$switch,
+			_user$project$Internal_Msg$SwitchMsg,
+			lift,
+			index,
+			store,
+			{
+				ctor: '::',
+				_0: _user$project$Internal_Options$id_(index),
+				_1: options
+			});
+	});
 var _user$project$Internal_Switch_Implementation$update = F3(
 	function (_p4, msg, model) {
 		var _p5 = msg;
@@ -19065,9 +19430,9 @@ var _user$project$Internal_Switch_Implementation$update = F3(
 		}
 	});
 var _user$project$Internal_Switch_Implementation$react = A4(_user$project$Internal_Component$react, _user$project$Internal_Switch_Implementation$get, _user$project$Internal_Switch_Implementation$set, _user$project$Internal_Msg$SwitchMsg, _user$project$Internal_Switch_Implementation$update);
-var _user$project$Internal_Switch_Implementation$Config = F3(
-	function (a, b, c) {
-		return {value: a, disabled: b, nativeControl: c};
+var _user$project$Internal_Switch_Implementation$Config = F4(
+	function (a, b, c, d) {
+		return {value: a, disabled: b, nativeControl: c, id_: d};
 	});
 
 var _user$project$Internal_Tabs_Implementation$decodeGeometry = function (hasIndicator) {
@@ -20345,7 +20710,8 @@ var _user$project$Internal_Textfield_Implementation$defaultConfig = {
 	placeholder: _elm_lang$core$Maybe$Nothing,
 	cols: _elm_lang$core$Maybe$Nothing,
 	rows: _elm_lang$core$Maybe$Nothing,
-	nativeControl: {ctor: '[]'}
+	nativeControl: {ctor: '[]'},
+	id_: ''
 };
 var _user$project$Internal_Textfield_Implementation$textField = F4(
 	function (lift, model, options, _p8) {
@@ -20404,7 +20770,7 @@ var _user$project$Internal_Textfield_Implementation$textField = F4(
 		return A5(
 			_user$project$Internal_Options$apply,
 			summary,
-			(!config.fullWidth) ? _elm_lang$html$Html$label : _elm_lang$html$Html$div,
+			_elm_lang$html$Html$div,
 			{
 				ctor: '::',
 				_0: _user$project$Internal_Options$cs('mdc-text-field'),
@@ -20517,128 +20883,132 @@ var _user$project$Internal_Textfield_Implementation$textField = F4(
 									_0: A2(_user$project$Internal_Options$css, 'outline', 'none'),
 									_1: {
 										ctor: '::',
-										_0: config.outlined ? A2(
-											_user$project$Internal_Options$on,
-											'focus',
-											A2(
-												_elm_lang$core$Json_Decode$map,
-												function (_p14) {
-													return lift(
-														_user$project$Internal_Textfield_Model$Focus(_p14));
-												},
-												_user$project$Internal_Textfield_Implementation$decodeGeometry)) : A2(
-											_user$project$Internal_Options$on,
-											'focus',
-											_elm_lang$core$Json_Decode$succeed(
-												lift(
-													_user$project$Internal_Textfield_Model$Focus(_user$project$Internal_Textfield_Model$defaultGeometry)))),
+										_0: _user$project$Internal_Options$id(config.id_),
 										_1: {
 											ctor: '::',
-											_0: _user$project$Internal_Options$onBlur(
-												lift(_user$project$Internal_Textfield_Model$Blur)),
+											_0: config.outlined ? A2(
+												_user$project$Internal_Options$on,
+												'focus',
+												A2(
+													_elm_lang$core$Json_Decode$map,
+													function (_p14) {
+														return lift(
+															_user$project$Internal_Textfield_Model$Focus(_p14));
+													},
+													_user$project$Internal_Textfield_Implementation$decodeGeometry)) : A2(
+												_user$project$Internal_Options$on,
+												'focus',
+												_elm_lang$core$Json_Decode$succeed(
+													lift(
+														_user$project$Internal_Textfield_Model$Focus(_user$project$Internal_Textfield_Model$defaultGeometry)))),
 											_1: {
 												ctor: '::',
-												_0: _user$project$Internal_Options$onInput(
-													function (_p15) {
-														return lift(
-															_user$project$Internal_Textfield_Model$Input(_p15));
-													}),
+												_0: _user$project$Internal_Options$onBlur(
+													lift(_user$project$Internal_Textfield_Model$Blur)),
 												_1: {
 													ctor: '::',
-													_0: function (_p16) {
-														return _user$project$Internal_Options$many(
-															A2(
-																_elm_lang$core$List$map,
-																_user$project$Internal_Options$attribute,
-																A2(_elm_lang$core$List$filterMap, _elm_lang$core$Basics$identity, _p16)));
-													}(
-														{
-															ctor: '::',
-															_0: ((!config.textarea) ? _elm_lang$core$Maybe$Just : _elm_lang$core$Basics$always(_elm_lang$core$Maybe$Nothing))(
-																_elm_lang$html$Html_Attributes$type_(
-																	A2(_elm_lang$core$Maybe$withDefault, 'text', config.type_))),
-															_1: {
+													_0: _user$project$Internal_Options$onInput(
+														function (_p15) {
+															return lift(
+																_user$project$Internal_Textfield_Model$Input(_p15));
+														}),
+													_1: {
+														ctor: '::',
+														_0: function (_p16) {
+															return _user$project$Internal_Options$many(
+																A2(
+																	_elm_lang$core$List$map,
+																	_user$project$Internal_Options$attribute,
+																	A2(_elm_lang$core$List$filterMap, _elm_lang$core$Basics$identity, _p16)));
+														}(
+															{
 																ctor: '::',
-																_0: (config.disabled ? _elm_lang$core$Maybe$Just : _elm_lang$core$Basics$always(_elm_lang$core$Maybe$Nothing))(
-																	_elm_lang$html$Html_Attributes$disabled(true)),
+																_0: ((!config.textarea) ? _elm_lang$core$Maybe$Just : _elm_lang$core$Basics$always(_elm_lang$core$Maybe$Nothing))(
+																	_elm_lang$html$Html_Attributes$type_(
+																		A2(_elm_lang$core$Maybe$withDefault, 'text', config.type_))),
 																_1: {
 																	ctor: '::',
-																	_0: (config.required ? _elm_lang$core$Maybe$Just : _elm_lang$core$Basics$always(_elm_lang$core$Maybe$Nothing))(
-																		A2(
-																			_elm_lang$html$Html_Attributes$property,
-																			'required',
-																			_elm_lang$core$Json_Encode$bool(true))),
+																	_0: (config.disabled ? _elm_lang$core$Maybe$Just : _elm_lang$core$Basics$always(_elm_lang$core$Maybe$Nothing))(
+																		_elm_lang$html$Html_Attributes$disabled(true)),
 																	_1: {
 																		ctor: '::',
-																		_0: ((!_elm_lang$core$Native_Utils.eq(config.pattern, _elm_lang$core$Maybe$Nothing)) ? _elm_lang$core$Maybe$Just : _elm_lang$core$Basics$always(_elm_lang$core$Maybe$Nothing))(
+																		_0: (config.required ? _elm_lang$core$Maybe$Just : _elm_lang$core$Basics$always(_elm_lang$core$Maybe$Nothing))(
 																			A2(
 																				_elm_lang$html$Html_Attributes$property,
-																				'pattern',
-																				_elm_lang$core$Json_Encode$string(
-																					A2(_elm_lang$core$Maybe$withDefault, '', config.pattern)))),
+																				'required',
+																				_elm_lang$core$Json_Encode$bool(true))),
 																		_1: {
 																			ctor: '::',
-																			_0: _elm_lang$core$Maybe$Just(
-																				A2(_elm_lang$html$Html_Attributes$attribute, 'outline', 'medium none')),
+																			_0: ((!_elm_lang$core$Native_Utils.eq(config.pattern, _elm_lang$core$Maybe$Nothing)) ? _elm_lang$core$Maybe$Just : _elm_lang$core$Basics$always(_elm_lang$core$Maybe$Nothing))(
+																				A2(
+																					_elm_lang$html$Html_Attributes$property,
+																					'pattern',
+																					_elm_lang$core$Json_Encode$string(
+																						A2(_elm_lang$core$Maybe$withDefault, '', config.pattern)))),
 																			_1: {
 																				ctor: '::',
-																				_0: ((!_elm_lang$core$Native_Utils.eq(config.value, _elm_lang$core$Maybe$Nothing)) ? _elm_lang$core$Maybe$Just : _elm_lang$core$Basics$always(_elm_lang$core$Maybe$Nothing))(
-																					_elm_lang$html$Html_Attributes$value(
-																						A2(_elm_lang$core$Maybe$withDefault, '', config.value))),
-																				_1: {ctor: '[]'}
+																				_0: _elm_lang$core$Maybe$Just(
+																					A2(_elm_lang$html$Html_Attributes$attribute, 'outline', 'medium none')),
+																				_1: {
+																					ctor: '::',
+																					_0: ((!_elm_lang$core$Native_Utils.eq(config.value, _elm_lang$core$Maybe$Nothing)) ? _elm_lang$core$Maybe$Just : _elm_lang$core$Basics$always(_elm_lang$core$Maybe$Nothing))(
+																						_elm_lang$html$Html_Attributes$value(
+																							A2(_elm_lang$core$Maybe$withDefault, '', config.value))),
+																					_1: {ctor: '[]'}
+																				}
 																			}
 																		}
 																	}
 																}
-															}
-														}),
-													_1: {
-														ctor: '::',
-														_0: _user$project$Internal_Options$many(
-															{
-																ctor: '::',
-																_0: A3(
-																	_user$project$Internal_Options$onWithOptions,
-																	'keydown',
-																	{preventDefault: false, stopPropagation: true},
-																	_elm_lang$core$Json_Decode$succeed(
-																		lift(_user$project$Internal_Textfield_Model$NoOp))),
-																_1: {
-																	ctor: '::',
-																	_0: A3(
-																		_user$project$Internal_Options$onWithOptions,
-																		'keyup',
-																		{preventDefault: false, stopPropagation: true},
-																		_elm_lang$core$Json_Decode$succeed(
-																			lift(_user$project$Internal_Textfield_Model$NoOp))),
-																	_1: {ctor: '[]'}
-																}
 															}),
 														_1: {
 															ctor: '::',
-															_0: A2(
-																_user$project$Internal_Options$when,
-																!_elm_lang$core$Native_Utils.eq(config.placeholder, _elm_lang$core$Maybe$Nothing),
-																_user$project$Internal_Options$attribute(
-																	_elm_lang$html$Html_Attributes$placeholder(
-																		A2(_elm_lang$core$Maybe$withDefault, '', config.placeholder)))),
+															_0: _user$project$Internal_Options$many(
+																{
+																	ctor: '::',
+																	_0: A3(
+																		_user$project$Internal_Options$onWithOptions,
+																		'keydown',
+																		{preventDefault: false, stopPropagation: true},
+																		_elm_lang$core$Json_Decode$succeed(
+																			lift(_user$project$Internal_Textfield_Model$NoOp))),
+																	_1: {
+																		ctor: '::',
+																		_0: A3(
+																			_user$project$Internal_Options$onWithOptions,
+																			'keyup',
+																			{preventDefault: false, stopPropagation: true},
+																			_elm_lang$core$Json_Decode$succeed(
+																				lift(_user$project$Internal_Textfield_Model$NoOp))),
+																		_1: {ctor: '[]'}
+																	}
+																}),
 															_1: {
 																ctor: '::',
 																_0: A2(
 																	_user$project$Internal_Options$when,
-																	config.textarea && (!_elm_lang$core$Native_Utils.eq(config.rows, _elm_lang$core$Maybe$Nothing)),
+																	!_elm_lang$core$Native_Utils.eq(config.placeholder, _elm_lang$core$Maybe$Nothing),
 																	_user$project$Internal_Options$attribute(
-																		_elm_lang$html$Html_Attributes$rows(
-																			A2(_elm_lang$core$Maybe$withDefault, 0, config.rows)))),
+																		_elm_lang$html$Html_Attributes$placeholder(
+																			A2(_elm_lang$core$Maybe$withDefault, '', config.placeholder)))),
 																_1: {
 																	ctor: '::',
 																	_0: A2(
 																		_user$project$Internal_Options$when,
-																		config.textarea && (!_elm_lang$core$Native_Utils.eq(config.cols, _elm_lang$core$Maybe$Nothing)),
+																		config.textarea && (!_elm_lang$core$Native_Utils.eq(config.rows, _elm_lang$core$Maybe$Nothing)),
 																		_user$project$Internal_Options$attribute(
-																			_elm_lang$html$Html_Attributes$cols(
-																				A2(_elm_lang$core$Maybe$withDefault, 0, config.cols)))),
-																	_1: {ctor: '[]'}
+																			_elm_lang$html$Html_Attributes$rows(
+																				A2(_elm_lang$core$Maybe$withDefault, 0, config.rows)))),
+																	_1: {
+																		ctor: '::',
+																		_0: A2(
+																			_user$project$Internal_Options$when,
+																			config.textarea && (!_elm_lang$core$Native_Utils.eq(config.cols, _elm_lang$core$Maybe$Nothing)),
+																			_user$project$Internal_Options$attribute(
+																				_elm_lang$html$Html_Attributes$cols(
+																					A2(_elm_lang$core$Maybe$withDefault, 0, config.cols)))),
+																		_1: {ctor: '[]'}
+																	}
 																}
 															}
 														}
@@ -20654,7 +21024,7 @@ var _user$project$Internal_Textfield_Implementation$textField = F4(
 							ctor: '::',
 							_0: (!config.fullWidth) ? A3(
 								_user$project$Internal_Options$styled,
-								_elm_lang$html$Html$span,
+								_elm_lang$html$Html$label,
 								{
 									ctor: '::',
 									_0: _user$project$Internal_Options$cs('mdc-floating-label'),
@@ -20664,7 +21034,11 @@ var _user$project$Internal_Textfield_Implementation$textField = F4(
 											_user$project$Internal_Options$when,
 											focused || isDirty,
 											_user$project$Internal_Options$cs('mdc-floating-label--float-above')),
-										_1: {ctor: '[]'}
+										_1: {
+											ctor: '::',
+											_0: _user$project$Internal_Options$for(config.id_),
+											_1: {ctor: '[]'}
+										}
 									}
 								},
 								function () {
@@ -21050,7 +21424,22 @@ var _user$project$Internal_Textfield_Implementation$textField = F4(
 					}
 				}));
 	});
-var _user$project$Internal_Textfield_Implementation$view = A3(_user$project$Internal_Component$render, _user$project$Internal_Textfield_Implementation$get, _user$project$Internal_Textfield_Implementation$textField, _user$project$Internal_Msg$TextfieldMsg);
+var _user$project$Internal_Textfield_Implementation$view = F4(
+	function (lift, index, store, options) {
+		return A7(
+			_user$project$Internal_Component$render,
+			_user$project$Internal_Textfield_Implementation$get,
+			_user$project$Internal_Textfield_Implementation$textField,
+			_user$project$Internal_Msg$TextfieldMsg,
+			lift,
+			index,
+			store,
+			{
+				ctor: '::',
+				_0: _user$project$Internal_Options$id_(index),
+				_1: options
+			});
+	});
 var _user$project$Internal_Textfield_Implementation$Config = function (a) {
 	return function (b) {
 		return function (c) {
@@ -21072,7 +21461,9 @@ var _user$project$Internal_Textfield_Implementation$Config = function (a) {
 																		return function (s) {
 																			return function (t) {
 																				return function (u) {
-																					return {labelText: a, labelFloat: b, value: c, defaultValue: d, disabled: e, dense: f, required: g, type_: h, box: i, pattern: j, textarea: k, fullWidth: l, invalid: m, outlined: n, leadingIcon: o, trailingIcon: p, iconClickable: q, placeholder: r, cols: s, rows: t, nativeControl: u};
+																					return function (v) {
+																						return {labelText: a, labelFloat: b, value: c, defaultValue: d, disabled: e, dense: f, required: g, type_: h, box: i, pattern: j, textarea: k, fullWidth: l, invalid: m, outlined: n, leadingIcon: o, trailingIcon: p, iconClickable: q, placeholder: r, cols: s, rows: t, nativeControl: u, id_: v};
+																					};
 																				};
 																			};
 																		};
@@ -22186,17 +22577,19 @@ var _user$project$Internal_TopAppBar_Implementation$view = A3(_user$project$Inte
 
 var _user$project$Internal_Typography_Implementation$adjustMargin = _user$project$Internal_Options$cs('mdc-typography--adjust-margin');
 var _user$project$Internal_Typography_Implementation$button = _user$project$Internal_Options$cs('mdc-typography--button');
-var _user$project$Internal_Typography_Implementation$subheading2 = _user$project$Internal_Options$cs('mdc-typography--subheading2');
-var _user$project$Internal_Typography_Implementation$subheading1 = _user$project$Internal_Options$cs('mdc-typography--subheading1');
 var _user$project$Internal_Typography_Implementation$body2 = _user$project$Internal_Options$cs('mdc-typography--body2');
 var _user$project$Internal_Typography_Implementation$body1 = _user$project$Internal_Options$cs('mdc-typography--body1');
 var _user$project$Internal_Typography_Implementation$caption = _user$project$Internal_Options$cs('mdc-typography--caption');
-var _user$project$Internal_Typography_Implementation$headline = _user$project$Internal_Options$cs('mdc-typography--headline');
+var _user$project$Internal_Typography_Implementation$overline = _user$project$Internal_Options$cs('mdc-typography--overline');
+var _user$project$Internal_Typography_Implementation$subtitle2 = _user$project$Internal_Options$cs('mdc-typography--subtitle2');
+var _user$project$Internal_Typography_Implementation$subtitle1 = _user$project$Internal_Options$cs('mdc-typography--subtitle1');
+var _user$project$Internal_Typography_Implementation$headline6 = _user$project$Internal_Options$cs('mdc-typography--headline6');
+var _user$project$Internal_Typography_Implementation$headline5 = _user$project$Internal_Options$cs('mdc-typography--headline5');
+var _user$project$Internal_Typography_Implementation$headline4 = _user$project$Internal_Options$cs('mdc-typography--headline4');
+var _user$project$Internal_Typography_Implementation$headline3 = _user$project$Internal_Options$cs('mdc-typography--headline3');
+var _user$project$Internal_Typography_Implementation$headline2 = _user$project$Internal_Options$cs('mdc-typography--headline2');
+var _user$project$Internal_Typography_Implementation$headline1 = _user$project$Internal_Options$cs('mdc-typography--headline1');
 var _user$project$Internal_Typography_Implementation$title = _user$project$Internal_Options$cs('mdc-typography--title');
-var _user$project$Internal_Typography_Implementation$display4 = _user$project$Internal_Options$cs('mdc-typography--display4');
-var _user$project$Internal_Typography_Implementation$display3 = _user$project$Internal_Options$cs('mdc-typography--display3');
-var _user$project$Internal_Typography_Implementation$display2 = _user$project$Internal_Options$cs('mdc-typography--display2');
-var _user$project$Internal_Typography_Implementation$display1 = _user$project$Internal_Options$cs('mdc-typography--display1');
 var _user$project$Internal_Typography_Implementation$typography = _user$project$Internal_Options$cs('mdc-typography');
 
 var _user$project$Material$top = function (content) {
@@ -22263,44 +22656,12 @@ var _user$project$Material$top = function (content) {
 							_0: _elm_lang$html$Html_Attributes$type_('text/javascript'),
 							_1: {
 								ctor: '::',
-								_0: _elm_lang$html$Html_Attributes$src('https://aforemny.github.io/elm-mdc/elm-global-events.js'),
+								_0: _elm_lang$html$Html_Attributes$src('https://aforemny.github.io/elm-mdc/elm-mdc.js'),
 								_1: {ctor: '[]'}
 							}
 						},
 						{ctor: '[]'}),
-					_1: {
-						ctor: '::',
-						_0: A3(
-							_elm_lang$html$Html$node,
-							'script',
-							{
-								ctor: '::',
-								_0: _elm_lang$html$Html_Attributes$type_('text/javascript'),
-								_1: {
-									ctor: '::',
-									_0: _elm_lang$html$Html_Attributes$src('https://aforemny.github.io/elm-mdc/elm-focus-trap.js'),
-									_1: {ctor: '[]'}
-								}
-							},
-							{ctor: '[]'}),
-						_1: {
-							ctor: '::',
-							_0: A3(
-								_elm_lang$html$Html$node,
-								'script',
-								{
-									ctor: '::',
-									_0: _elm_lang$html$Html_Attributes$type_('text/javascript'),
-									_1: {
-										ctor: '::',
-										_0: _elm_lang$html$Html_Attributes$src('https://aforemny.github.io/elm-mdc/elm-mdc.js'),
-										_1: {ctor: '[]'}
-									}
-								},
-								{ctor: '[]'}),
-							_1: {ctor: '[]'}
-						}
-					}
+					_1: {ctor: '[]'}
 				}
 			}
 		});
@@ -22317,11 +22678,7 @@ var _user$project$Material$subscriptions = F2(
 				_1: {
 					ctor: '::',
 					_0: A2(_user$project$Internal_Menu_Implementation$subs, lift, model.mdc),
-					_1: {
-						ctor: '::',
-						_0: A2(_user$project$Internal_Select_Implementation$subs, lift, model.mdc),
-						_1: {ctor: '[]'}
-					}
+					_1: {ctor: '[]'}
 				}
 			});
 	});
@@ -22339,6 +22696,8 @@ var _user$project$Material$update_ = F3(
 				return A4(_user$project$Internal_Button_Implementation$react, lift, _p0._1, _p0._0, store);
 			case 'CheckboxMsg':
 				return A4(_user$project$Internal_Checkbox_Implementation$react, lift, _p0._1, _p0._0, store);
+			case 'ChipMsg':
+				return A4(_user$project$Internal_Chip_Implementation$react, lift, _p0._1, _p0._0, store);
 			case 'DialogMsg':
 				return A4(_user$project$Internal_Dialog_Implementation$react, lift, _p0._1, _p0._0, store);
 			case 'DrawerMsg':
@@ -22394,7 +22753,7 @@ var _user$project$Material$update = F3(
 						return _.mdc;
 					}(container))));
 	});
-var _user$project$Material$defaultModel = {button: _elm_lang$core$Dict$empty, checkbox: _elm_lang$core$Dict$empty, dialog: _elm_lang$core$Dict$empty, drawer: _elm_lang$core$Dict$empty, fab: _elm_lang$core$Dict$empty, gridList: _elm_lang$core$Dict$empty, iconToggle: _elm_lang$core$Dict$empty, menu: _elm_lang$core$Dict$empty, radio: _elm_lang$core$Dict$empty, ripple: _elm_lang$core$Dict$empty, select: _elm_lang$core$Dict$empty, slider: _elm_lang$core$Dict$empty, snackbar: _elm_lang$core$Dict$empty, $switch: _elm_lang$core$Dict$empty, tabs: _elm_lang$core$Dict$empty, textfield: _elm_lang$core$Dict$empty, toolbar: _elm_lang$core$Dict$empty, topAppBar: _elm_lang$core$Dict$empty};
+var _user$project$Material$defaultModel = {button: _elm_lang$core$Dict$empty, checkbox: _elm_lang$core$Dict$empty, chip: _elm_lang$core$Dict$empty, dialog: _elm_lang$core$Dict$empty, drawer: _elm_lang$core$Dict$empty, fab: _elm_lang$core$Dict$empty, gridList: _elm_lang$core$Dict$empty, iconToggle: _elm_lang$core$Dict$empty, menu: _elm_lang$core$Dict$empty, radio: _elm_lang$core$Dict$empty, ripple: _elm_lang$core$Dict$empty, select: _elm_lang$core$Dict$empty, slider: _elm_lang$core$Dict$empty, snackbar: _elm_lang$core$Dict$empty, $switch: _elm_lang$core$Dict$empty, tabs: _elm_lang$core$Dict$empty, textfield: _elm_lang$core$Dict$empty, toolbar: _elm_lang$core$Dict$empty, topAppBar: _elm_lang$core$Dict$empty};
 var _user$project$Material$Model = function (a) {
 	return function (b) {
 		return function (c) {
@@ -22413,7 +22772,9 @@ var _user$project$Material$Model = function (a) {
 															return function (p) {
 																return function (q) {
 																	return function (r) {
-																		return {button: a, checkbox: b, dialog: c, drawer: d, fab: e, gridList: f, iconToggle: g, menu: h, radio: i, ripple: j, select: k, slider: l, snackbar: m, $switch: n, tabs: o, textfield: p, toolbar: q, topAppBar: r};
+																		return function (s) {
+																			return {button: a, checkbox: b, chip: c, dialog: d, drawer: e, fab: f, gridList: g, iconToggle: h, menu: i, radio: j, ripple: k, select: l, slider: m, snackbar: n, $switch: o, tabs: p, textfield: q, toolbar: r, topAppBar: s};
+																		};
 																	};
 																};
 															};
@@ -22458,6 +22819,33 @@ var _user$project$Material_Switch$on = _user$project$Internal_Switch_Implementat
 var _user$project$Material_Switch$view = _user$project$Internal_Switch_Implementation$view;
 
 var _user$project$Material_Textfield$nativeControl = _user$project$Internal_Textfield_Implementation$nativeControl;
+var _user$project$Material_Textfield$autocomplete = function (_p0) {
+	return _user$project$Material_Textfield$nativeControl(
+		_elm_lang$core$List$singleton(
+			_user$project$Internal_Options$autocomplete(_p0)));
+};
+var _user$project$Material_Textfield$autofocus = _user$project$Material_Textfield$nativeControl(
+	{
+		ctor: '::',
+		_0: _user$project$Internal_Options$autofocus(true),
+		_1: {ctor: '[]'}
+	});
+var _user$project$Material_Textfield$onFocus = function (handler) {
+	return _user$project$Material_Textfield$nativeControl(
+		{
+			ctor: '::',
+			_0: _user$project$Internal_Options$onFocus(handler),
+			_1: {ctor: '[]'}
+		});
+};
+var _user$project$Material_Textfield$onBlur = function (handler) {
+	return _user$project$Material_Textfield$nativeControl(
+		{
+			ctor: '::',
+			_0: _user$project$Internal_Options$onBlur(handler),
+			_1: {ctor: '[]'}
+		});
+};
 var _user$project$Material_Textfield$placeholder = _user$project$Internal_Textfield_Implementation$placeholder;
 var _user$project$Material_Textfield$textarea = _user$project$Internal_Textfield_Implementation$textarea;
 var _user$project$Material_Textfield$invalid = _user$project$Internal_Textfield_Implementation$invalid;
@@ -22486,17 +22874,26 @@ var _user$project$Material_Textfield_HelperText$helperText = _user$project$Inter
 
 var _user$project$Material_Typography$adjustMargin = _user$project$Internal_Typography_Implementation$adjustMargin;
 var _user$project$Material_Typography$button = _user$project$Internal_Typography_Implementation$button;
-var _user$project$Material_Typography$subheading2 = _user$project$Internal_Typography_Implementation$subheading2;
-var _user$project$Material_Typography$subheading1 = _user$project$Internal_Typography_Implementation$subheading1;
+var _user$project$Material_Typography$overline = _user$project$Internal_Typography_Implementation$overline;
 var _user$project$Material_Typography$body2 = _user$project$Internal_Typography_Implementation$body2;
 var _user$project$Material_Typography$body1 = _user$project$Internal_Typography_Implementation$body1;
 var _user$project$Material_Typography$caption = _user$project$Internal_Typography_Implementation$caption;
-var _user$project$Material_Typography$headline = _user$project$Internal_Typography_Implementation$headline;
+var _user$project$Material_Typography$subtitle2 = _user$project$Internal_Typography_Implementation$subtitle2;
+var _user$project$Material_Typography$subheading2 = _user$project$Material_Typography$subtitle2;
+var _user$project$Material_Typography$subtitle1 = _user$project$Internal_Typography_Implementation$subtitle1;
+var _user$project$Material_Typography$subheading1 = _user$project$Material_Typography$subtitle1;
+var _user$project$Material_Typography$headline6 = _user$project$Internal_Typography_Implementation$headline6;
+var _user$project$Material_Typography$headline5 = _user$project$Internal_Typography_Implementation$headline5;
+var _user$project$Material_Typography$headline4 = _user$project$Internal_Typography_Implementation$headline4;
+var _user$project$Material_Typography$headline3 = _user$project$Internal_Typography_Implementation$headline3;
+var _user$project$Material_Typography$headline2 = _user$project$Internal_Typography_Implementation$headline2;
+var _user$project$Material_Typography$headline1 = _user$project$Internal_Typography_Implementation$headline1;
+var _user$project$Material_Typography$headline = _user$project$Internal_Typography_Implementation$headline6;
 var _user$project$Material_Typography$title = _user$project$Internal_Typography_Implementation$title;
-var _user$project$Material_Typography$display4 = _user$project$Internal_Typography_Implementation$display4;
-var _user$project$Material_Typography$display3 = _user$project$Internal_Typography_Implementation$display3;
-var _user$project$Material_Typography$display2 = _user$project$Internal_Typography_Implementation$display2;
-var _user$project$Material_Typography$display1 = _user$project$Internal_Typography_Implementation$display1;
+var _user$project$Material_Typography$display4 = _user$project$Material_Typography$headline4;
+var _user$project$Material_Typography$display3 = _user$project$Material_Typography$headline3;
+var _user$project$Material_Typography$display2 = _user$project$Material_Typography$headline2;
+var _user$project$Material_Typography$display1 = _user$project$Material_Typography$headline1;
 var _user$project$Material_Typography$typography = _user$project$Internal_Typography_Implementation$typography;
 
 var _user$project$Pb_Www$rsvpInfoEncoder = function (v) {
@@ -23415,11 +23812,7 @@ var _user$project$Main$viewSubmit = F2(
 				_0: A5(
 					_user$project$Material_Button$view,
 					_user$project$Main$Mdc,
-					{
-						ctor: '::',
-						_0: 0,
-						_1: {ctor: '[]'}
-					},
+					'btn-send',
 					model.mdc,
 					{
 						ctor: '::',
@@ -23475,11 +23868,7 @@ var _user$project$Main$viewEmail = function (model) {
 			_0: A5(
 				_user$project$Material_Textfield$view,
 				_user$project$Main$Mdc,
-				{
-					ctor: '::',
-					_0: 1,
-					_1: {ctor: '[]'}
-				},
+				'txt-email',
 				model.mdc,
 				{
 					ctor: '::',
@@ -23559,11 +23948,7 @@ var _user$project$Main$viewNames = function (model) {
 			_0: A5(
 				_user$project$Material_Textfield$view,
 				_user$project$Main$Mdc,
-				{
-					ctor: '::',
-					_0: 2,
-					_1: {ctor: '[]'}
-				},
+				'txt-names',
 				model.mdc,
 				{
 					ctor: '::',
@@ -23643,11 +24028,7 @@ var _user$project$Main$viewChildrenNameAge = function (model) {
 			_0: A5(
 				_user$project$Material_Textfield$view,
 				_user$project$Main$Mdc,
-				{
-					ctor: '::',
-					_0: 3,
-					_1: {ctor: '[]'}
-				},
+				'txt-children-name-age',
 				model.mdc,
 				{
 					ctor: '::',
@@ -23723,11 +24104,7 @@ var _user$project$Main$viewMusic = function (model) {
 			_0: A5(
 				_user$project$Material_Textfield$view,
 				_user$project$Main$Mdc,
-				{
-					ctor: '::',
-					_0: 4,
-					_1: {ctor: '[]'}
-				},
+				'display-music',
 				model.mdc,
 				{
 					ctor: '::',
@@ -23831,11 +24208,7 @@ var _user$project$Main$viewPresence = function (model) {
 						_0: A5(
 							_user$project$Material_Switch$view,
 							_user$project$Main$Mdc,
-							{
-								ctor: '::',
-								_0: 5,
-								_1: {ctor: '[]'}
-							},
+							'txt-presence',
 							model.mdc,
 							{
 								ctor: '::',
@@ -23925,11 +24298,7 @@ var _user$project$Main$viewHousing = function (model) {
 						_0: A5(
 							_user$project$Material_Switch$view,
 							_user$project$Main$Mdc,
-							{
-								ctor: '::',
-								_0: 6,
-								_1: {ctor: '[]'}
-							},
+							'txt-housing',
 							model.mdc,
 							{
 								ctor: '::',
@@ -24019,11 +24388,7 @@ var _user$project$Main$viewBrunch = function (model) {
 						_0: A5(
 							_user$project$Material_Switch$view,
 							_user$project$Main$Mdc,
-							{
-								ctor: '::',
-								_0: 7,
-								_1: {ctor: '[]'}
-							},
+							'txt-brunch',
 							model.mdc,
 							{
 								ctor: '::',

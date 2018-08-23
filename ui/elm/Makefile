@@ -48,6 +48,7 @@ build-css:
 
 setup:
 	npm i
+	cd node_modules/elm-mdc/ && npm i
 	cd node_modules/elm-mdc/ && make elm-mdc.js
 	cp node_modules/elm-mdc/elm-mdc.js .
 	cd node_modules/elm-mdc/ && make distclean

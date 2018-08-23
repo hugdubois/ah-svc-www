@@ -395,7 +395,7 @@ viewSubmit model isLoading =
             , css "display" "block"
             ]
             [ Button.view Mdc
-                [ 0 ]
+                "btn-send"
                 model.mdc
                 [ Button.ripple
                 , Button.raised
@@ -419,7 +419,7 @@ viewEmail model =
             , css "display" "block"
             ]
             [ Textfield.view Mdc
-                [ 1 ]
+                "txt-email"
                 model.mdc
                 [ Textfield.label "Une addresse email"
                 , Textfield.required
@@ -451,7 +451,7 @@ viewNames model =
             , css "display" "block"
             ]
             [ Textfield.view Mdc
-                [ 2 ]
+                "txt-names"
                 model.mdc
                 [ Textfield.label "Vos noms et prenoms"
                 , Textfield.required
@@ -483,7 +483,7 @@ viewChildrenNameAge model =
             , css "display" "block"
             ]
             [ Textfield.view Mdc
-                [ 3 ]
+                "txt-children-name-age"
                 model.mdc
                 [ Textfield.label "Prenoms et ages des enfants"
                 , Options.onInput ChildrenNameAgeChange
@@ -514,7 +514,7 @@ viewMusic model =
             , css "margin-top" "16px"
             ]
             [ Textfield.view Mdc
-                [ 4 ]
+                "display-music"
                 model.mdc
                 [ Textfield.label "Sur quel morceau souhaitez-vous danser?"
                 , Options.onInput MusicChange
@@ -548,7 +548,7 @@ viewPresence model =
             [ text "On vous compte parmi nous?*" ]
         , FormField.view []
             [ Switch.view Mdc
-                [ 5 ]
+                "txt-presence"
                 model.mdc
                 [ Switch.on |> when model.rsvp.presence
                 , Options.onClick (Toogle Presence)
@@ -583,7 +583,7 @@ viewHousing model =
             [ text "On a prévu un hébergement pour vous" ]
         , FormField.view []
             [ Switch.view Mdc
-                [ 6 ]
+                "txt-housing"
                 model.mdc
                 [ Switch.on |> when model.rsvp.housing
                 , Options.onClick (Toogle Housing)
@@ -618,7 +618,7 @@ viewBrunch model =
             [ text "Serez vous présent pour le Brunch du dimanche?" ]
         , FormField.view []
             [ Switch.view Mdc
-                [ 7 ]
+                "txt-brunch"
                 model.mdc
                 [ Switch.on |> when model.rsvp.brunch
                 , Options.onClick (Toogle Brunch)

@@ -47,6 +47,12 @@
   revision = "7fef81c5963c21ba8b89459eaf00adf8ae6bf627"
 
 [[projects]]
+  name = "github.com/elazarl/go-bindata-assetfs"
+  packages = ["."]
+  revision = "30f82fa23fd844bd5bb1e5f216db87fd77b5eb43"
+  version = "v1.0.0"
+
+[[projects]]
   name = "github.com/fatih/color"
   packages = ["."]
   revision = "507f6050b8568533fb3f5504de8e5205fa62a114"
@@ -99,6 +105,10 @@
   packages = [
     "jsonpb",
     "proto",
+    "protoc-gen-go/descriptor",
+    "protoc-gen-go/generator",
+    "protoc-gen-go/generator/internal/remap",
+    "protoc-gen-go/plugin",
     "ptypes",
     "ptypes/any",
     "ptypes/duration",
@@ -473,6 +483,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "bb2fad6cd4988664282dd0eb7d35f4b4e1b90f608e213e12a71243043fa5320d"
+  inputs-digest = "64e62512b19b456294cfefceca07ef2e4f3708bc405e2d8144a130ea9be5b48f"
   solver-name = "gps-cdcl"
   solver-version = 1
